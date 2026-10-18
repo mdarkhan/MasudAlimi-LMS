@@ -46,6 +46,27 @@ class AdminResultsTest extends TestCase
             ->assertSee(__('results_admin.answers_heading'));
     }
 
+    public function test_a_numeric_filter_matches_the_roll_exactly(): void
+    {
+        $quiz = Quiz::factory()->create();
+        QuizBuilder::for($quiz)->question(['A', 'B'], correctPositions: [1], marks: 4);
+        $svc = app(QuizAttemptService::class);
+        foreach (['5' => 'Five Student', '15' => 'Fifteen Student', '50' => 'Fifty Student'] as $roll => $name) {
+            $student = $this->makeStudent(['roll' => $roll, 'name' => $name]);
+            app(PointService::class)->credit($student, 5, PointTransaction::TYPE_ADJUSTMENT, 'seed');
+            $svc->submit($svc->startOfficial($quiz->fresh(), $student->fresh()));
+        }
+        $admin = $this->makeAdmin();
+
+        $this->actingAs($admin)->get(route('admin.results.index', ['q' => '5']))
+            ->assertOk()->assertSee('Five Student')->assertDontSee('Fifteen Student')->assertDontSee('Fifty Student');
+        // Bengali digits are the same roll; a name search still works as a partial match.
+        $this->actingAs($admin)->get(route('admin.results.index', ['q' => '৫']))
+            ->assertOk()->assertSee('Five Student')->assertDontSee('Fifteen Student');
+        $this->actingAs($admin)->get(route('admin.results.index', ['q' => 'Fif']))
+            ->assertOk()->assertSee('Fifteen Student')->assertSee('Fifty Student')->assertDontSee('Five Student');
+    }
+
     public function test_a_student_cannot_reach_the_admin_results_area(): void
     {
         [, $attempt] = $this->lockedQuizWithAttempt();

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ScoreAdjustmentRequest;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
+use App\Models\User;
 use App\Services\Quiz\AdjustmentOutOfBoundsException;
 use App\Services\Quiz\ScoreAdjustmentService;
 use App\Support\AttemptReviewPresenter;
@@ -129,9 +130,14 @@ class ResultController extends Controller
             ->where('kind', QuizAttempt::KIND_OFFICIAL)
             ->when($filters['quiz_id'], fn ($q, $id) => $q->where('quiz_id', $id))
             ->when($filters['status'], fn ($q, $s) => $q->where('status', $s))
-            ->when($filters['q'] !== '', fn ($q) => $q->whereHas('user', function ($u) use ($filters) {
-                $u->where('name', 'like', '%'.$filters['q'].'%')
-                    ->orWhere('roll', 'like', '%'.$filters['q'].'%');
-            }));
+            ->when($filters['q'] !== '', function ($q) use ($filters) {
+                // A purely numeric search (Latin or Bengali digits) is a roll number and must match
+                // EXACTLY — "5" is student 5, not 15/50/53. Anything else searches by name.
+                $roll = User::normaliseRoll($filters['q']);
+
+                return $q->whereHas('user', fn ($u) => ctype_digit((string) $roll)
+                    ? $u->where('roll', $roll)
+                    : $u->where('name', 'like', '%'.$filters['q'].'%'));
+            });
     }
 }
