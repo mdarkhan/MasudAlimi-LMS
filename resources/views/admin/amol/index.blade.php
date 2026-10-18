@@ -14,14 +14,14 @@
             @foreach ($students as $student)
                 <a href="{{ route('admin.amol.show', $student) }}"
                    class="group flex items-center gap-4 p-3.5 sm:p-4 rounded-2xl border border-line bg-surface hover:border-brand/40 hover:shadow-sm transition">
-                    <span class="shrink-0 grid place-items-center size-12 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-4 ring-brand-tint {{ mb_strlen((string) $student->roll) > 3 ? 'text-sm' : 'text-lg' }}"
+                    <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $student->roll) > 3 ? 'text-xs' : 'text-base' }}"
                           title="{{ __('dashboard.roll') }}">
                         {{ $student->roll ? bn($student->roll) : '—' }}
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="font-semibold text-ink truncate">{{ $student->name }}</p>
+                        <p class="font-semibold text-ink truncate pl-1.5 -ml-1.5">{{ $student->name }}</p>
                         @if ($student->guardian_name)
-                            <p class="text-sm text-muted truncate">
+                            <p class="text-sm text-muted truncate pl-1.5 -ml-1.5">
                                 <span>{{ __('students.guardian_col') }}:</span> {{ $student->guardian_name }}
                             </p>
                         @endif
