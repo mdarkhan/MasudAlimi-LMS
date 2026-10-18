@@ -101,7 +101,7 @@
                                     <div class="font-semibold text-ink">{{ $row['quiz']->title }}</div>
                                     @if ($row['quiz']->course)<div class="text-xs text-muted">{{ $row['quiz']->course->title }}</div>@endif
                                 </td>
-                                <td class="px-4 py-3 text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y H:i') }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y H:i') }}</td>
                                 <td class="px-4 py-3 text-center"><x-ui.badge :color="$statusTone($row['attempt']->status)">{{ $statusLabel($row['attempt']->status) }}</x-ui.badge></td>
                                 <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums whitespace-nowrap">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ bn(number_format($row['percentage'], 2)) }}%</td>
@@ -192,7 +192,7 @@
                         @foreach ($groups['legacy'] as $row)
                             <tr>
                                 <td class="px-4 py-3 font-semibold text-ink">{{ $row['quiz']->title }}</td>
-                                <td class="px-4 py-3 text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y') }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y') }}</td>
                                 <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ $row['percentage'] !== null ? bn(number_format($row['percentage'], 2)).'%' : '—' }}</td>
                                 <td class="px-4 py-3 text-center text-muted tabular-nums">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
