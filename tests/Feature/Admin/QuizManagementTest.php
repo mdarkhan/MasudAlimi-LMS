@@ -40,6 +40,27 @@ class QuizManagementTest extends TestCase
         $this->assertDatabaseHas('audit_logs', ['action' => 'quiz.created']);
     }
 
+    public function test_the_overall_leaderboard_checkbox_is_ticked_by_default_and_can_be_unticked(): void
+    {
+        $admin = $this->makeAdmin();
+
+        // The create form renders the box ticked.
+        $html = $this->actingAs($admin)->get(route('admin.quizzes.create'))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/name="counts_toward_overall"[^>]*checked/', $html);
+
+        // Ticked -> counted; the checkbox is absent when unticked -> not counted.
+        $this->actingAs($admin)->post(route('admin.quizzes.store'), $this->payload(['title' => 'গণনা হবে', 'counts_toward_overall' => '1']))->assertRedirect();
+        $this->actingAs($admin)->post(route('admin.quizzes.store'), $this->payload(['title' => 'গণনা হবে না']))->assertRedirect();
+
+        $this->assertTrue(Quiz::where('title', 'গণনা হবে')->firstOrFail()->counts_toward_overall);
+        $this->assertFalse(Quiz::where('title', 'গণনা হবে না')->firstOrFail()->counts_toward_overall);
+
+        // And it can be switched back on later from the edit form.
+        $quiz = Quiz::where('title', 'গণনা হবে না')->firstOrFail();
+        $this->actingAs($admin)->put(route('admin.quizzes.update', $quiz), $this->payload(['title' => 'গণনা হবে না', 'counts_toward_overall' => '1']))->assertRedirect();
+        $this->assertTrue($quiz->fresh()->counts_toward_overall);
+    }
+
     public function test_end_before_start_is_rejected(): void
     {
         $admin = $this->makeAdmin();

@@ -56,6 +56,7 @@ return [
     'practice_enabled' => 'Practice enabled',
     'practice_timer_enabled' => 'Practice has a timer',
     'leaderboard_visible' => 'Leaderboard visible',
+    'counts_toward_overall' => 'Count toward the overall leaderboard',
     'bonus_enabled' => 'Give a bonus for a high score',
     'bonus_full' => 'When the student gets full marks',
     'bonus_marks' => 'When the student reaches a set mark',

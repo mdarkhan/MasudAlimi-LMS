@@ -102,6 +102,10 @@
                     <input type="checkbox" name="leaderboard_visible" value="1" @checked(old('leaderboard_visible', $quiz->leaderboard_visible ?? true)) class="rounded border-line text-brand focus:ring-brand">
                     {{ __('quizzes.leaderboard_visible') }}
                 </label>
+                <label class="flex items-center gap-2 text-sm text-ink">
+                    <input type="checkbox" name="counts_toward_overall" value="1" @checked(old('counts_toward_overall', $quiz->counts_toward_overall ?? true)) class="rounded border-line text-brand focus:ring-brand">
+                    {{ __('quizzes.counts_toward_overall') }}
+                </label>
                 @php $shuffleLocked = isset($quiz) && $quiz->exists && $quiz->scoringLocked(); @endphp
                 <div>
                     <label class="flex items-center gap-2 text-sm text-ink">

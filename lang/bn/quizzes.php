@@ -56,6 +56,7 @@ return [
     'practice_enabled' => 'অনুশীলন চালু',
     'practice_timer_enabled' => 'অনুশীলনে টাইমার',
     'leaderboard_visible' => 'মেধাতালিকা দৃশ্যমান',
+    'counts_toward_overall' => 'সার্বিক মেধাতালিকায় গণনা করা হবে',
     'bonus_enabled' => 'ভালো ফলাফলে বোনাস পয়েন্ট দিন',
     'bonus_full' => 'শিক্ষার্থী পূর্ণ নম্বর পেলে',
     'bonus_marks' => 'শিক্ষার্থী নির্ধারিত নম্বর পেলে',
