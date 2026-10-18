@@ -82,4 +82,19 @@ class BookBuyLinksTest extends TestCase
             $this->assertSame(['Rokomari', 'Wafilife'], $stores, $book->title);
         }
     }
+
+    public function test_rerunning_the_seeder_restores_a_missing_cover_file_but_never_overwrites_one(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+        $this->seed(\Database\Seeders\BookSeeder::class);
+        $book = Book::query()->where('cover_path', 'books/salafder-jibonkotha.png')->firstOrFail();
+
+        \Illuminate\Support\Facades\Storage::disk('public')->delete($book->cover_path);   // a new container: files are gone
+        $this->seed(\Database\Seeders\BookSeeder::class);
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($book->cover_path);
+
+        \Illuminate\Support\Facades\Storage::disk('public')->put($book->cover_path, 'custom');
+        $this->seed(\Database\Seeders\BookSeeder::class);
+        $this->assertSame('custom', \Illuminate\Support\Facades\Storage::disk('public')->get($book->cover_path), 'an existing file is left alone');
+    }
 }

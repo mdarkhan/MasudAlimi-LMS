@@ -105,7 +105,17 @@ class BookSeeder extends Seeder
         foreach (self::BOOKS as $order => $row) {
             $slug = Slug::make($row['title'], 'book');
 
-            if (Book::query()->where('slug', $slug)->exists()) {
+            $existing = Book::query()->where('slug', $slug)->first();
+            if ($existing !== null) {
+                // Hosts with an ephemeral filesystem (a fresh container every deploy) lose
+                // storage/app/public. Put a MISSING catalogue cover back — never overwrite a file
+                // that is there, and never touch a book whose cover the admin has replaced.
+                $coverPath = 'books/'.$row['cover'];
+                $sourcePath = __DIR__.'/assets/books/'.$row['cover'];
+                if ($existing->cover_path === $coverPath && is_file($sourcePath) && ! Storage::disk('public')->exists($coverPath)) {
+                    Storage::disk('public')->put($coverPath, file_get_contents($sourcePath));
+                }
+
                 continue;
             }
 
