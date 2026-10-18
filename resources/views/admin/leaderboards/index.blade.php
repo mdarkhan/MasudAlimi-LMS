@@ -1,9 +1,7 @@
 @php
     $isQuiz = $tab === 'quiz';
     $tabs = ['overall' => __('leaderboards.tab_overall'), 'quiz' => __('leaderboards.tab_quiz'), 'course' => __('leaderboards.tab_course')];
-    $fmtTime = fn ($seconds) => $seconds === null
-        ? '—'
-        : __('leaderboards.time_format', ['minutes' => bn(intdiv((int) $seconds, 60)), 'seconds' => bn((int) $seconds % 60)]);
+    $fmtTime = fn ($seconds) => duration_label($seconds === null ? null : (int) $seconds);
     $medal = [1 => 'from-amber-300 to-amber-500 text-amber-950', 2 => 'from-slate-200 to-slate-400 text-slate-900', 3 => 'from-orange-300 to-orange-600 text-orange-950'];
     $ready = match ($tab) { 'quiz' => $quiz !== null, 'course' => $course !== null, default => true };
 @endphp

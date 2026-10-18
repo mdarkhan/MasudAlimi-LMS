@@ -14,6 +14,7 @@ return [
     'practice_available' => 'Practice available',
     'minutes' => ':count min',
     'seconds' => ':count sec',
+    'hours' => ':count hr',
     'marks' => ':count marks',
     'points' => ':count points',
 

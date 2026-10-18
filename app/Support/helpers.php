@@ -70,8 +70,9 @@ if (! function_exists('bn')) {
 
 if (! function_exists('duration_label')) {
     /**
-     * A student-facing duration: whole minutes, but under a minute show seconds (so a 58-second
-     * attempt reads "58 sec", not "0 min"). Unknown (null) renders as an em dash.
+     * A student-facing duration in full: hours (only when there are any), then minutes AND seconds
+     * always — 58 s is "0 min 58 sec", 754 s is "12 min 34 sec", 3725 s is "1 hr 2 min 5 sec".
+     * Unknown (null) renders as an em dash.
      */
     function duration_label(?int $seconds): string
     {
@@ -79,8 +80,14 @@ if (! function_exists('duration_label')) {
             return '—';
         }
 
-        return $seconds < 60
-            ? __('exams.seconds', ['count' => bn($seconds)])
-            : __('exams.minutes', ['count' => bn(intdiv($seconds, 60))]);
+        $seconds = max(0, $seconds);
+        $parts = [];
+        if ($seconds >= 3600) {
+            $parts[] = __('exams.hours', ['count' => bn(intdiv($seconds, 3600))]);
+        }
+        $parts[] = __('exams.minutes', ['count' => bn(intdiv($seconds % 3600, 60))]);
+        $parts[] = __('exams.seconds', ['count' => bn($seconds % 60)]);
+
+        return implode(' ', $parts);
     }
 }

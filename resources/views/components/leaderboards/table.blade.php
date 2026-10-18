@@ -4,12 +4,7 @@
 ])
 
 @php
-    $fmtTime = fn ($seconds) => $seconds === null
-        ? '—'
-        : __('leaderboards.time_format', [
-            'minutes' => bn(intdiv((int) $seconds, 60)),
-            'seconds' => bn((int) $seconds % 60),
-        ]);
+    $fmtTime = fn ($seconds) => duration_label($seconds === null ? null : (int) $seconds);
 @endphp
 
 @if ($rows->total() === 0)

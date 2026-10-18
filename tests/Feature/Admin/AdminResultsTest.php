@@ -55,7 +55,7 @@ class AdminResultsTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.results.index', ['quiz_id' => $quiz->id]));
 
         $response->assertOk()->assertSee($student->name)
-            ->assertSee(bn(12).' '.__('results_admin.min').' '.bn(34).' '.__('results_admin.sec'))   // 754 s
+            ->assertSee(duration_label(754))   // 12 min 34 sec
             ->assertSee('<span class="inline-grid', false);   // the "submitted #" badge
         $stats = $response->viewData('stats');
         $this->assertSame(1, $stats['attempts']);

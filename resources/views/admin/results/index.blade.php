@@ -1,8 +1,6 @@
 @php
     // 754 s -> "12 min 34 sec" (Bengali digits in the Bengali UI); unknown / unfinished -> em dash.
-    $fmt = fn (?int $sec) => $sec === null ? '—' : ($sec >= 60
-        ? bn(intdiv($sec, 60)).' '.__('results_admin.min').($sec % 60 ? ' '.bn($sec % 60).' '.__('results_admin.sec') : '')
-        : bn($sec).' '.__('results_admin.sec'));
+    $fmt = fn (?int $sec) => duration_label($sec);
 @endphp
 
 <x-layout.admin :title="__('results_admin.heading')" :heading="__('results_admin.heading')">
