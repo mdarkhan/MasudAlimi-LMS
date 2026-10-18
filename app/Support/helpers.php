@@ -67,3 +67,20 @@ if (! function_exists('bn')) {
             : BengaliText::toBengaliDigits($value);
     }
 }
+
+if (! function_exists('duration_label')) {
+    /**
+     * A student-facing duration: whole minutes, but under a minute show seconds (so a 58-second
+     * attempt reads "58 sec", not "0 min"). Unknown (null) renders as an em dash.
+     */
+    function duration_label(?int $seconds): string
+    {
+        if ($seconds === null) {
+            return '—';
+        }
+
+        return $seconds < 60
+            ? __('exams.seconds', ['count' => bn($seconds)])
+            : __('exams.minutes', ['count' => bn(intdiv($seconds, 60))]);
+    }
+}

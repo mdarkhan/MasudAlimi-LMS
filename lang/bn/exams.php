@@ -13,6 +13,7 @@ return [
 
     'practice_available' => 'অনুশীলন উপলব্ধ',
     'minutes' => ':count মিনিট',
+    'seconds' => ':count সেকেন্ড',
     'marks' => ':count নম্বর',
     'points' => ':count পয়েন্ট',
 

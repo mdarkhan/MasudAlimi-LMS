@@ -51,7 +51,7 @@
                 @if ($attempt->time_taken_seconds !== null)
                     <div>
                         <dt class="text-muted">{{ __('exams.result_time_taken') }}</dt>
-                        <dd class="font-semibold text-ink tabular-nums">{{ __('exams.minutes', ['count' => bn(intdiv($attempt->time_taken_seconds, 60))]) }}</dd>
+                        <dd class="font-semibold text-ink tabular-nums">{{ duration_label((int) $attempt->time_taken_seconds) }}</dd>
                     </div>
                 @endif
             </dl>

@@ -1,5 +1,5 @@
 @php
-    $fmtTime = fn ($seconds) => $seconds === null ? '—' : __('exams.minutes', ['count' => bn(intdiv((int) $seconds, 60))]);
+    $fmtTime = fn ($seconds) => duration_label($seconds === null ? null : (int) $seconds);
     $statusLabel = fn ($status) => $status === \App\Models\QuizAttempt::STATUS_EXPIRED
         ? __('results.status_expired') : __('results.status_submitted');
     $statusTone = fn ($status) => $status === \App\Models\QuizAttempt::STATUS_EXPIRED ? 'warning' : 'success';
@@ -191,7 +191,7 @@
                     <tbody class="divide-y divide-line">
                         @foreach ($groups['legacy'] as $row)
                             <tr>
-                                <td class="px-4 py-3 font-semibold text-ink">{{ $row['quiz']->title }}</td>
+                                <td class="px-4 py-3 text-center font-semibold text-ink">{{ $row['quiz']->title }}</td>
                                 <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y') }}</td>
                                 <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ $row['percentage'] !== null ? bn(number_format($row['percentage'], 2)).'%' : '—' }}</td>
