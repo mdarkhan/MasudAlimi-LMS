@@ -13,10 +13,18 @@
         <div class="space-y-2">
             @foreach ($students as $student)
                 <a href="{{ route('admin.amol.show', $student) }}"
-                   class="flex items-center justify-between gap-4 p-4 rounded-2xl border border-line bg-surface hover:border-brand/40 transition-colors">
-                    <div class="min-w-0">
+                   class="group flex items-center gap-4 p-3.5 sm:p-4 rounded-2xl border border-line bg-surface hover:border-brand/40 hover:shadow-sm transition">
+                    <span class="shrink-0 grid place-items-center size-12 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-4 ring-brand-tint {{ mb_strlen((string) $student->roll) > 3 ? 'text-sm' : 'text-lg' }}"
+                          title="{{ __('dashboard.roll') }}">
+                        {{ $student->roll ? bn($student->roll) : '—' }}
+                    </span>
+                    <div class="min-w-0 flex-1">
                         <p class="font-semibold text-ink truncate">{{ $student->name }}</p>
-                        <p class="text-xs text-muted tabular-nums">{{ $student->roll ? bn($student->roll) : '—' }}</p>
+                        @if ($student->guardian_name)
+                            <p class="text-sm text-muted truncate">
+                                <span>{{ __('students.guardian_col') }}:</span> {{ $student->guardian_name }}
+                            </p>
+                        @endif
                     </div>
                     <span class="shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
                         {{ __('amol.view_amol') }} <x-ui.icon name="chevron" class="w-4 h-4" />
