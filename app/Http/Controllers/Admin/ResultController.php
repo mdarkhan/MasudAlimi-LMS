@@ -33,12 +33,25 @@ class ResultController extends Controller
             'q' => trim($request->string('q')->toString()),
         ];
 
-        $attempts = $this->filteredQuery($filters)
-            ->with(['quiz:id,title', 'user:id,roll,name'])
-            ->orderByDesc('submitted_at')
-            ->orderByDesc('id')
-            ->paginate(30)
-            ->withQueryString();
+        $sort = $request->string('sort')->toString();
+        $sort = in_array($sort, ['latest', 'score', 'fastest', 'roll'], true) ? $sort : 'latest';
+        $filters['sort'] = $sort;
+
+        $query = $this->filteredQuery($filters)
+            ->with(['quiz' => fn ($q) => $q->select('id', 'title')->withCount('questions'), 'user:id,roll,name,guardian_name'])
+            // Questions the student actually picked an option for (an emptied answer does not count).
+            ->withCount(['answers as answered_count' => fn ($q) => $q->whereHas('options')]);
+
+        match ($sort) {
+            'score' => $query->orderByDesc('final_score')->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds'),
+            'fastest' => $query->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds')->orderByDesc('final_score'),
+            'roll' => $query->orderByRaw('(SELECT CAST(users.roll AS UNSIGNED) FROM users WHERE users.id = quiz_attempts.user_id)'),
+            // Newest activity first; a student still sitting the exam (no submit time yet) uses their start time.
+            default => $query->orderByRaw('COALESCE(submitted_at, started_at) DESC'),
+        };
+
+        $attempts = $query->orderByDesc('id')->paginate(30)->withQueryString();
+        $stats = $this->summary($filters);
 
         $now = CarbonImmutable::now();
         $pendingRelease = Quiz::query()->where('status', '!=', Quiz::STATUS_DRAFT)->get()
@@ -47,6 +60,7 @@ class ResultController extends Controller
 
         return view('admin.results.index', [
             'attempts' => $attempts,
+            'stats' => $stats,
             'filters' => $filters,
             'quizzes' => Quiz::query()->orderBy('title')->get(['id', 'title']),
             'pendingRelease' => $pendingRelease,
@@ -116,6 +130,33 @@ class ResultController extends Controller
 
             fclose($out);
         }, 'results-'.now()->format('Ymd-His').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /**
+     * Headline figures for whatever the filters currently select. Scores and times only
+     * consider finished attempts (submitted / expired) — a live attempt has neither yet.
+     *
+     * @param  array<string, mixed>  $filters
+     * @return array{attempts:int, students:int, in_progress:int, finished:int, average_percent:?int, highest:?int, average_seconds:?int}
+     */
+    private function summary(array $filters): array
+    {
+        $base = $this->filteredQuery($filters);
+        $finished = (clone $base)->whereIn('status', QuizAttempt::RANKABLE_STATUSES);
+
+        $avgPercent = (clone $finished)->where('total_marks_snapshot', '>', 0)
+            ->selectRaw('AVG(final_score * 100 / total_marks_snapshot) AS p')->value('p');
+        $avgSeconds = (clone $finished)->whereNotNull('time_taken_seconds')->avg('time_taken_seconds');
+
+        return [
+            'attempts' => (clone $base)->count(),
+            'students' => (clone $base)->distinct()->count('user_id'),
+            'in_progress' => (clone $base)->where('status', QuizAttempt::STATUS_IN_PROGRESS)->count(),
+            'finished' => (clone $finished)->count(),
+            'average_percent' => $avgPercent !== null ? (int) round((float) $avgPercent) : null,
+            'highest' => (clone $finished)->max('final_score'),
+            'average_seconds' => $avgSeconds !== null ? (int) round((float) $avgSeconds) : null,
+        ];
     }
 
     /**

@@ -39,11 +39,46 @@ class AdminResultsTest extends TestCase
 
         $index = $this->actingAs($admin)->get(route('admin.results.index'));
         $index->assertOk()->assertSee($quiz->title);
-        $this->assertSame(14, substr_count($index->getContent(), 'text-center align-middle'));
+        $this->assertSame(16, substr_count($index->getContent(), 'text-center align-middle'));   // 8 centred columns: header + cell
         $this->actingAs($admin)->get(route('admin.results.show', $attempt))
             ->assertOk()
             ->assertSee(__('results_admin.scores'))
             ->assertSee(__('results_admin.answers_heading'));
+    }
+
+    public function test_the_overview_shows_stats_answered_count_and_duration(): void
+    {
+        [$quiz, $attempt, , $student] = $this->lockedQuizWithAttempt();   // 1 question, answered, submitted
+        $attempt->forceFill(['time_taken_seconds' => 754])->save();
+        $admin = $this->makeAdmin();
+
+        $response = $this->actingAs($admin)->get(route('admin.results.index', ['quiz_id' => $quiz->id]));
+
+        $response->assertOk()->assertSee($student->name)
+            ->assertSee(bn(12).' '.__('results_admin.min').' '.bn(34).' '.__('results_admin.sec'))   // 754 s
+            ->assertSee('> / '.bn(1).'</span>', false);                                              // …answered / questions
+        $stats = $response->viewData('stats');
+        $this->assertSame(1, $stats['attempts']);
+        $this->assertSame(1, $stats['students']);
+        $this->assertSame(1, $stats['finished']);
+        $this->assertSame(754, $stats['average_seconds']);
+    }
+
+    public function test_the_overview_can_be_sorted_by_roll_numerically(): void
+    {
+        $quiz = Quiz::factory()->create();
+        QuizBuilder::for($quiz)->question(['A', 'B'], correctPositions: [1], marks: 4);
+        $svc = app(QuizAttemptService::class);
+        foreach (['100', '2', '10'] as $roll) {
+            $student = $this->makeStudent(['roll' => $roll]);
+            app(PointService::class)->credit($student, 5, PointTransaction::TYPE_ADJUSTMENT, 'seed');
+            $svc->submit($svc->startOfficial($quiz->fresh(), $student->fresh()));
+        }
+
+        $rolls = $this->actingAs($this->makeAdmin())->get(route('admin.results.index', ['sort' => 'roll']))
+            ->assertOk()->viewData('attempts')->map(fn ($a) => $a->user->roll)->all();
+
+        $this->assertSame(['2', '10', '100'], $rolls);
     }
 
     public function test_a_numeric_filter_matches_the_roll_exactly(): void
