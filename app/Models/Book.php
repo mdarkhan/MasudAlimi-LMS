@@ -46,6 +46,6 @@ class Book extends Model
 
     public function coverUrl(): ?string
     {
-        return $this->cover_path ? Storage::disk('public')->url($this->cover_path) : null;
+        return $this->cover_path ? Storage::disk(config('filesystems.uploads_disk'))->url($this->cover_path) : null;
     }
 }

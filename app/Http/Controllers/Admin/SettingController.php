@@ -75,14 +75,14 @@ class SettingController extends Controller
         $values = ['about_bio' => $data['about_bio'] ?? ''];
 
         if ($request->hasFile('about_photo')) {
-            $values['about_photo'] = $request->file('about_photo')->store('about', 'public');
+            $values['about_photo'] = $request->file('about_photo')->store('about', config('filesystems.uploads_disk'));
         }
 
         $this->settings->set($values, $request->user());
 
         // Only remove the old file once the new one is safely saved, and only if it changed.
         if ($oldPhoto && ($values['about_photo'] ?? $oldPhoto) !== $oldPhoto) {
-            Storage::disk('public')->delete($oldPhoto);
+            Storage::disk(config('filesystems.uploads_disk'))->delete($oldPhoto);
         }
 
         $this->audit->log('settings.about_updated', null, after: ['keys' => array_keys($values)]);

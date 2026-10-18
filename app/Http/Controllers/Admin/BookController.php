@@ -43,7 +43,7 @@ class BookController extends Controller
                 'publisher' => $data['publisher'] ?? null,
                 'page_count' => $data['page_count'] ?? null,
                 'details' => $data['details'] ?? null,
-                'cover_path' => $request->file('cover')?->store('books', 'public'),
+                'cover_path' => $request->file('cover')?->store('books', config('filesystems.uploads_disk')),
                 'is_published' => $request->boolean('is_published'),
                 'sort_order' => (int) Book::query()->max('sort_order') + 1,
             ]);
@@ -86,7 +86,7 @@ class BookController extends Controller
             ]);
 
             if ($request->hasFile('cover')) {
-                $book->cover_path = $request->file('cover')->store('books', 'public');
+                $book->cover_path = $request->file('cover')->store('books', config('filesystems.uploads_disk'));
             }
 
             $book->save();
@@ -96,7 +96,7 @@ class BookController extends Controller
 
         // Only remove the old file once the new one is safely saved, and only if it changed.
         if ($oldCoverPath !== null && $oldCoverPath !== $book->cover_path) {
-            Storage::disk('public')->delete($oldCoverPath);
+            Storage::disk(config('filesystems.uploads_disk'))->delete($oldCoverPath);
         }
 
         $this->audit->log('book.updated', $book,
@@ -112,7 +112,7 @@ class BookController extends Controller
         $this->audit->log('book.deleted', $book, before: $book->only(['slug', 'title']));
 
         if ($book->cover_path !== null) {
-            Storage::disk('public')->delete($book->cover_path);
+            Storage::disk(config('filesystems.uploads_disk'))->delete($book->cover_path);
         }
 
         $book->delete();   // purchase links cascade

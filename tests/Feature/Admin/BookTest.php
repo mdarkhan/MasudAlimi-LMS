@@ -112,4 +112,22 @@ class BookTest extends TestCase
         $this->actingAs($this->makeStudent())->get(route('admin.books.index'))->assertForbidden();
         $this->actingAs($this->makeStudent())->post(route('admin.books.store'), ['title' => 'x', 'author' => 'y'])->assertForbidden();
     }
+
+    public function test_uploads_follow_the_configured_uploads_disk(): void
+    {
+        config(['filesystems.uploads_disk' => 'r2']);
+        Storage::fake('r2');
+        Storage::fake('public');
+
+        $this->actingAs($this->makeAdmin())->post(route('admin.books.store'), [
+            'title' => 'ক্লাউড কভার',
+            'author' => 'লেখক',
+            'is_published' => '1',
+            'cover' => UploadedFile::fake()->image('cover.jpg'),
+        ])->assertRedirect();
+
+        $book = Book::query()->where('title', 'ক্লাউড কভার')->firstOrFail();
+        Storage::disk('r2')->assertExists($book->cover_path);
+        Storage::disk('public')->assertMissing($book->cover_path);
+    }
 }

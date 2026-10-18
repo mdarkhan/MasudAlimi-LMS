@@ -112,8 +112,8 @@ class BookSeeder extends Seeder
                 // that is there, and never touch a book whose cover the admin has replaced.
                 $coverPath = 'books/'.$row['cover'];
                 $sourcePath = __DIR__.'/assets/books/'.$row['cover'];
-                if ($existing->cover_path === $coverPath && is_file($sourcePath) && ! Storage::disk('public')->exists($coverPath)) {
-                    Storage::disk('public')->put($coverPath, file_get_contents($sourcePath));
+                if ($existing->cover_path === $coverPath && is_file($sourcePath) && ! Storage::disk(config('filesystems.uploads_disk'))->exists($coverPath)) {
+                    Storage::disk(config('filesystems.uploads_disk'))->put($coverPath, file_get_contents($sourcePath));
                 }
 
                 continue;
@@ -122,7 +122,7 @@ class BookSeeder extends Seeder
             $coverPath = 'books/'.$row['cover'];
             $sourcePath = __DIR__.'/assets/books/'.$row['cover'];
             if (is_file($sourcePath)) {
-                Storage::disk('public')->put($coverPath, file_get_contents($sourcePath));
+                Storage::disk(config('filesystems.uploads_disk'))->put($coverPath, file_get_contents($sourcePath));
             }
 
             $book = Book::query()->create([

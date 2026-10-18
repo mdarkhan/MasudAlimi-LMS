@@ -72,7 +72,7 @@
                 @if ($about['about_photo'])
                     <div>
                         <p class="text-xs text-muted mb-1.5">{{ __('settings.current_photo') }}</p>
-                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($about['about_photo']) }}" alt="" class="w-20 h-20 rounded-xl object-cover border border-line">
+                        <img src="{{ \Illuminate\Support\Facades\Storage::disk(config('filesystems.uploads_disk'))->url($about['about_photo']) }}" alt="" class="w-20 h-20 rounded-xl object-cover border border-line">
                     </div>
                 @endif
                 <x-ui.field :label="__('settings.about_photo')" name="about_photo">

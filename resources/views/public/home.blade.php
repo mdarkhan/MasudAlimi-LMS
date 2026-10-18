@@ -90,7 +90,7 @@
             <section data-reveal class="rounded-3xl border border-line bg-card p-6 sm:p-8">
                 <div class="grid gap-6 sm:grid-cols-[auto_1fr] items-start">
                     @if ($about['about_photo'])
-                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($about['about_photo']) }}" alt=""
+                        <img src="{{ \Illuminate\Support\Facades\Storage::disk(config('filesystems.uploads_disk'))->url($about['about_photo']) }}" alt=""
                              class="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl object-cover border border-line shrink-0">
                     @endif
                     <div>
