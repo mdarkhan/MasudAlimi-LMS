@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             BookSeeder::class,
             AmolSeeder::class,
             LegacyCourseSeeder::class,
-            DevAccountsSeeder::class,
+            DevAccountsSeeder::class,       // skips itself in production
+            ProductionAdminSeeder::class,   // no-op unless INITIAL_SUPERADMIN_PASSWORD is set
         ]);
     }
 }

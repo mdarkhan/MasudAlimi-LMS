@@ -19,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\AddSecurityHeaders::class,
         ]);
 
+        // The app runs behind the hosting platform's HTTPS reverse proxy: trust its forwarded
+        // scheme/host headers so generated URLs, redirects and secure cookies use https.
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
             'perm' => \App\Http\Middleware\EnsurePermission::class,
