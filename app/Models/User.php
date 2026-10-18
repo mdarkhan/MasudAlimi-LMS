@@ -114,6 +114,12 @@ class User extends Authenticatable
         $query->whereHas('roles', fn ($r) => $r->where('name', Role::STUDENT));
     }
 
+    /** Numeric roll order (1, 2, 10, 100) — `roll` is a string column, so a plain ORDER BY gives 1, 10, 100, 2. */
+    public function scopeOrderByRoll(Builder $query): void
+    {
+        $query->orderByRaw('CAST(roll AS UNSIGNED)')->orderBy('roll');
+    }
+
     /** Users holding any non-student role — the population the Staff admin area manages. */
     public function scopeStaff(Builder $query): void
     {

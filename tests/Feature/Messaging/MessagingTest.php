@@ -150,6 +150,18 @@ class MessagingTest extends TestCase
             ->assertJsonCount(0, 'messages');
     }
 
+    public function test_the_new_conversation_student_list_is_in_numeric_roll_order(): void
+    {
+        foreach (['100', '2', '10', '1'] as $roll) {
+            $this->makeStudent(['roll' => $roll]);
+        }
+
+        $order = $this->actingAs($this->makeAdmin())->get(route('admin.messages.index'))
+            ->assertOk()->viewData('students')->pluck('roll')->all();
+
+        $this->assertSame(['1', '2', '10', '100'], $order);
+    }
+
     public function test_a_student_cannot_open_the_admin_inbox(): void
     {
         $student = $this->makeStudent();

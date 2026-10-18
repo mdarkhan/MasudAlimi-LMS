@@ -34,7 +34,7 @@ class MessageController extends Controller
             // For "start a new conversation": students who can be written to first.
             'students' => User::query()->students()
                 ->where('status', User::STATUS_ACTIVE)
-                ->orderBy('roll')
+                ->orderByRoll()
                 ->get(['id', 'name', 'roll']),
         ]);
     }

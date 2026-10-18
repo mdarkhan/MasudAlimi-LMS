@@ -30,7 +30,7 @@ class AmolController extends Controller
             ->when($search !== '', fn ($q) => $q->where(
                 fn ($w) => $w->where('name', 'like', "%{$search}%")->orWhere('roll', 'like', "%{$search}%")
             ))
-            ->orderBy('roll')
+            ->orderByRoll()
             ->paginate(20)
             ->withQueryString();
 
