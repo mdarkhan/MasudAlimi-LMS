@@ -69,7 +69,46 @@ class AmolStatsService
             }
         }
 
+        $avg = function (CarbonImmutable $from, int $count) use ($perDay, $total): int {
+            if ($total === 0 || $count === 0) {
+                return 0;
+            }
+            $sum = 0;
+            for ($i = 0; $i < $count; $i++) {
+                $sum += ($perDay[$from->addDays($i)->toDateString()] ?? 0) / $total;
+            }
+
+            return (int) round($sum * 100 / $count);
+        };
+
+        // Rolling 7-day windows ending today, and the whole previous calendar month — the
+        // "how is this student trending" comparisons the ustaz's analysis view needs.
+        $prevMonth = $month->subMonth()->startOfMonth();
+        $hasPrev = collect($perDay)->keys()->contains(fn (string $d) => $d >= $prevMonth->toDateString() && $d < $month->toDateString());
+
+        // Per-deed consistency for the viewed month (days it was ticked / days elapsed).
+        $monthEnd = $month->endOfMonth()->startOfDay();
+        $upTo = $today->lessThan($monthEnd) ? $today : $monthEnd;
+        $deeds = [];
+        if ($elapsed > 0) {
+            $ticked = DB::table('amol_entries')
+                ->where('user_id', $student->getKey())->where('is_done', true)
+                ->whereBetween('date', [$month->toDateString(), $upTo->toDateString()])
+                ->groupBy('amol_id')->selectRaw('amol_id, count(*) as c')->pluck('c', 'amol_id');
+
+            foreach (Amol::query()->active()->ordered()->get(['id', 'label', 'group']) as $amol) {
+                $n = (int) ($ticked[$amol->id] ?? 0);
+                $deeds[] = ['label' => $amol->label, 'group' => $amol->group, 'days' => $n, 'percent' => (int) round($n * 100 / $elapsed)];
+            }
+            usort($deeds, fn ($x, $y) => $x['percent'] <=> $y['percent']);
+        }
+
         return [
+            'elapsed' => $elapsed,
+            'week_average' => $avg($today->subDays(6), 7),
+            'prev_week_average' => $avg($today->subDays(13), 7),
+            'prev_month_average' => $hasPrev ? $avg($prevMonth, $prevMonth->daysInMonth) : null,
+            'deeds' => $deeds,
             'total' => $total,
             'current_full' => $this->current($perDay, $isFull, $today),
             'best_full' => $this->best($perDay, $isFull),

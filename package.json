@@ -17,6 +17,8 @@
         "@laravel/multiplex": "^0.4.1"
     },
     "dependencies": {
-        "alpinejs": "^3.16.1"
+        "alpinejs": "^3.16.1",
+        "country-flag-emoji-polyfill": "^0.1.10",
+        "emojibase-data": "^18.0.0"
     }
 }

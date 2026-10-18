@@ -17,7 +17,8 @@
         </main>
 
         <footer class="py-6 text-center text-xs text-muted">
-            সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} · মাসউদ আলিমী
+            {{ __('ui.copyright', ['year' => date('Y')]) }} · মাসউদ আলিমী
+            <x-layout.dev-credit class="mt-2" />
         </footer>
     </div>
 </x-layout.base>

@@ -62,6 +62,50 @@ window.pollWhenVisible = function (task, { base, max = base * 4, backoff = 1.5 }
     };
 };
 
+// Full emoji set for the chat picker: ~110 KB, so it is a separate chunk fetched on first open only.
+window.loadEmojiData = () => import('./emoji-data.js').then((m) => m.default);
+
+// Shared key behaviour for plain <textarea> comment boxes (the chat has its own, in thread.blade.php):
+//   Enter -> onEnter() (submit)    Shift+Enter -> new line    Ctrl/Cmd+B -> wrap/unwrap the selection in *bold*
+// Enter is ignored while an input method (e.g. Avro) is composing a word.
+window.richKeys = function (e, onEnter) {
+    const t = e.target;
+    if ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        const a = t.selectionStart, b = t.selectionEnd, v = t.value, sel = v.slice(a, b);
+        let from, to;
+        if (sel.length >= 2 && sel.startsWith('*') && sel.endsWith('*')) {
+            t.value = v.slice(0, a) + sel.slice(1, -1) + v.slice(b); from = a; to = b - 2;
+        } else {
+            t.value = v.slice(0, a) + '*' + sel + '*' + v.slice(b); from = a + 1; to = b + 1;
+        }
+        t.setSelectionRange(from, to);
+        t.dispatchEvent(new Event('input', { bubbles: true }));
+    } else if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && !e.isComposing && e.keyCode !== 229) {
+        e.preventDefault();
+        onEnter();
+    }
+};
+
+// Keep the reader's place when a control re-loads the same page with different parameters
+// (the amol date / month navigation). There is no client-side routing, so a plain link would
+// land at the top; instead the scroll offset is stashed just before leaving and restored on
+// arrival. Links opt in with data-keep-scroll; other code can call window.keepScroll().
+window.keepScroll = () => {
+    try { sessionStorage.setItem('keepScroll', JSON.stringify({ path: location.pathname, y: window.scrollY })); } catch (e) {}
+};
+document.addEventListener('click', (e) => {
+    if (e.target.closest('a[data-keep-scroll]')) window.keepScroll();
+});
+try {
+    const saved = JSON.parse(sessionStorage.getItem('keepScroll') || 'null');
+    sessionStorage.removeItem('keepScroll');
+    if (saved && saved.path === location.pathname) {
+        history.scrollRestoration = 'manual';
+        window.scrollTo({ top: saved.y, left: 0, behavior: 'instant' });
+    }
+} catch (e) {}
+
 window.Alpine = Alpine;
 Alpine.start();
 

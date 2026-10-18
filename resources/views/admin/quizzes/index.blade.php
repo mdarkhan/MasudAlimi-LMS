@@ -53,9 +53,11 @@
             </x-slot:head>
             @foreach ($quizzes as $quiz)
                 @php [$color, $label] = $statusMeta[$quiz->status]; @endphp
-                <tr>
+                <tr class="cursor-pointer hover:bg-ink/5 transition-colors"
+                    onclick="if (!event.target.closest('a, button, form, input')) window.location = this.dataset.href"
+                    data-href="{{ route('admin.quizzes.edit', $quiz) }}">
                     <td class="px-4 py-3">
-                        <p class="font-semibold text-ink">{{ $quiz->title }}</p>
+                        <a href="{{ route('admin.quizzes.edit', $quiz) }}" class="font-semibold text-ink hover:text-brand">{{ $quiz->title }}</a>
                         <p class="text-xs text-muted">
                             {{ bn($quiz->point_cost) }} {{ __('quizzes.points_suffix') }}
                             @if ($quiz->duration_seconds) · {{ bn(intdiv($quiz->duration_seconds, 60)) }} {{ __('quizzes.minutes_suffix') }} @endif
@@ -76,7 +78,7 @@
                         {{ bn($quiz->official_attempts_count) }}
                     </td>
                     <td class="px-4 py-3">
-                        <div class="flex items-center justify-end" x-data="{ open: false }">
+                        <div class="flex items-center justify-end" x-data="{ open: false }" @click.stop>
                             <button @click="open = !open" class="p-2 rounded-lg text-muted hover:text-ink hover:bg-ink/5" aria-label="{{ __('quizzes.actions') }}">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
                             </button>

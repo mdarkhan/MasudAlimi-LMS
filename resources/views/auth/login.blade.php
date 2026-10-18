@@ -1,6 +1,6 @@
 <x-layout.guest :title="__('auth.enter')">
     <x-ui.card>
-        <x-flash />
+        <x-flash inline />
         <div class="text-center mb-6">
             <p class="font-arabic text-xl text-brand mb-3">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
             <h1 class="text-xl font-bold text-ink">{{ __('auth.sign_in') }}</h1>
@@ -17,15 +17,7 @@
             </x-ui.field>
 
             <x-ui.field :label="__('auth.password')" name="password" required>
-                <div x-data="{ show: false }" class="relative">
-                    <x-ui.input name="password" x-bind:type="show ? 'text' : 'password'"
-                                autocomplete="current-password" :placeholder="__('auth.password_placeholder')" class="pr-11" />
-                    <button type="button" @click="show = !show" tabindex="-1"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink" aria-label="{{ __('auth.show_password') }}">
-                        <x-ui.icon name="profile" class="w-5 h-5" x-show="!show" />
-                        <x-ui.icon name="close" class="w-5 h-5" x-show="show" x-cloak />
-                    </button>
-                </div>
+                <x-ui.input name="password" type="password" autocomplete="current-password" :placeholder="__('auth.password_placeholder')" />
             </x-ui.field>
 
             <label class="flex items-center gap-2 text-sm text-muted select-none">

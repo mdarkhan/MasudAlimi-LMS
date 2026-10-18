@@ -13,6 +13,18 @@
  * CLAUDE.md for the full reasoning (two prior attempts — font-display: optional,
  * then removing an unrelated re-triggering CSS animation — didn't fix this).
  */
+/* Windows ships no country-flag glyphs (a flag shows as two letters, e.g. "BD"). This COLR
+   font draws ONLY the regional-indicator pairs, so unicode-range keeps it from loading unless
+   a flag is actually on the page, and it never touches any other text. */
+@font-face {
+    font-family: 'Twemoji Country Flags';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/TwemojiCountryFlags.woff2') format('woff2');
+    unicode-range: U+1F1E6-1F1FF, U+1F3F4, U+E0062-E007F;
+}
+
 @font-face {
     font-family: 'kalpurush';
     font-style: normal;
@@ -41,7 +53,7 @@
  * neutral surfaces, following the legacy site.
  */
 @theme {
-    --font-sans: 'kalpurush', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'kalpurush', 'Twemoji Country Flags', ui-sans-serif, system-ui, sans-serif;
     --font-arabic: 'Noto Naskh Arabic', 'Amiri', serif;
 
     --color-surface: var(--surface);
@@ -75,6 +87,9 @@
 }
 
 .dark {
+    /* Native controls (date/time pickers' calendar icon, scrollbars, select arrows) follow the theme;
+       without this the date icon stays black on the dark surface and cannot be seen. */
+    color-scheme: dark;
     --surface: #0b1220;
     --surface-raised: #0f172a;  /* slate-900 */
     --card: #172033;
@@ -89,6 +104,19 @@
 }
 
 @layer base {
+  /* Tailwind v4 preflight resets buttons to the default arrow cursor; restore the hand
+     for everything clickable so no control feels dead. */
+  button:not(:disabled),
+  [role="button"],
+  summary,
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  label[for] {
+    cursor: pointer;
+  }
+  button:disabled { cursor: not-allowed; }
     html {
         scroll-behavior: smooth;
     }

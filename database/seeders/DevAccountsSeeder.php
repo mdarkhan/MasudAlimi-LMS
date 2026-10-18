@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Hash;
 
 /**
  * Local development accounts only. Never runs in production.
+ *
+ * Exactly three, all with the password "password":
+ *   superadmin  — super_admin (everything, incl. staff & roles)
+ *   admin       — admin (day-to-day management)
+ *   roll 101    — a demo student (for trying the student side)
+ *
+ * Real students are never created here: they come from the legacy import.
  */
 class DevAccountsSeeder extends Seeder
 {
@@ -23,45 +30,28 @@ class DevAccountsSeeder extends Seeder
 
         $points = app(PointService::class);
 
-        // Clean up legacy admin email if present
-        User::query()->where('email', 'admin@masudalimi.test')->update(['email' => 'admin']);
+        $superAdmin = User::query()->updateOrCreate(
+            ['email' => 'superadmin'],
+            ['name' => 'সুপার অ্যাডমিন', 'password' => Hash::make('password'), 'status' => User::STATUS_ACTIVE],
+        );
+        $superAdmin->assignRole(Role::SUPER_ADMIN);
 
         $admin = User::query()->updateOrCreate(
             ['email' => 'admin'],
-            [
-                'name' => 'সুপার অ্যাডমিন',
-                'password' => Hash::make('password'),
-                'status' => User::STATUS_ACTIVE,
-            ],
+            ['name' => 'অ্যাডমিন', 'password' => Hash::make('password'), 'status' => User::STATUS_ACTIVE],
         );
-        $admin->assignRole(Role::SUPER_ADMIN);
+        $admin->assignRole(Role::ADMIN);
 
-        $demo = [
-            ['১০১', 'আব্দুল্লাহ আল মামুন', 'active', 5],
-            ['১০২', 'ফাতিমা খাতুন', 'active', 3],
-            ['১০৩', 'মুহাম্মদ ইব্রাহিম', 'active', 0],
-            ['১০৪', 'আয়েশা সিদ্দিকা', 'suspended', 2],
-            ['১০৫', 'উমর ফারুক', 'active', 8],
-            ['১০৬', 'খাদিজা বেগম', 'archived', 0],
-        ];
+        $student = User::query()->updateOrCreate(
+            ['roll' => User::normaliseRoll('১০১')],
+            ['name' => 'ডেমো শিক্ষার্থী', 'guardian_name' => 'অভিভাবক', 'password' => Hash::make('password'), 'status' => User::STATUS_ACTIVE],
+        );
+        $student->assignRole(Role::STUDENT);
 
-        foreach ($demo as [$roll, $name, $status, $pts]) {
-            $student = User::query()->updateOrCreate(
-                ['roll' => User::normaliseRoll($roll)],
-                [
-                    'name' => $name,
-                    'guardian_name' => 'অভিভাবক',
-                    'password' => Hash::make('password'),
-                    'status' => $status,
-                ],
-            );
-            $student->assignRole(Role::STUDENT);
-
-            if ($pts > 0 && $points->ledgerBalance($student) === 0) {
-                $points->credit($student, $pts, reason: 'প্রাথমিক পয়েন্ট', performedBy: $admin);
-            }
+        if ($points->ledgerBalance($student) === 0) {
+            $points->credit($student, 5, reason: 'প্রাথমিক পয়েন্ট', performedBy: $superAdmin);
         }
 
-        $this->command?->info('Dev accounts: admin / password, students roll ১০১–১০৬ / password.');
+        $this->command?->info('Dev accounts (password "password"): superadmin, admin, student roll 101.');
     }
 }

@@ -10,6 +10,12 @@
         ['label' => __('nav.lessons'), 'href' => route('admin.lessons.index'), 'icon' => 'lessons', 'active' => request()->routeIs('admin.lessons.*')],
     ];
 
+    // Students' name/guardian correction requests waiting for a decision.
+    if ($user?->hasPermission('students.update')) {
+        $pendingRequests = app(\App\Services\Profile\ProfileChangeService::class)->pendingCount();
+        $nav[] = ['label' => __('nav.profile_requests'), 'href' => route('admin.profile-requests.index'), 'icon' => 'edit', 'active' => request()->routeIs('admin.profile-requests.*'), 'badge' => $pendingRequests ?: null];
+    }
+
     if ($user?->hasPermission('books.manage')) {
         $nav[] = ['label' => __('nav.books'), 'href' => route('admin.books.index'), 'icon' => 'book', 'active' => request()->routeIs('admin.books.*')];
     }

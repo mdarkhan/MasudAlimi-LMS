@@ -21,6 +21,8 @@
         <p class="text-[11px] text-muted mt-2">{{ __('amol.prayer_times_note') }}</p>
     </x-ui.card>
 
+    <x-amol.summary-strip :stats="$stats" />
+
     <x-amol.date-nav :date="$date" :today="$today" route="student.amol.index" />
 
     @if (! $isToday)
@@ -30,11 +32,12 @@
     @php $parts = \App\Models\Amol::partition($checklist); @endphp
 
     <x-ui.card>
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-ink">{{ bn($date->format('d/m/Y')) }}</h3>
-            <span id="amol-progress" class="text-sm font-semibold text-muted tabular-nums">
+        <div class="flex items-center gap-3 mb-4">
+            <h3 class="font-bold text-ink whitespace-nowrap">{{ bn($date->format('d/m/Y')) }}</h3>
+            <span id="amol-progress" class="flex-1 min-w-0 text-center text-sm font-semibold text-muted tabular-nums">
                 {{ __('amol.progress', ['done' => bn($checklist->where('is_done', true)->count()), 'total' => bn($checklist->count())]) }}
             </span>
+            <x-amol.expand-all />
         </div>
 
         {{-- The five daily prayers, each a dropdown of its sunnah/prayer/takbir-e-oola. --}}
@@ -45,30 +48,22 @@
             @endforeach
         </div>
 
-        {{-- Everything else, flat as before. --}}
-        <div class="grid gap-2 sm:grid-cols-2">
-            @foreach ($parts['ungrouped'] as $item)
-                <x-amol.item-row
-                    :label="$item['amol']->label"
-                    :is-done="$item['is_done']"
-                    :editable="$isToday"
-                    :toggle-url="route('student.amol.toggle', $item['amol'])" />
-            @endforeach
-        </div>
+        {{-- The deeds that belong to no particular prayer sit in a dropdown of their own, like the prayers. --}}
+        @if ($parts['ungrouped']->isNotEmpty())
+            <x-amol.group-row group="daily" :items="$parts['ungrouped']" :editable="$isToday" />
+        @endif
 
         <p id="amol-toggle-error" class="hidden mt-3 text-sm font-medium text-rose-600" role="alert">
             {{ __('amol.toggle_failed') }}
         </p>
     </x-ui.card>
 
-    <div class="mt-5"><x-amol.stats :stats="$stats" /></div>
-
     <x-ui.card class="mt-5">
         <h3 class="font-bold text-ink mb-2 flex items-center gap-2">
             <x-ui.icon name="message" class="w-4 h-4 text-brand" /> {{ __('amol.note_heading') }}
         </h3>
         @if ($note && $note->note !== '')
-            <p class="text-sm text-ink leading-relaxed whitespace-pre-wrap">{{ $note->note }}</p>
+            <p class="text-sm text-ink leading-relaxed whitespace-pre-wrap [&_strong]:font-extrabold">{!! chat_format($note->note) !!}</p>
             <p class="text-xs text-muted mt-2">
                 {{ __('amol.note_by', ['name' => $note->commentedBy?->name ?? '—', 'at' => $note->commented_at?->format('d/m/Y H:i') ?? '']) }}
             </p>
@@ -76,6 +71,10 @@
             <p class="text-sm text-muted italic">{{ __('amol.no_note') }}</p>
         @endif
     </x-ui.card>
+
+    <div id="amol-stats" class="mt-5 scroll-mt-20">
+        <x-amol.stats :stats="$stats" :analysis="true" />
+    </div>
 
     @once
         <script>

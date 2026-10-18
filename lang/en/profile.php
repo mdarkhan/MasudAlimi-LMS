@@ -5,7 +5,7 @@ return [
     'guardian' => 'Guardian',
     'status' => 'Status',
     'active' => 'Active',
-    'identity_note' => 'To change your name, roll or guardian details, please contact the administration.',
+    'identity_note' => 'If your name or guardian name is wrong, use "Request a correction" below. To change your roll, contact the administration.',
 
     'contact_info' => 'Contact details',
     'email' => 'Email',

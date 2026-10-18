@@ -44,4 +44,5 @@ return [
     'toggle_theme' => 'থিম পরিবর্তন করুন',
     'open_menu' => 'মেনু খুলুন',
     'close_menu' => 'মেনু বন্ধ করুন',
+    'profile_requests' => 'সংশোধনের অনুরোধ',
 ];

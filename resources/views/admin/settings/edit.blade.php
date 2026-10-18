@@ -35,6 +35,24 @@
                         <x-ui.input name="facebook_group_url" value="{{ old('facebook_group_url', $general['facebook_group_url']) }}" placeholder="https://facebook.com/groups/…" dir="ltr" />
                     </x-ui.field>
                 </div>
+                <div class="border-t border-line pt-4">
+                    <h4 class="font-semibold text-ink">{{ __('settings.dev_credit') }}</h4>
+                    <p class="text-xs text-muted mt-0.5 mb-3">{{ __('settings.dev_credit_hint') }}</p>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <x-ui.field :label="__('settings.dev_name_bn')" name="dev_name_bn">
+                            <x-ui.input name="dev_name_bn" value="{{ old('dev_name_bn', $general['dev_name_bn']) }}" maxlength="100" />
+                        </x-ui.field>
+                        <x-ui.field :label="__('settings.dev_name_en')" name="dev_name_en">
+                            <x-ui.input name="dev_name_en" value="{{ old('dev_name_en', $general['dev_name_en']) }}" maxlength="100" dir="ltr" />
+                        </x-ui.field>
+                        <x-ui.field :label="__('settings.dev_whatsapp_url')" name="dev_whatsapp_url">
+                            <x-ui.input name="dev_whatsapp_url" value="{{ old('dev_whatsapp_url', $general['dev_whatsapp_url']) }}" placeholder="https://wa.me/8801XXXXXXXXX" dir="ltr" />
+                        </x-ui.field>
+                        <x-ui.field :label="__('settings.dev_linkedin_url')" name="dev_linkedin_url">
+                            <x-ui.input name="dev_linkedin_url" value="{{ old('dev_linkedin_url', $general['dev_linkedin_url']) }}" placeholder="https://www.linkedin.com/in/…" dir="ltr" />
+                        </x-ui.field>
+                    </div>
+                </div>
                 <x-ui.field :label="__('settings.ustaz_email')" name="ustaz_email" :hint="__('settings.ustaz_email_hint')">
                     <x-ui.input type="email" name="ustaz_email" value="{{ old('ustaz_email', $general['ustaz_email']) }}" placeholder="ustaz@example.com" dir="ltr" />
                 </x-ui.field>

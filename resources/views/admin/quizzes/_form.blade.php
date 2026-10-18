@@ -49,9 +49,18 @@
                 <x-ui.field :label="__('quizzes.starts_at')" name="starts_at">
                     <x-ui.input type="datetime-local" name="starts_at" :value="old('starts_at', $dt($quiz->starts_at ?? null))" />
                 </x-ui.field>
-                <x-ui.field :label="__('quizzes.ends_at')" name="ends_at">
-                    <x-ui.input type="datetime-local" name="ends_at" :value="old('ends_at', $dt($quiz->ends_at ?? null))" />
-                </x-ui.field>
+                <div x-data="{ now: @js(now()->format('Y-m-d\TH:i')), end: @js(old('ends_at', $dt($quiz->ends_at ?? null)) ?? '') }"
+                     @input.capture="if ($event.target.name === 'ends_at') end = $event.target.value">
+                    <x-ui.field :label="__('quizzes.ends_at')" name="ends_at">
+                        <x-ui.input type="datetime-local" name="ends_at" :value="old('ends_at', $dt($quiz->ends_at ?? null))" />
+                    </x-ui.field>
+                    {{-- Non-blocking: shown whenever the end time is already behind us, even for an
+                         already-saved quiz, so a closed exam is never mistaken for an open one. --}}
+                    <p x-show="end && end < now" x-cloak class="mt-1.5 flex items-start gap-1.5 text-xs font-semibold text-amber-600">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+                        {{ __('quizzes.end_in_past_warning') }}
+                    </p>
+                </div>
                 <x-ui.field :label="__('quizzes.result_release')" name="result_release_at" :hint="__('quizzes.result_release_hint')" class="sm:col-span-2">
                     <x-ui.input type="datetime-local" name="result_release_at" :value="old('result_release_at', $dt($quiz->result_release_at ?? null))" />
                 </x-ui.field>
@@ -126,7 +135,7 @@
                             </x-ui.field>
                         </div>
                         <x-ui.field :label="__('quizzes.bonus_points')" name="bonus_points">
-                            <x-ui.input type="number" name="bonus_points" min="1" :value="old('bonus_points', $quiz->bonus_points ?? '')" />
+                            <x-ui.input type="number" name="bonus_points" min="1" :value="old('bonus_points', ($quiz->bonus_points ?? 0) ?: '')" />
                         </x-ui.field>
                     </div>
                 </div>

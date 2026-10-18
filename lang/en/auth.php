@@ -32,4 +32,5 @@ return [
     'reset_done' => 'Your password has been changed. Sign in with the new password.',
     'email' => 'Email',
     'min_chars_reset' => 'Students: at least 6 characters. Staff: at least 10, with a letter and a number.',
+    'hide_password' => 'Hide password',
 ];

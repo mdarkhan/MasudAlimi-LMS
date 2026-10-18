@@ -12,6 +12,20 @@ use Carbon\CarbonImmutable;
  */
 class AmolDate
 {
+    /** `?month=YYYY-MM` as the first day of a real month, never later than the current one. */
+    public static function resolveMonth(mixed $raw): CarbonImmutable
+    {
+        $current = CarbonImmutable::now()->startOfMonth();
+
+        if (! is_string($raw) || ! preg_match('/^(\d{4})-(0[1-9]|1[0-2])$/', $raw)) {
+            return $current;
+        }
+
+        $month = CarbonImmutable::createFromFormat('!Y-m', $raw);
+
+        return $month->greaterThan($current) ? $current : $month;
+    }
+
     public static function resolve(?string $raw): CarbonImmutable
     {
         $today = CarbonImmutable::now()->startOfDay();

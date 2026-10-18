@@ -44,4 +44,5 @@ return [
     'toggle_theme' => 'Toggle theme',
     'open_menu' => 'Open menu',
     'close_menu' => 'Close menu',
+    'profile_requests' => 'Profile requests',
 ];

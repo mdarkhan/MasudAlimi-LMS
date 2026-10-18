@@ -77,5 +77,5 @@
             </tbody>
         </table>
     </div>
-    <div class="mt-4 print:hidden">{{ $rows->links() }}</div>
+    <div class="mt-4 print:hidden">{{ $rows->links('components.pagination') }}</div>
 @endif

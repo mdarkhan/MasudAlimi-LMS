@@ -135,6 +135,23 @@ class AmolService
         return $row;
     }
 
+    /** Remove the ustaz's comment on a day (and its bell notification). True if there was one. */
+    public function deleteNote(User $student, CarbonImmutable $date): bool
+    {
+        $note = $this->noteFor($student, $date);
+
+        if ($note === null) {
+            return false;
+        }
+
+        DB::transaction(function () use ($note) {
+            $this->notifications->forgetSubject('amol_day_note', (int) $note->getKey());
+            $note->delete();
+        });
+
+        return true;
+    }
+
     /** Unseen day-notes across every date — the "আমলনামা" sidebar badge. */
     public function unseenNoteCountFor(User $student): int
     {

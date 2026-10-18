@@ -111,4 +111,50 @@ class AmolStatsTest extends TestCase
         $this->actingAs($s)->get(route('student.amol.index', ['month' => 'garbage']))->assertOk();
         $this->actingAs($s)->get(route('student.amol.index', ['month' => '2026-08']))->assertOk();
     }
+
+    public function test_trend_windows_and_per_deed_consistency_for_the_ustaz_view(): void
+    {
+        $s = $this->makeStudent();
+        // Last 7 days: all 3 deeds on 3 of them; the 7 days before: 1 deed on every day.
+        foreach ([0, 1, 2] as $ago) { $this->done($s, $ago, 3); }
+        foreach (range(7, 13) as $ago) { $this->done($s, $ago, 1); }
+
+        $r = app(AmolStatsService::class)->forStudent($s, null, $this->today);
+
+        $this->assertSame((int) round(3 / 7 * 100), $r['week_average']);
+        $this->assertSame((int) round(1 / 3 * 100), $r['prev_week_average']);
+        $this->assertNull($r['prev_month_average'], 'no entries last month → no comparison');
+        $this->assertSame(24, $r['elapsed']);
+        $this->assertCount(3, $r['deeds']);
+        $this->assertSame('a', $r['deeds'][2]['label']);                  // strongest last
+        $this->assertSame(10, $r['deeds'][2]['days']);                    // a: 3 recent + 7 earlier
+        $this->assertSame(3, $r['deeds'][0]['days']);                     // c: only the 3 full days
+    }
+
+    public function test_the_ustaz_screen_shows_the_analysis_and_a_student_cannot_open_it(): void
+    {
+        $s = $this->makeStudent();
+        $this->done($s, 1, 3);
+        $admin = $this->makeAdmin();
+
+        $this->actingAs($admin)->get(route('admin.amol.show', $s))
+            ->assertOk()
+            ->assertSee(__('amol.an_week'))
+            ->assertSee(__('amol.an_deeds_heading'));
+        $this->actingAs($admin)->get(route('admin.amol.show', ['student' => $s, 'month' => 'junk']))->assertOk();
+
+        $this->actingAs($this->makeStudent())->get(route('admin.amol.show', $s))->assertForbidden();
+    }
+
+    public function test_the_student_sees_the_same_summary_and_full_analysis_on_their_own_page(): void
+    {
+        $s = $this->makeStudent();
+        $this->done($s, 1, 3);
+
+        $this->actingAs($s)->get(route('student.amol.index'))
+            ->assertOk()
+            ->assertSee(__('amol.sum_week'))
+            ->assertSee(__('amol.an_week'))
+            ->assertSee(__('amol.an_deeds_heading'));
+    }
 }

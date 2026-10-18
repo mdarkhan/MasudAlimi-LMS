@@ -16,6 +16,20 @@ if (! function_exists('resource_label_html')) {
     }
 }
 
+if (! function_exists('chat_format')) {
+    /**
+     * A chat message body for display: HTML-escaped FIRST, then only `*bold*` (WhatsApp
+     * style, what Ctrl+B inserts) is turned into <strong>. Nothing else is interpreted, so a
+     * body can never inject markup. The client has a mirror of this in the thread component.
+     */
+    function chat_format(?string $body): \Illuminate\Support\HtmlString
+    {
+        $escaped = e((string) $body);
+
+        return new \Illuminate\Support\HtmlString(preg_replace('/\*(?=\S)([^*\n]*?\S)\*/u', '<strong>$1</strong>', $escaped) ?? $escaped);
+    }
+}
+
 if (! function_exists('csv_safe')) {
     /**
      * Neutralise formula injection in a CSV cell (OWASP CSV Injection). A cell

@@ -107,7 +107,14 @@ class LegacyResultImporter
         $timezone ??= (string) config('app.timezone', 'Asia/Dhaka');
         $imported = 0;
 
-        DB::transaction(function () use ($preview, $batch, $timezone, &$imported): void {
+        // The legacy "total_questions" counted QUESTIONS, but scores were summed with each
+        // question's marks (mega questions are worth more). The matched quiz's real total marks
+        // is the correct denominator; the legacy count is only the fallback (MIGRATION.md §4.2).
+        $quizTotals = Quiz::query()
+            ->whereIn('id', collect($preview['rows'])->pluck('matched_quiz_id')->filter()->unique())
+            ->pluck('total_marks', 'id');
+
+        DB::transaction(function () use ($preview, $batch, $timezone, $quizTotals, &$imported): void {
             foreach ($preview['rows'] as $row) {
                 if ($row['status'] !== 'import') {
                     continue;
@@ -117,7 +124,10 @@ class LegacyResultImporter
                 if ($submittedAt === null) {
                     throw new \LogicException('A validated timestamp could not be parsed.');
                 }
+                // A recorded time of 0 means "no time was captured" (exams marked by hand), not
+                // "finished instantly": store NULL so it never outranks a real time on a tie.
                 $timeTaken = (int) $row['time_taken'];
+                $timeKnown = $timeTaken > 0;
                 $attemptNo = (int) QuizAttempt::query()
                     ->where('quiz_id', $row['matched_quiz_id'])
                     ->where('user_id', $row['user_id'])
@@ -130,7 +140,7 @@ class LegacyResultImporter
                     'kind' => QuizAttempt::KIND_OFFICIAL,
                     'attempt_no' => $attemptNo,
                     'status' => QuizAttempt::STATUS_SUBMITTED,
-                    'started_at' => $submittedAt->subSeconds($timeTaken),
+                    'started_at' => $submittedAt->subSeconds($timeKnown ? $timeTaken : 0),
                     'expires_at' => null,
                     'counts_toward_cumulative' => true,
                     'is_legacy_import' => true,
@@ -139,11 +149,11 @@ class LegacyResultImporter
                     'legacy_source_key' => $row['source_key'],
                     'legacy_quiz_id' => $row['legacy_quiz_id'],
                     'point_transaction_id' => null,
-                    'total_marks_snapshot' => $row['total_questions'],
+                    'total_marks_snapshot' => ((int) ($quizTotals[$row['matched_quiz_id']] ?? 0)) > 0 ? (int) $quizTotals[$row['matched_quiz_id']] : $row['total_questions'],
                 ]);
                 $attempt->forceFill([
                     'submitted_at' => $submittedAt,
-                    'time_taken_seconds' => $timeTaken,
+                    'time_taken_seconds' => $timeKnown ? $timeTaken : null,
                     'calculated_score' => $row['score'],
                     'manual_adjustment' => 0,
                     'final_score' => $row['score'],
@@ -203,7 +213,9 @@ class LegacyResultImporter
             if ($parsed !== false
                 && ($errors === false || ($errors['warning_count'] === 0 && $errors['error_count'] === 0))
                 && $parsed->format($format) === $value) {
-                return CarbonImmutable::instance($parsed);
+                // Eloquent writes a date's wall-clock text as-is and reads it back in the app timezone,
+                // so the instant must be expressed in the APP timezone before it is saved.
+                return CarbonImmutable::instance($parsed)->setTimezone((string) config('app.timezone', 'Asia/Dhaka'));
             }
         }
 

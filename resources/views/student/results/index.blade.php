@@ -84,30 +84,30 @@
                 <table class="w-full text-sm">
                     <thead class="bg-surface-raised text-muted">
                         <tr class="text-start">
-                            <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('results.col_quiz') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('results.col_date') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('results.col_status') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-end font-semibold">{{ __('results.col_score') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-end font-semibold">{{ __('results.col_percentage') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-end font-semibold">{{ __('results.col_time') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-end font-semibold">{{ __('results.col_rank') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_quiz') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_date') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_status') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_score') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_percentage') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_time') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_rank') }}</th>
                             <th scope="col" class="px-4 py-2.5 print:hidden"><span class="sr-only">{{ __('results.view_answer_sheet') }}</span></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-line">
                         @foreach ($groups['released'] as $row)
                             <tr class="hover:bg-surface-raised/50">
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-3 text-center">
                                     <div class="font-semibold text-ink">{{ $row['quiz']->title }}</div>
                                     @if ($row['quiz']->course)<div class="text-xs text-muted">{{ $row['quiz']->course->title }}</div>@endif
                                 </td>
                                 <td class="px-4 py-3 text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y H:i') }}</td>
-                                <td class="px-4 py-3"><x-ui.badge :color="$statusTone($row['attempt']->status)">{{ $statusLabel($row['attempt']->status) }}</x-ui.badge></td>
-                                <td class="px-4 py-3 text-end font-semibold text-ink tabular-nums whitespace-nowrap">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
-                                <td class="px-4 py-3 text-end tabular-nums">{{ bn(number_format($row['percentage'], 2)) }}%</td>
-                                <td class="px-4 py-3 text-end text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
-                                <td class="px-4 py-3 text-end tabular-nums">{{ $row['rank'] ? bn($row['rank']) : '—' }}</td>
-                                <td class="px-4 py-3 text-end print:hidden">
+                                <td class="px-4 py-3 text-center"><x-ui.badge :color="$statusTone($row['attempt']->status)">{{ $statusLabel($row['attempt']->status) }}</x-ui.badge></td>
+                                <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums whitespace-nowrap">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
+                                <td class="px-4 py-3 text-center tabular-nums">{{ bn(number_format($row['percentage'], 2)) }}%</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
+                                <td class="px-4 py-3 text-center tabular-nums">{{ $row['rank'] ? bn($row['rank']) : '—' }}</td>
+                                <td class="px-4 py-3 text-center print:hidden">
                                     @if ($row['reviewable'])
                                         <x-ui.button :href="route('student.results.show', $row['attempt'])" variant="secondary" size="sm">{{ __('results.view_answer_sheet') }}</x-ui.button>
                                     @else
@@ -181,11 +181,11 @@
                 <table class="w-full text-sm">
                     <thead class="bg-surface-raised text-muted">
                         <tr>
-                            <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('results.col_quiz') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('results.col_date') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-end font-semibold">{{ __('results.col_score') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-end font-semibold">{{ __('results.col_percentage') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-end font-semibold">{{ __('results.col_time') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_quiz') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_date') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_score') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_percentage') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_time') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-line">
@@ -193,9 +193,9 @@
                             <tr>
                                 <td class="px-4 py-3 font-semibold text-ink">{{ $row['quiz']->title }}</td>
                                 <td class="px-4 py-3 text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y') }}</td>
-                                <td class="px-4 py-3 text-end font-semibold text-ink tabular-nums">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
-                                <td class="px-4 py-3 text-end tabular-nums">{{ $row['percentage'] !== null ? bn(number_format($row['percentage'], 2)).'%' : '—' }}</td>
-                                <td class="px-4 py-3 text-end text-muted tabular-nums">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
+                                <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
+                                <td class="px-4 py-3 text-center tabular-nums">{{ $row['percentage'] !== null ? bn(number_format($row['percentage'], 2)).'%' : '—' }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

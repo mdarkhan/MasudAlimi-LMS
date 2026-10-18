@@ -21,6 +21,12 @@ use Illuminate\Support\Facades\Hash;
  * is handed to the admin exactly once via a downloadable CSV (never persisted long).
  *
  * Existing rolls are skipped and reported, never silently overwritten.
+ *
+ * ONE opt-in exception, by the site owner's explicit decision: `$useSheetPasswords` keeps the
+ * sheet password as the account's INITIAL password (hashed, never logged or exported) so
+ * students can sign in with what they already know. Accounts still carry
+ * `force_password_change`, so the sheet password only ever works until the student's first
+ * login. Off by default — the safe behaviour above is unchanged unless the flag is passed.
  */
 class StudentImporter
 {
@@ -87,14 +93,24 @@ class StudentImporter
      * @param  array<int, array<string, ?string>>  $rows
      * @return array{imported:int, skipped:int, credentials:array<int, array{roll:?string, name:?string, password:string}>}
      */
-    public function import(array $rows, ?User $actor = null, ?LegacyImportBatch $batch = null): array
+    public function import(array $rows, ?User $actor = null, ?LegacyImportBatch $batch = null, bool $useSheetPasswords = false): array
     {
         $preview = $this->preview($rows);
+
+        $sheetPasswords = [];
+        if ($useSheetPasswords) {
+            foreach ($rows as $raw) {
+                $roll = User::normaliseRoll($raw['roll'] ?? null);
+                if ($roll !== null && $roll !== '' && trim((string) ($raw['password'] ?? '')) !== '') {
+                    $sheetPasswords[$roll] = (string) $raw['password'];
+                }
+            }
+        }
 
         $imported = 0;
         $credentials = [];
 
-        DB::transaction(function () use ($preview, $batch, &$imported, &$credentials) {
+        DB::transaction(function () use ($preview, $batch, $sheetPasswords, &$imported, &$credentials) {
             $studentRoleId = Role::query()->where('name', Role::STUDENT)->value('id');
 
             foreach ($preview['rows'] as $row) {
@@ -102,9 +118,11 @@ class StudentImporter
                     continue;
                 }
 
-                // A brand-new temporary password — the legacy spreadsheet password is
-                // never read here and never becomes a usable credential.
-                $temp = TemporaryPassword::generate();
+                // Default: a brand-new temporary password — the legacy spreadsheet password is
+                // never read here. Only with the owner's explicit opt-in is the sheet password
+                // used (and then nothing is exported, the student already knows it).
+                $fromSheet = $sheetPasswords[$row['roll']] ?? null;
+                $temp = $fromSheet ?? TemporaryPassword::generate();
 
                 $student = User::query()->create([
                     'roll' => $row['roll'],
@@ -119,7 +137,9 @@ class StudentImporter
                 ]);
                 $student->roles()->syncWithoutDetaching([$studentRoleId]);
 
-                $credentials[] = ['roll' => $student->roll, 'name' => $student->name, 'password' => $temp];
+                if ($fromSheet === null) {
+                    $credentials[] = ['roll' => $student->roll, 'name' => $student->name, 'password' => $temp];
+                }
                 $imported++;
             }
         });

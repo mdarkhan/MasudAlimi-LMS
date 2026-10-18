@@ -134,6 +134,8 @@ Route::middleware(['auth', 'account.active', 'password.changed', 'role:student']
     Route::get('profile', [Student\ProfileController::class, 'edit'])->name('student.profile.edit');
     Route::put('profile', [Student\ProfileController::class, 'update'])->name('student.profile.update');
     Route::put('profile/password', [Student\ProfileController::class, 'updatePassword'])->name('student.profile.password');
+    Route::post('profile/change-request', [Student\ProfileChangeRequestController::class, 'store'])->name('student.profile.request')->middleware('throttle:10,60');
+    Route::delete('profile/change-request/{changeRequest}', [Student\ProfileChangeRequestController::class, 'destroy'])->name('student.profile.request.cancel');
 });
 
 /*
@@ -149,6 +151,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.active', 'p
 
     // Students — literal routes are declared before the {student} wildcard so
     // /students/create and /students/import are never captured as an id.
+    Route::get('profile-requests', [Admin\ProfileRequestController::class, 'index'])->name('profile-requests.index')->middleware('perm:students.update');
+    Route::post('profile-requests/{changeRequest}/approve', [Admin\ProfileRequestController::class, 'approve'])->name('profile-requests.approve')->middleware('perm:students.update');
+    Route::post('profile-requests/{changeRequest}/reject', [Admin\ProfileRequestController::class, 'reject'])->name('profile-requests.reject')->middleware('perm:students.update');
     Route::get('students', [Admin\StudentController::class, 'index'])->name('students.index')->middleware('perm:students.view');
     Route::get('students/export', [Admin\StudentController::class, 'export'])->name('students.export')->middleware('perm:students.view');
     Route::put('students/bulk-status', [Admin\StudentController::class, 'bulkStatus'])->name('students.bulk-status')->middleware('perm:students.suspend');
@@ -281,6 +286,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.active', 'p
         Route::get('messages/{conversation}', [Admin\MessageController::class, 'show'])->name('messages.show');
         Route::get('messages/{conversation}/poll', [Admin\MessageController::class, 'poll'])->name('messages.poll');
         Route::post('messages/{conversation}', [Admin\MessageController::class, 'store'])->name('messages.store')->middleware('throttle:60,1');
+        Route::put('messages/{conversation}/{message}', [Admin\MessageController::class, 'update'])->name('messages.update')->middleware('throttle:60,1');
+        Route::delete('messages/{conversation}/{message}', [Admin\MessageController::class, 'destroyMessage'])->name('messages.message.destroy')->middleware('throttle:60,1');
         Route::delete('messages/{conversation}', [Admin\MessageController::class, 'destroy'])->name('messages.destroy');
     });
 
@@ -289,6 +296,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.active', 'p
         Route::get('amol', [Admin\AmolController::class, 'index'])->name('amol.index');
         Route::get('amol/{student}', [Admin\AmolController::class, 'show'])->name('amol.show');
         Route::post('amol/{student}/note', [Admin\AmolController::class, 'saveNote'])->name('amol.note');
+        Route::delete('amol/{student}/note', [Admin\AmolController::class, 'destroyNote'])->name('amol.note.destroy');
     });
 
     // Settings (general / zakat / calendar). Secrets are never editable here.

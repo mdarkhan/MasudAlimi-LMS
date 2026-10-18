@@ -26,6 +26,14 @@
                         @if ($rank)<x-ui.badge color="brand">{{ __('results.col_rank') }}: {{ bn($rank) }}</x-ui.badge>@endif
                     </div>
                 </div>
+                {{-- Examinee identity: only on paper, so a printed answer sheet says whose it is. --}}
+                <dl class="hidden print:block flex-1 text-sm text-ink space-y-0.5 px-4">
+                    <div><dt class="inline text-muted">{{ __('results.print_name') }}:</dt> <dd class="inline font-semibold">{{ $attempt->user->name }}</dd></div>
+                    <div><dt class="inline text-muted">{{ __('results.print_roll') }}:</dt> <dd class="inline font-semibold">{{ bn($attempt->user->roll) }}</dd></div>
+                    @if (filled($attempt->user->guardian_name))
+                        <div><dt class="inline text-muted">{{ __('results.print_guardian') }}:</dt> <dd class="inline font-semibold">{{ $attempt->user->guardian_name }}</dd></div>
+                    @endif
+                </dl>
                 <div class="text-end">
                     <p class="text-xs text-muted">{{ __('results.score_summary') }}</p>
                     <p class="text-3xl font-black text-brand tabular-nums">{{ bn($attempt->final_score) }}<span class="text-lg text-muted font-normal"> / {{ bn($attempt->total_marks_snapshot) }}</span></p>

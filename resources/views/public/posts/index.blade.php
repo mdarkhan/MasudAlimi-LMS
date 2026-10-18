@@ -43,7 +43,7 @@
                     </article>
                 @endforeach
             </div>
-            <div class="mt-8">{{ $posts->links() }}</div>
+            <div class="mt-8">{{ $posts->links('components.pagination') }}</div>
         @endif
     </div>
 </x-layout.public>

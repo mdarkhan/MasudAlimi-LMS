@@ -245,4 +245,13 @@ class AdminResultsTest extends TestCase
 
         $this->actingAs($admin->fresh())->put(route('admin.quizzes.release', $quiz))->assertForbidden();
     }
+
+    public function test_the_results_list_paginates_across_many_pages_without_error(): void
+    {
+        $quiz = Quiz::factory()->create();
+        \App\Models\QuizAttempt::factory()->count(65)->create(['quiz_id' => $quiz->id]);
+
+        $this->actingAs($this->makeAdmin())->get(route('admin.results.index'))->assertOk();
+        $this->actingAs($this->makeAdmin())->get(route('admin.results.index', ['page' => 3]))->assertOk();
+    }
 }

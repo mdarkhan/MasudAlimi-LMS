@@ -39,4 +39,7 @@ return [
     'reason' => 'Reason',
     'balance' => 'Balance',
     'type' => 'Type',
+    'save_failed' => ':count field(s) need attention — not saved',
+    'developed_by' => 'Developed by',
+    'copyright' => 'All rights reserved © :year',
 ];

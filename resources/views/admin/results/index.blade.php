@@ -80,6 +80,6 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-4">{{ $attempts->links() }}</div>
+        <div class="mt-4">{{ $attempts->links('components.pagination') }}</div>
     @endif
 </x-layout.admin>

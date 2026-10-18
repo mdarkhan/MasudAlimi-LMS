@@ -7,9 +7,10 @@
     ];
 @endphp
 <x-layout.student :title="__('exams.heading')" :heading="__('exams.heading')">
-    <div class="flex items-center justify-between mb-6">
-        <p class="text-sm text-muted">{{ __('exams.your_points') }}</p>
-        <span class="text-2xl font-black text-brand tabular-nums">{{ bn($user->points_balance) }}</span>
+    <div class="inline-flex items-center gap-3 rounded-2xl border border-brand/30 bg-brand-tint/40 pl-3 pr-5 py-2.5 mb-6">
+        <span class="w-9 h-9 rounded-full bg-brand text-brand-ink grid place-items-center"><x-ui.icon name="points" class="w-5 h-5" /></span>
+        <span class="text-sm font-semibold text-muted">{{ __('exams.your_points') }}</span>
+        <span class="text-2xl font-black text-brand tabular-nums leading-none">{{ bn($user->points_balance) }}</span>
     </div>
 
     @php $anything = collect($groups)->flatten(1)->isNotEmpty(); @endphp

@@ -56,7 +56,7 @@
                             <form method="POST" action="{{ route('admin.students.reset-password', $student) }}"
                                   data-confirm="{{ __('students.confirm_reset_password') }}">
                                 @csrf
-                                <x-ui.button type="submit" variant="secondary" class="w-full justify-center"><x-ui.icon name="key" class="w-4 h-4" /> {{ __('students.reset_password') }}</x-ui.button>
+                                <x-ui.button type="submit" variant="secondary" class="w-full justify-center">{{ __('students.reset_password') }}</x-ui.button>
                             </form>
                         @endif
                     </div>

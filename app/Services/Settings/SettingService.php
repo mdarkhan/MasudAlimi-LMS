@@ -48,6 +48,13 @@ class SettingService
         // config('mail.ustaz_email') — so Contact works even before it is explicitly set.
         'contact_email' => ['default' => '', 'type' => 'string', 'group' => 'general'],
 
+        // Developer credit shown in the public/login footer. Defaults are the site developer's own
+        // details; clearing the name hides the whole line. Public contact links only — never a phone number.
+        'dev_name_bn' => ['default' => 'মোঃ আরাফাত রহমান', 'type' => 'string', 'group' => 'general'],
+        'dev_name_en' => ['default' => 'Md Arafat Rahman', 'type' => 'string', 'group' => 'general'],
+        'dev_whatsapp_url' => ['default' => 'https://wa.me/8801743340737', 'type' => 'string', 'group' => 'general'],
+        'dev_linkedin_url' => ['default' => 'https://www.linkedin.com/in/mdarkhan', 'type' => 'string', 'group' => 'general'],
+
         'gold_price_per_gram' => ['default' => null, 'type' => 'decimal', 'group' => 'zakat'],
         'silver_price_per_gram' => ['default' => null, 'type' => 'decimal', 'group' => 'zakat'],
         'nisab_basis' => ['default' => 'silver', 'type' => 'string', 'group' => 'zakat'],

@@ -63,6 +63,6 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-4">{{ $posts->links() }}</div>
+        <div class="mt-4">{{ $posts->links('components.pagination') }}</div>
     @endif
 </x-layout.admin>

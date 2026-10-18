@@ -81,6 +81,6 @@
                 </x-ui.card>
             @endforeach
         </div>
-        <div class="mt-4">{{ $notices->links() }}</div>
+        <div class="mt-4">{{ $notices->links('components.pagination') }}</div>
     @endif
 </x-layout.admin>

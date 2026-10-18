@@ -64,6 +64,29 @@ class MessageService
     }
 
     /**
+     * Staff may correct their OWN messages. Never a student's, never a colleague's: the
+     * author check is the whole rule, so it lives here and not only in a controller. The new
+     * text is not copied anywhere (no audit payload, no notification) — only the fact is audited.
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function edit(Message $message, User $editor, string $body): Message
+    {
+        if ((int) $message->sender_id !== (int) $editor->getKey() || ! $editor->isAdmin()) {
+            throw new \Illuminate\Auth\Access\AuthorizationException('Only the author may edit this message.');
+        }
+
+        $body = trim($body);
+
+        if ($body !== $message->body) {
+            $message->forceFill(['body' => $body, 'edited_at' => now()])->save();
+            $this->audit->log('message.edited', null, null, ['message_id' => $message->getKey(), 'conversation_id' => $message->conversation_id], $editor);
+        }
+
+        return $message;
+    }
+
+    /**
      * A student's message pings every admin who can see the shared inbox; an ustaz reply
      * pings just that one student. Upserted by (conversation) — see NotificationService::
      * notify() — so a burst of messages in one thread surfaces as one feed item, not many.
@@ -179,6 +202,23 @@ class MessageService
             ->orderByDesc('last_message_at')
             ->orderByDesc('id')
             ->get();
+    }
+
+    /**
+     * Remove ONE message (any author) from a thread. Genuinely deleted; only the fact is
+     * audited (ids, never the body). The thread's ordering timestamp falls back to its newest
+     * remaining message so the inbox does not keep floating it for a message that is gone.
+     */
+    public function deleteMessage(Message $message, User $actor): void
+    {
+        $conversation = $message->conversation;
+        $summary = ['message_id' => $message->getKey(), 'conversation_id' => $message->conversation_id, 'author_id' => $message->sender_id];
+
+        DB::transaction(function () use ($message, $conversation, $actor, $summary) {
+            $message->delete();
+            $conversation->forceFill(['last_message_at' => $conversation->messages()->max('created_at')])->save();
+            $this->audit->log('message.deleted', null, $summary, null, $actor);
+        });
     }
 
     /**

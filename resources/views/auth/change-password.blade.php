@@ -8,6 +8,19 @@
             <p class="text-sm text-muted mt-1">{{ __('auth.set_new_password_hint') }}</p>
         </div>
 
+        {{-- Who is signing in: a shared classroom device is common, so the student can see at a glance
+             that this is THEIR account before choosing a password. --}}
+        @php $me = auth()->user(); @endphp
+        <dl class="mb-6 rounded-xl border border-line bg-surface-raised px-4 py-3 text-sm space-y-1.5">
+            <div class="flex justify-between gap-3"><dt class="text-muted">{{ __('students.name_col') }}</dt><dd class="font-semibold text-ink text-right">{{ $me->name }}</dd></div>
+            @if (filled($me->guardian_name))
+                <div class="flex justify-between gap-3"><dt class="text-muted">{{ __('profile.guardian') }}</dt><dd class="font-semibold text-ink text-right">{{ $me->guardian_name }}</dd></div>
+            @endif
+            @if ($me->roll)
+                <div class="flex justify-between gap-3"><dt class="text-muted">{{ __('dashboard.roll') }}</dt><dd class="font-semibold text-ink tabular-nums">{{ bn($me->roll) }}</dd></div>
+            @endif
+        </dl>
+
         <form method="POST" action="{{ route('password.change.update') }}" class="space-y-4">
             @csrf
             @method('PUT')

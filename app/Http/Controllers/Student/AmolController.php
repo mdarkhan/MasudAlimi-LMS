@@ -9,7 +9,6 @@ use App\Services\Amol\AmolStatsService;
 use App\Services\Calendar\PrayerTimeService;
 use App\Services\Notifications\NotificationService;
 use App\Support\AmolDate;
-use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -48,22 +47,8 @@ class AmolController extends Controller
             'checklist' => $this->amol->checklistFor($student, $date),
             'note' => $note,
             'prayer' => $this->prayers->status(),
-            'stats' => $this->stats->forStudent($student, $this->month($request->query('month')), $today),
+            'stats' => $this->stats->forStudent($student, AmolDate::resolveMonth($request->query('month')), $today),
         ]);
-    }
-
-    /** `?month=YYYY-MM`, clamped to a real month no later than the current one. */
-    private function month(mixed $raw): CarbonImmutable
-    {
-        $current = CarbonImmutable::now()->startOfMonth();
-
-        if (! is_string($raw) || ! preg_match('/^(\d{4})-(0[1-9]|1[0-2])$/', $raw)) {
-            return $current;
-        }
-
-        $month = CarbonImmutable::createFromFormat('!Y-m', $raw);
-
-        return $month->greaterThan($current) ? $current : $month;
     }
 
     /** Toggle one deed. Always today — the service never accepts a date to write to. */

@@ -69,6 +69,21 @@ class QuizRequest extends FormRequest
                 $validator->errors()->add('lesson_id', 'ক্লাস নির্বাচন করতে হলে আগে কোর্স নির্বাচন করুন।');
             }
 
+            // A live (scheduled/published) exam whose end is set to a moment that has already
+            // passed would never open and nobody would notice. Enforced only when the end time
+            // is new or changed, so editing the title of a finished or imported quiz is never
+            // blocked; draft/archived quizzes are exempt; a few minutes' grace covers clock
+            // drift and "end it right now".
+            if ($this->filled('ends_at') && in_array($this->input('status'), [Quiz::STATUS_SCHEDULED, Quiz::STATUS_PUBLISHED], true)) {
+                $quiz = $this->route('quiz');
+                $new = \Illuminate\Support\Carbon::parse($this->input('ends_at'));
+                $changed = ! $quiz instanceof Quiz || $quiz->ends_at === null || $quiz->ends_at->format('Y-m-d H:i') !== $new->format('Y-m-d H:i');
+
+                if ($changed && $new->lt(now()->subMinutes(5))) {
+                    $validator->errors()->add('ends_at', 'শেষ সময় অবশ্যই বর্তমান সময়ের পরে হতে হবে — নইলে পরীক্ষা কখনো খুলবে না।');
+                }
+            }
+
             // Result release before the exam ends is nonsensical.
             if ($this->filled('result_release_at') && $this->filled('ends_at')
                 && strtotime($this->input('result_release_at')) < strtotime($this->input('ends_at'))) {

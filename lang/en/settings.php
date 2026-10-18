@@ -60,6 +60,12 @@ return [
     'isha_angle' => 'Isha angle (°)',
     'asr_method' => 'Asr method',
     'asr_hanafi' => 'Hanafi (shadow ×2)',
-    'asr_shafii' => 'Shafi'i (shadow ×1)',
+    'asr_shafii' => "Shafi'i (shadow ×1)",
     'prayer_hint' => 'Prayer times are computed from the coordinates above; Bangladesh typically uses 18° for Fajr/Isha and Hanafi Asr.',
+    'dev_credit' => 'Developer credit',
+    'dev_credit_hint' => 'Shown as "Developed by …" in the footer of public and login pages. Clear both names to hide the line.',
+    'dev_name_bn' => 'Name (Bengali)',
+    'dev_name_en' => 'Name (English)',
+    'dev_whatsapp_url' => 'WhatsApp link',
+    'dev_linkedin_url' => 'LinkedIn link',
 ];

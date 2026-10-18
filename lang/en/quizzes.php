@@ -145,4 +145,5 @@ return [
     'shuffle_per_student' => 'Different question & option order per student (official exams)',
     'shuffle_hint' => 'When on, each examinee sees questions and options in a different order. Results and answer sheets always show the original order for everyone.',
     'shuffle_locked' => 'Locked because official attempts already exist.',
+    'end_in_past_warning' => 'This end time has already passed, so the quiz will not open. Set a future time to keep it open.',
 ];

@@ -118,10 +118,11 @@ Databases: `masudalimi` (dev), `masudalimi_test` (tests, configured in
 `phpunit.xml`). Tests run on **MySQL, not sqlite** — the point ledger and attempt
 creation depend on `lockForUpdate`, and the schema uses `ENUM` and `utf8mb4`.
 
-Dev accounts (from `DevAccountsSeeder`, never runs in production):
-`admin` / `password` (super_admin), students roll `১০১`–`১০৬` /
-`password`. Test helpers `makeStudent()` / `makeAdmin()` / `makeSuperAdmin()` live
-on the base `TestCase`.
+Dev accounts (from `DevAccountsSeeder`, never runs in production) — exactly three, password
+`password` for all: **`superadmin`** (super_admin), **`admin`** (admin), and student **roll `101`**
+("ডেমো শিক্ষার্থী"). The old six demo students and the demo quizzes were deleted; real students and
+results arrive through the legacy import (see MIGRATION.md). Test helpers `makeStudent()` /
+`makeAdmin()` / `makeSuperAdmin()` live on the base `TestCase`.
 
 Preview the app with `php artisan serve` (or the `masudalimi` launch config).
 
@@ -214,7 +215,7 @@ and `super_admin` bypasses `perm:` via `User::hasPermission()`.
   even when the interface is set to English).
 - Default locale is `bn` (`APP_LOCALE`). `SetLocale` middleware (web group) resolves the
   language per request: authenticated `users.locale` → session → app default. The
-  `x-ui.locale-toggle` (in every layout header + the profile page) posts to
+  `x-ui.locale-toggle` (in every layout header; the profile page deliberately does not repeat it) posts to
   `locale.update`, which saves to the user and the session.
 - The site name **মাসউদ আলিমী** and the Arabic bismillah are never translated.
 - New user-facing chrome must use `__()` keys, not hardcoded strings. `admin.php` holds
@@ -335,6 +336,21 @@ one archived quiz was staged as a draft and no historical result was imported. T
 export, complete archived quiz sources, reviewed mapping, hosting inputs, and explicit production
 access are still missing. Keep `CODEX_TAKEOVER_AUDIT.md` and `MIGRATION_RECONCILIATION.md` honest;
 never turn staging evidence into a deployment claim.
+
+**Legacy data loaded into the LOCAL dev database (2026-10-19, not production).** From the owner's
+exports: 58 students (`Student Database.xlsx`), 33 archived quizzes `সীরাত-০৪`…`সীরাত-৩৬` (954 questions,
+from `সীরাত পরীক্ষা.xlsx`) and 886 historical results (`masudalimi.sql`, real-roll rows only). Owner decisions,
+all recorded here so they are not "fixed" by accident: **`সীরাত-০১/০২/০৩` are deliberately NOT imported** (placeholder
+questions / sheet missing — add later when the owner confirms them); `tafseer-1`, `halakah-1`, `jummah-1` are
+not imported; the 225 blank-roll submissions are NOT attributed to anyone (the original `.sql` is the archive);
+students keep their sheet password as the **initial** password via the opt-in
+`legacy:students:import --use-sheet-passwords` (hashed, still `force_password_change`) — default stays fresh
+random passwords; the legacy `created_at` values are **UTC** (`--source-timezone=UTC`); a recorded time of 0 =
+hand-marked exam = stored as NULL (unknown, ranks after real times); the attempt denominator is the matched
+quiz's real `total_marks` (mega questions make score > question-count); `সীরাত-২০`'s one blank key was set to
+"১৩/১৪ দিন" by the owner; `সীরাত-২১`'s copied dates were cleared; `সীরাত-১০`'s sheet title typo ("১১") is ignored;
+`সীরাত-২৫`'s stray header row is dropped; imported quizzes are archived with `counts_toward_overall = false`
+until staff decide otherwise. Source files and reports live in `D:\Work\Private\MasudAlimi LMS\` (outside the repo).
 
 The **secure live OFFICIAL exam** IS built (Phase 7): start/resume, per-question
 autosave, the authoritative server timer, expiry finalisation and a released-score

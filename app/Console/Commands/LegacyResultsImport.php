@@ -16,6 +16,7 @@ class LegacyResultsImport extends Command
     protected $signature = 'legacy:results:import {file : CSV/XLSX quiz_submissions export}
         {--mapping= : Reviewed mapping CSV (required)}
         {--confirm : Perform the import}
+        {--source-timezone= : Timezone of the exported created_at values (default: the app timezone; phpMyAdmin TIMESTAMP dumps are UTC)}
         {--report= : Markdown reconciliation report path}';
 
     protected $description = 'Import approved legacy result rows without answers or point transactions';
@@ -53,7 +54,7 @@ class LegacyResultsImport extends Command
 
         $batch = $batches->start(LegacyImportBatch::TYPE_RESULTS, $path);
         try {
-            $result = $importer->import($rows, $mapping, $batch);
+            $result = $importer->import($rows, $mapping, $batch, ((string) $this->option('source-timezone')) ?: null);
             $summary = [
                 'source_rows' => count($rows),
                 'valid_rows' => $preview['summary']['valid_rows'],

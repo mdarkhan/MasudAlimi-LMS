@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SendMessageRequest;
 use App\Models\Conversation;
+use App\Models\Message;
 use App\Models\User;
 use App\Services\Messaging\MessageService;
 use App\Services\Notifications\NotificationService;
@@ -69,6 +70,25 @@ class MessageController extends Controller
         }
 
         return back();
+    }
+
+    public function update(SendMessageRequest $request, Conversation $conversation, Message $message): JsonResponse
+    {
+        abort_unless((int) $message->conversation_id === (int) $conversation->getKey(), 404);
+
+        $admin = $request->user();
+        $message = $this->messages->edit($message, $admin, $request->validated()['body']);
+
+        return response()->json(['message' => MessagePresenter::one($message->load('sender:id,name'), $admin)]);
+    }
+
+    public function destroyMessage(Request $request, Conversation $conversation, Message $message): JsonResponse
+    {
+        abort_unless((int) $message->conversation_id === (int) $conversation->getKey(), 404);
+
+        $this->messages->deleteMessage($message, $request->user());
+
+        return response()->json(['deleted' => true]);
     }
 
     /** The ustaz opening a thread with a student who has never written in. */

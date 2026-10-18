@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AmolNoteRequest;
 use App\Models\User;
 use App\Services\Amol\AmolService;
+use App\Services\Amol\AmolStatsService;
+use App\Services\Audit\AuditLogger;
 use App\Support\AmolDate;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +20,7 @@ use Illuminate\View\View;
  */
 class AmolController extends Controller
 {
-    public function __construct(private readonly AmolService $amol) {}
+    public function __construct(private readonly AmolService $amol, private readonly AmolStatsService $stats) {}
 
     public function index(Request $request): View
     {
@@ -47,7 +49,22 @@ class AmolController extends Controller
             'today' => $this->amol->today(),
             'checklist' => $this->amol->checklistFor($student, $date),
             'note' => $this->amol->noteFor($student, $date),
+            'stats' => $this->stats->forStudent($student, AmolDate::resolveMonth($request->query('month')), $this->amol->today()),
         ]);
+    }
+
+    public function destroyNote(Request $request, User $student, AuditLogger $audit): RedirectResponse
+    {
+        abort_unless($student->isStudent(), 404);
+
+        $date = AmolDate::resolve($request->input('date'));
+
+        if ($this->amol->deleteNote($student, $date)) {
+            $audit->log('amol.note_deleted', $student, null, ['date' => $date->toDateString()], $request->user());
+        }
+
+        return redirect()->route('admin.amol.show', ['student' => $student, 'date' => $date->toDateString()])
+            ->with('success', __('amol.note_deleted'));
     }
 
     public function saveNote(AmolNoteRequest $request, User $student): RedirectResponse

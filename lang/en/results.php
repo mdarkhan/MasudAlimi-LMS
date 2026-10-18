@@ -56,4 +56,7 @@ return [
     'explanation_label' => 'Explanation',
     'regrade_note' => 'এই পরীক্ষার উত্তরমালা পরবর্তীতে সংশোধন করা হয়েছে এবং ফলাফল পুনরায় গণনা করা হয়েছে।',
     'print' => 'Print / PDF',
+    'print_name' => 'Student',
+    'print_roll' => 'Roll',
+    'print_guardian' => 'Guardian',
 ];

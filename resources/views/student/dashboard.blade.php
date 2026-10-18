@@ -76,9 +76,9 @@
             :value="$overall ? bn($overall['obtained']) : '—'"
             :sub="$overall ? __('dashboard.total_of', ['total' => bn($overall['possible'])]).' · '.bn(number_format($overall['percentage'], 1)).'%' : null"
             tone="ink" />
-        <div class="bg-card border border-line rounded-[--radius-card] shadow-[--shadow-soft] p-5">
-            <p class="text-xs font-semibold uppercase tracking-wider text-muted">{{ __('dashboard.overall_rank') }}</p>
-            <div class="mt-2 flex items-center gap-2">
+        <div class="bg-card border border-line rounded-[--radius-card] shadow-[--shadow-soft] p-5 text-center">
+            <p class="text-base font-semibold tracking-wide text-muted">{{ __('dashboard.overall_rank') }}</p>
+            <div class="mt-2 flex items-center justify-center gap-2">
                 <p class="text-3xl font-black text-amber-500 tabular-nums">{{ $overall ? bn($overall['rank']) : '—' }}</p>
                 @if ($rankMovement === 'up')
                     <span class="flex items-center gap-0.5 text-xs font-semibold text-emerald-600" title="{{ __('dashboard.rank_up') }}"><x-ui.icon name="trend-up" class="w-4 h-4" /></span>

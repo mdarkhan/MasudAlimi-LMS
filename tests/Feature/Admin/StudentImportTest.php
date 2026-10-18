@@ -167,4 +167,22 @@ class StudentImportTest extends TestCase
         $this->assertSame('আব্দুল্লাহ', $rows[0]['name']);
         $this->assertSame('পিতা এক', $rows[0]['guardian_name']);
     }
+
+    public function test_the_owner_opt_in_keeps_the_sheet_password_but_still_forces_a_change_and_exports_nothing(): void
+    {
+        $admin = $this->makeAdmin();
+        $rows = [['row' => 2, 'roll' => '101', 'name' => 'আব্দুল্লাহ', 'guardian_name' => null, 'password' => '4821'],
+                 ['row' => 3, 'roll' => '102', 'name' => 'ফাতিমা', 'guardian_name' => null, 'password' => '']];
+
+        $result = app(StudentImporter::class)->import($rows, $admin, null, useSheetPasswords: true);
+
+        $kept = User::query()->where('roll', '101')->firstOrFail();
+        $this->assertTrue(Hash::check('4821', $kept->password), 'the sheet password is the initial password');
+        $this->assertNotSame('4821', $kept->password, 'stored hashed, never in plaintext');
+        $this->assertTrue($kept->force_password_change, 'but it must be changed at first login');
+
+        // A row with no sheet password still gets a fresh generated one, and only that is exported.
+        $this->assertCount(1, $result['credentials']);
+        $this->assertSame('102', $result['credentials'][0]['roll']);
+    }
 }

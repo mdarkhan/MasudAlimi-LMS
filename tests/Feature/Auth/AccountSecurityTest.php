@@ -170,4 +170,15 @@ class AccountSecurityTest extends TestCase
         $this->post('/login', ['identifier' => '999', 'password' => 'secret123'])->assertSessionHasErrors('identifier');
         $this->assertGuest();
     }
+
+    public function test_the_password_change_screen_shows_whose_account_it_is(): void
+    {
+        $s = $this->makeStudent(['name' => 'আব্দুল্লাহ আল মামুন', 'roll' => '5', 'guardian_name' => 'আব্দুর রহমান', 'force_password_change' => true]);
+
+        $this->actingAs($s)->get(route('password.change'))
+            ->assertOk()
+            ->assertSee('আব্দুল্লাহ আল মামুন')
+            ->assertSee('আব্দুর রহমান')
+            ->assertSee(bn('5'));
+    }
 }

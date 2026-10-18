@@ -39,4 +39,7 @@ return [
     'reason' => 'কারণ',
     'balance' => 'ব্যালেন্স',
     'type' => 'ধরন',
+    'save_failed' => ':count টি তথ্য ঠিক নয় — সংরক্ষণ হয়নি',
+    'developed_by' => 'ডেভেলপার:',
+    'copyright' => 'সর্বস্বত্ব সংরক্ষিত © :year',
 ];

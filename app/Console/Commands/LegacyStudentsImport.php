@@ -15,6 +15,7 @@ class LegacyStudentsImport extends Command
 {
     protected $signature = 'legacy:students:import {file : CSV/XLSX student export}
         {--confirm : Perform the import after preview}
+        {--use-sheet-passwords : OWNER OPT-IN: keep each sheet password as the initial password (still forced to change at first login)}
         {--actor= : Admin email for audit attribution}
         {--report= : Markdown reconciliation report path}';
 
@@ -54,7 +55,7 @@ class LegacyStudentsImport extends Command
 
         $batch = $batches->start(LegacyImportBatch::TYPE_STUDENTS, $path);
         try {
-            $result = $importer->import($rows, $actor, $batch);
+            $result = $importer->import($rows, $actor, $batch, (bool) $this->option('use-sheet-passwords'));
             $summary = [
                 'source_rows' => count($rows),
                 'valid_rows' => count($rows) - $preview['summary']['error'],
@@ -64,6 +65,7 @@ class LegacyStudentsImport extends Command
                 'skipped' => $result['skipped'],
                 'failed' => $preview['summary']['error'],
                 'generated_temporary_credentials' => count($result['credentials']),
+                'sheet_passwords_kept' => (bool) $this->option('use-sheet-passwords') ? 'yes (forced change at first login)' : 'no',
                 'final_active_user_count' => User::query()->where('status', User::STATUS_ACTIVE)->count(),
             ];
             $batches->complete($batch, $summary);

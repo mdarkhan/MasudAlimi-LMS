@@ -14,13 +14,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Markdown) — students and admins both write here, so nothing in it is trusted.
  * `read_at` is set when the receiving side opens the thread.
  */
-#[Fillable(['conversation_id', 'sender_id', 'body', 'read_at'])]
+#[Fillable(['conversation_id', 'sender_id', 'body', 'read_at', 'edited_at'])]
 class Message extends Model
 {
     protected function casts(): array
     {
         return [
             'read_at' => 'datetime',
+            'edited_at' => 'datetime',
         ];
     }
 

@@ -14,8 +14,7 @@ class SocialLinksTest extends TestCase
     {
         $this->get(route('home'))
             ->assertOk()
-            ->assertDontSee('WhatsApp')
-            ->assertDontSeeText(__('public.social_heading'));
+            ->assertDontSeeText(__('public.social_heading'));   // the developer credit's own WhatsApp link is separate
     }
 
     public function test_the_footer_shows_only_the_configured_channels(): void
@@ -63,5 +62,24 @@ class SocialLinksTest extends TestCase
         $this->actingAs($this->makeStudent())->get(route('student.dashboard'))
             ->assertOk()
             ->assertDontSee('https://wa.me/8801700000000', false);
+    }
+
+    public function test_the_developer_credit_shows_in_the_public_and_login_footers_and_can_be_hidden(): void
+    {
+        $this->get(route('home'))->assertOk()
+            ->assertSee('মোঃ আরাফাত রহমান')
+            ->assertSee('https://wa.me/8801743340737', false)
+            ->assertSee('https://www.linkedin.com/in/mdarkhan', false)
+            ->assertSee('rel="noopener noreferrer"', false);
+        $this->get(route('login'))->assertOk()->assertSee('মোঃ আরাফাত রহমান');
+
+        app(SettingService::class)->set(['dev_name_bn' => '', 'dev_name_en' => '']);
+
+        $this->get(route('home'))->assertOk()->assertDontSee('মোঃ আরাফাত রহমান')->assertDontSee('linkedin.com/in/mdarkhan', false);
+    }
+
+    public function test_the_credit_name_follows_the_interface_language(): void
+    {
+        $this->withSession(['locale' => 'en'])->get(route('home'))->assertSee('Md Arafat Rahman');
     }
 }

@@ -195,4 +195,43 @@ class LegacyResultImportTest extends TestCase
 
         return app(LegacyQuizMapping::class)->keyByLegacyId($rows);
     }
+
+    public function test_a_zero_time_is_stored_as_unknown_and_never_outranks_a_real_time(): void
+    {
+        $this->makeStudent(['roll' => '101']);
+        $quiz = Quiz::factory()->create(['slug' => 'seerat-24', 'title' => 'সীরাত ২৪']);
+        $mapping = $this->approvedMapping(['seerat-24']);
+
+        app(LegacyResultImporter::class)->import([$this->row(['time_taken' => 0])], $mapping, $this->batch());
+
+        $attempt = QuizAttempt::query()->firstOrFail();
+        $this->assertNull($attempt->time_taken_seconds, 'no captured time is NULL, not "0 seconds"');
+        $this->assertTrue($attempt->started_at->equalTo($attempt->submitted_at));
+    }
+
+    public function test_source_timestamps_can_be_declared_utc_and_land_as_the_same_instant(): void
+    {
+        $this->makeStudent(['roll' => '101']);
+        Quiz::factory()->create(['slug' => 'seerat-24', 'title' => 'সীরাত ২৪']);
+        $mapping = $this->approvedMapping(['seerat-24']);
+
+        app(LegacyResultImporter::class)->import([$this->row(['created_at' => '2026-02-20 11:24:46'])], $mapping, $this->batch(), 'UTC');
+
+        $attempt = QuizAttempt::query()->firstOrFail();
+        $this->assertSame('2026-02-20 17:24:46', $attempt->submitted_at->setTimezone('Asia/Dhaka')->format('Y-m-d H:i:s'));
+    }
+
+    public function test_the_attempt_denominator_is_the_quizs_real_total_marks_not_the_legacy_question_count(): void
+    {
+        $this->makeStudent(['roll' => '101']);
+        $quiz = Quiz::factory()->create(['slug' => 'seerat-24', 'title' => 'সীরাত ২৪', 'total_marks' => 50]);
+        $mapping = $this->approvedMapping(['seerat-24']);
+
+        // Legacy: 25 questions, but mega marks made the score 47 — 47/25 would read as 188%.
+        app(LegacyResultImporter::class)->import([$this->row(['score' => 47, 'total_questions' => 25])], $mapping, $this->batch());
+
+        $attempt = QuizAttempt::query()->firstOrFail();
+        $this->assertSame(47, $attempt->final_score);
+        $this->assertSame(50, $attempt->total_marks_snapshot);
+    }
 }

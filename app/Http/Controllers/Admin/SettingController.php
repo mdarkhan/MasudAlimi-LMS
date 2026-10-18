@@ -50,6 +50,10 @@ class SettingController extends Controller
             'whatsapp_url' => ['nullable', 'url', 'max:250'],
             'facebook_page_url' => ['nullable', 'url', 'max:250'],
             'facebook_group_url' => ['nullable', 'url', 'max:250'],
+            'dev_name_bn' => ['nullable', 'string', 'max:100'],
+            'dev_name_en' => ['nullable', 'string', 'max:100'],
+            'dev_whatsapp_url' => ['nullable', 'url', 'max:250'],
+            'dev_linkedin_url' => ['nullable', 'url', 'max:250'],
             'ustaz_email' => ['nullable', 'email', 'max:190'],
             'contact_email' => ['nullable', 'email', 'max:190'],
         ]);

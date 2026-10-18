@@ -99,6 +99,12 @@ class NotificationService
             ->update(['read_at' => now()]);
     }
 
+    /** The thing a notification pointed at no longer exists: drop it from every feed. */
+    public function forgetSubject(string $subjectType, int $subjectId): void
+    {
+        AppNotification::query()->where('subject_type', $subjectType)->where('subject_id', $subjectId)->delete();
+    }
+
     /** Facebook-style: the user removes it from their own feed. Never affects anyone else's. */
     public function delete(AppNotification $notification): void
     {
