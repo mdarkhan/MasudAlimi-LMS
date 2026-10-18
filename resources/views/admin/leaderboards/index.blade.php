@@ -20,26 +20,36 @@
         @endforeach
     </div>
 
-    {{-- Picker (quiz / course tabs) --}}
+    {{-- Pickers: choosing an option loads the board straight away — there is no filter button.
+         "By exam" picks the course first, then lists only that course's exams. --}}
     @if ($tab !== 'overall')
-        <form method="GET" action="{{ route('admin.leaderboards.index') }}" class="mb-5 flex flex-col sm:flex-row gap-3 max-w-2xl">
+        <form method="GET" action="{{ route('admin.leaderboards.index') }}" class="mb-5 flex flex-col sm:flex-row gap-3 max-w-3xl">
             <input type="hidden" name="tab" value="{{ $tab }}">
             @if ($isQuiz)
-                <x-ui.select name="quiz_id" class="flex-1">
+                <x-ui.select name="course_id" class="flex-1" onchange="this.form.elements['quiz_id'].value=''; this.form.submit()">
+                    <option value="">{{ __('leaderboards.pick_course') }}</option>
+                    @foreach ($courses as $c)
+                        <option value="{{ $c->id }}" @selected((string) $quizCourse === (string) $c->id)>{{ $c->title }}</option>
+                    @endforeach
+                    @if ($hasUncategorised)
+                        <option value="none" @selected($quizCourse === 'none')>{{ __('leaderboards.no_course') }}</option>
+                    @endif
+                </x-ui.select>
+                <x-ui.select name="quiz_id" class="flex-1" onchange="this.form.submit()" :disabled="$quizOptions->isEmpty()">
                     <option value="">{{ __('leaderboards.pick_quiz') }}</option>
-                    @foreach ($quizzes as $q)
+                    @foreach ($quizOptions as $q)
                         <option value="{{ $q->id }}" @selected($quiz?->id === $q->id)>{{ $q->title }}</option>
                     @endforeach
                 </x-ui.select>
             @else
-                <x-ui.select name="course_id" class="flex-1">
+                <x-ui.select name="course_id" class="flex-1" onchange="this.form.submit()">
                     <option value="">{{ __('leaderboards.pick_course') }}</option>
                     @foreach ($courses as $c)
                         <option value="{{ $c->id }}" @selected($course?->id === $c->id)>{{ $c->title }}</option>
                     @endforeach
                 </x-ui.select>
             @endif
-            <x-ui.button type="submit" variant="secondary">{{ __('results_admin.apply') }}</x-ui.button>
+            <noscript><x-ui.button type="submit" variant="secondary">{{ __('results_admin.apply') }}</x-ui.button></noscript>
         </form>
     @endif
 

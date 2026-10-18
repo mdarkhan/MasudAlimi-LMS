@@ -76,6 +76,29 @@ class AdminLeaderboardTest extends TestCase
             ->assertSee(__('leaderboards.admin_quiz_unreleased'));
     }
 
+    public function test_the_exam_tab_lists_only_the_chosen_courses_exams_and_has_no_filter_button(): void
+    {
+        $seerat = \App\Models\Course::factory()->create(['title' => 'Seerat Course']);
+        $tafsir = \App\Models\Course::factory()->create(['title' => 'Tafsir Course']);
+        $in = $this->quiz(true, ['course_id' => $seerat->id, 'title' => 'Seerat Exam One']);
+        $this->quiz(true, ['course_id' => $tafsir->id, 'title' => 'Tafsir Exam One']);
+        $admin = $this->makeAdmin();
+
+        // Course picked, no exam yet: the exam dropdown holds just that course's exams.
+        $response = $this->actingAs($admin)->get(route('admin.leaderboards.index', ['tab' => 'quiz', 'course_id' => $seerat->id]))->assertOk();
+        $this->assertSame(['Seerat Exam One'], $response->viewData('quizOptions')->pluck('title')->all());
+        $response->assertDontSee('Tafsir Exam One');
+        // No filter button (the only submit button is the <noscript> fallback).
+        $visible = preg_replace('#<noscript>.*?</noscript>#s', '', $response->getContent());
+        $this->assertStringNotContainsString('>'.__('results_admin.apply').'<', $visible);
+        $this->assertStringContainsString('onchange="this.form.submit()"', $response->getContent());
+
+        // A link that names only the quiz still resolves its course.
+        $deep = $this->actingAs($admin)->get(route('admin.leaderboards.index', ['tab' => 'quiz', 'quiz_id' => $in->id]))->assertOk();
+        $this->assertSame((string) $seerat->id, (string) $deep->viewData('quizCourse'));
+        $this->assertSame(['Seerat Exam One'], $deep->viewData('quizOptions')->pluck('title')->all());
+    }
+
     public function test_csv_export_and_access_control(): void
     {
         $quiz = $this->quiz(true);

@@ -35,7 +35,20 @@ class LeaderboardController extends Controller
 
         $quizzes = Quiz::query()->where('status', '!=', Quiz::STATUS_DRAFT)->orderBy('title')->get();
 
+        // "By exam" is a two-step pick: the course first, then only that course's exams. A deep link that
+        // names just a quiz still works — its course is used.
+        $quizCourse = $request->query('course_id');
+        if (($quizCourse === null || $quizCourse === '') && $quiz) {
+            $quizCourse = $quiz->course_id ?? 'none';
+        }
+        $quizOptions = $tab === 'quiz' && $quizCourse !== null && $quizCourse !== ''
+            ? $quizzes->filter(fn (Quiz $q) => $quizCourse === 'none' ? $q->course_id === null : (int) $q->course_id === (int) $quizCourse)->values()
+            : collect();
+
         return view('admin.leaderboards.index', [
+            'quizCourse' => $quizCourse,
+            'quizOptions' => $quizOptions,
+            'hasUncategorised' => $quizzes->contains(fn (Quiz $q) => $q->course_id === null),
             'tab' => $tab,
             'quiz' => $quiz,
             'course' => $course,
