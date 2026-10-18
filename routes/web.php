@@ -235,6 +235,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.active', 'p
     // Results management (Phase 8). export is declared before the {attempt} wildcard.
     Route::get('results', [Admin\ResultController::class, 'index'])->name('results.index')->middleware('perm:results.view');
     Route::get('results/export', [Admin\ResultController::class, 'export'])->name('results.export')->middleware('perm:results.view');
+    Route::get('leaderboards', [Admin\LeaderboardController::class, 'index'])->name('leaderboards.index')->middleware('perm:results.view');
+    Route::get('leaderboards/export', [Admin\LeaderboardController::class, 'export'])->name('leaderboards.export')->middleware('perm:results.view');
     Route::get('results/{attempt}', [Admin\ResultController::class, 'show'])->name('results.show')->middleware('perm:results.view');
     Route::get('quizzes/{quiz}/analysis', [Admin\QuizAnalysisController::class, 'show'])->name('quizzes.analysis')->middleware('perm:results.view');
     Route::post('results/{attempt}/adjust', [Admin\ResultController::class, 'adjust'])->name('results.adjust')->middleware('perm:results.adjust');

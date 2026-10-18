@@ -100,14 +100,14 @@ class LeaderboardService
      *     obtained:int, possible:int, percentage:float
      * }>
      */
-    public function overallLeaderboard(?CarbonImmutable $now = null): Collection
+    public function overallLeaderboard(?CarbonImmutable $now = null, bool $includeUnreleased = false): Collection
     {
         $now ??= CarbonImmutable::now();
 
         $quizIds = Quiz::query()
             ->where('counts_toward_overall', true)
             ->get(['id', 'ends_at', 'result_release_at', 'results_released_at'])
-            ->filter(fn (Quiz $quiz) => $quiz->resultsReleasedAt($now))
+            ->filter(fn (Quiz $quiz) => $includeUnreleased || $quiz->resultsReleasedAt($now))
             ->pluck('id');
 
         return $this->aggregateStandings($quizIds);
@@ -120,13 +120,13 @@ class LeaderboardService
      *
      * @return Collection<int, array{rank:int, user_id:int, roll:?string, name:string, exams_counted:int, time_taken_seconds:?int, obtained:int, possible:int, percentage:float}>
      */
-    public function courseLeaderboard(Course $course, ?CarbonImmutable $now = null): Collection
+    public function courseLeaderboard(Course $course, ?CarbonImmutable $now = null, bool $includeUnreleased = false): Collection
     {
         $now ??= CarbonImmutable::now();
 
         $quizIds = $course->quizzes()
             ->get(['id', 'ends_at', 'result_release_at', 'results_released_at'])
-            ->filter(fn (Quiz $quiz) => $quiz->resultsReleasedAt($now))
+            ->filter(fn (Quiz $quiz) => $includeUnreleased || $quiz->resultsReleasedAt($now))
             ->pluck('id');
 
         return $this->aggregateStandings($quizIds);

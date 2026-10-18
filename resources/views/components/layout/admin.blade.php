@@ -27,6 +27,7 @@
 
     if ($user?->hasPermission('results.view')) {
         $nav[] = ['label' => __('nav.results'), 'href' => route('admin.results.index'), 'icon' => 'results', 'active' => request()->routeIs('admin.results.*')];
+        $nav[] = ['label' => __('nav.leaderboard'), 'href' => route('admin.leaderboards.index'), 'icon' => 'leaderboard', 'active' => request()->routeIs('admin.leaderboards.*')];
     }
 
     if ($user?->hasPermission('posts.manage')) {
