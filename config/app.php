@@ -67,6 +67,9 @@ return [
 
     'timezone' => env('APP_TIMEZONE', 'UTC'),
 
+    // Shared secret for GET /cron/{token} (external scheduler pinger). Empty = endpoint disabled.
+    'cron_token' => env('CRON_TOKEN', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

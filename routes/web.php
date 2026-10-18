@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
 
+// External scheduler trigger (no cron on the host). 404 unless CRON_TOKEN matches.
+Route::get('cron/{token}', \App\Http\Controllers\CronController::class)->name('cron.run')->middleware('throttle:120,1');
+
 // Interface language toggle (available to everyone, including guests).
 Route::post('locale', [\App\Http\Controllers\LocaleController::class, 'update'])->name('locale.update');
 
