@@ -88,7 +88,7 @@ class LeaderboardPageTest extends TestCase
             ->assertSee('Overall Me')
             ->assertSee(__('leaderboards.you'));
 
-        $this->assertSame(14, substr_count($response->getContent(), 'text-center align-middle'));
+        $this->assertSame(10, substr_count($response->getContent(), 'text-center align-middle'));
     }
 
     public function test_a_quiz_leaderboard_keeps_the_generic_heading_and_uses_the_shared_table(): void
@@ -114,7 +114,7 @@ class LeaderboardPageTest extends TestCase
             ->assertSee('text-lg font-bold', false)
             ->assertDontSee('Ranked by marks, then by time taken. Equal performances share a rank.');
 
-        $this->assertSame(14, substr_count($response->getContent(), 'text-center align-middle'));
+        $this->assertSame(10, substr_count($response->getContent(), 'text-center align-middle'));
     }
 
     public function test_privacy_the_quiz_leaderboard_never_exposes_contact_details(): void

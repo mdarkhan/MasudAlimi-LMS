@@ -32,6 +32,7 @@ class LeaderboardController extends Controller
         return view('student.leaderboards.overall', [
             'rows' => $this->paginate($rows, $request),
             'me' => $rows->firstWhere('user_id', $request->user()->getKey()),
+            'myPage' => $this->pageOf($rows, $request),
             'quizzes' => $this->visibleQuizzes($now),
         ]);
     }
@@ -50,8 +51,17 @@ class LeaderboardController extends Controller
             'quiz' => $quiz,
             'rows' => $this->paginate($rows, $request),
             'me' => $rows->firstWhere('user_id', $request->user()->getKey()),
+            'myPage' => $this->pageOf($rows, $request),
             'quizzes' => $this->visibleQuizzes($now),
         ]);
+    }
+
+    /** The page of the paginated board that holds the signed-in student's row (1 when they are not on it). */
+    private function pageOf(Collection $rows, Request $request): int
+    {
+        $index = $rows->search(fn (array $row) => $row['user_id'] === $request->user()->getKey());
+
+        return $index === false ? 1 : intdiv($index, self::PER_PAGE) + 1;
     }
 
     /** Quizzes whose leaderboard a student may currently open — for the picker. */
