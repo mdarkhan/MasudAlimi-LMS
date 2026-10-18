@@ -34,14 +34,18 @@
                        'border-brand/40 bg-brand-tint/40' => $conversation->unread_count > 0,
                        'border-line bg-surface' => $conversation->unread_count === 0,
                    ])>
+                    <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $conversation->student->roll) > 3 ? 'text-xs' : 'text-base' }}"
+                          title="{{ __('dashboard.roll') }}">
+                        {{ $conversation->student->roll ? bn($conversation->student->roll) : '—' }}
+                    </span>
                     <div class="min-w-0 flex-1">
-                        <p class="font-semibold text-ink truncate">
-                            {{ $conversation->student->name }}
-                            @if ($conversation->student->roll)
-                                <span class="text-xs text-muted tabular-nums">({{ bn($conversation->student->roll) }})</span>
+                        <p class="truncate pl-1.5 -ml-1.5">
+                            <span class="font-semibold text-ink">{{ $conversation->student->name }}</span>
+                            @if ($conversation->student->guardian_name)
+                                <span class="text-sm text-muted">· {{ __('students.guardian_col') }}: {{ $conversation->student->guardian_name }}</span>
                             @endif
                         </p>
-                        <p class="text-sm text-muted truncate mt-0.5">{{ $conversation->latestMessage?->body ?? '—' }}</p>
+                        <p class="text-sm text-muted truncate mt-0.5 pl-1.5 -ml-1.5">{{ $conversation->latestMessage?->body ?? '—' }}</p>
                     </div>
                     <div class="shrink-0 text-end">
                         @if ($conversation->unread_count > 0)

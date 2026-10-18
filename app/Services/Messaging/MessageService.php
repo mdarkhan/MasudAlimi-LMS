@@ -196,7 +196,7 @@ class MessageService
         // A thread opened via "start a new conversation" but never written in stays out of the list.
         return Conversation::query()
             ->has('messages')
-            ->with(['student:id,name,roll', 'latestMessage'])
+            ->with(['student:id,name,roll,guardian_name', 'latestMessage'])
             ->withCount(['messages as unread_count' => fn ($q) => $q
                 ->whereNull('messages.read_at')
                 ->whereColumn('messages.sender_id', 'conversations.user_id'),
