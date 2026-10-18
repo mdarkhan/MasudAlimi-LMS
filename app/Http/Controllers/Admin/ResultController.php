@@ -29,20 +29,27 @@ class ResultController extends Controller
     {
         $filters = [
             'quiz_id' => $request->integer('quiz_id') ?: null,
-            'status' => $request->string('status')->toString() ?: null,
+            'status' => null,
             'q' => trim($request->string('q')->toString()),
         ];
 
         $sort = $request->string('sort')->toString();
-        $sort = in_array($sort, ['latest', 'score', 'fastest', 'roll'], true) ? $sort : 'latest';
+        $sort = in_array($sort, ['latest', 'order', 'score', 'fastest', 'roll'], true) ? $sort : 'latest';
         $filters['sort'] = $sort;
 
         $query = $this->filteredQuery($filters)
-            ->with(['quiz' => fn ($q) => $q->select('id', 'title')->withCount('questions'), 'user:id,roll,name,guardian_name'])
-            // Questions the student actually picked an option for (an emptied answer does not count).
-            ->withCount(['answers as answered_count' => fn ($q) => $q->whereHas('options')]);
+            ->with(['quiz:id,title', 'user:id,roll,name,guardian_name'])
+            ->select('quiz_attempts.*')
+            // "Submitted #": 1 = the first student to hand this exam in. Ties on the same second
+            // fall back to the attempt id, so the order is stable and every number is unique.
+            ->selectRaw("(SELECT COUNT(*) FROM quiz_attempts AS earlier
+                WHERE earlier.quiz_id = quiz_attempts.quiz_id AND earlier.kind = 'official'
+                  AND earlier.submitted_at IS NOT NULL
+                  AND (earlier.submitted_at < quiz_attempts.submitted_at
+                       OR (earlier.submitted_at = quiz_attempts.submitted_at AND earlier.id < quiz_attempts.id))) + 1 AS submit_order");
 
         match ($sort) {
+            'order' => $query->orderByRaw('submitted_at IS NULL')->orderBy('submitted_at'),
             'score' => $query->orderByDesc('final_score')->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds'),
             'fastest' => $query->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds')->orderByDesc('final_score'),
             'roll' => $query->orderByRaw('(SELECT CAST(users.roll AS UNSIGNED) FROM users WHERE users.id = quiz_attempts.user_id)'),

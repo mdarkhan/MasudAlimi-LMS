@@ -108,6 +108,8 @@ return [
     'sort_score' => 'বেশি নম্বর আগে',
     'sort_fastest' => 'দ্রুত আগে',
     'sort_roll' => 'রোল অনুযায়ী',
+    'col_order' => 'জমার ক্রম',
+    'sort_order' => 'আগে জমা আগে',
     'col_started' => 'শুরু',
     'col_duration' => 'সময় লেগেছে',
     'col_answered' => 'উত্তর দিয়েছে',

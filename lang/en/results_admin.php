@@ -108,6 +108,8 @@ return [
     'sort_score' => 'Highest score first',
     'sort_fastest' => 'Fastest first',
     'sort_roll' => 'By roll',
+    'col_order' => 'Submitted #',
+    'sort_order' => 'Earliest submitted first',
     'col_started' => 'Started',
     'col_duration' => 'Time taken',
     'col_answered' => 'Answered',

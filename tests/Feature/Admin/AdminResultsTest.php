@@ -39,14 +39,14 @@ class AdminResultsTest extends TestCase
 
         $index = $this->actingAs($admin)->get(route('admin.results.index'));
         $index->assertOk()->assertSee($quiz->title);
-        $this->assertSame(16, substr_count($index->getContent(), 'text-center align-middle'));   // 8 centred columns: header + cell
+        $this->assertSame(12, substr_count($index->getContent(), 'text-center align-middle'));   // 6 centred columns: header + cell
         $this->actingAs($admin)->get(route('admin.results.show', $attempt))
             ->assertOk()
             ->assertSee(__('results_admin.scores'))
             ->assertSee(__('results_admin.answers_heading'));
     }
 
-    public function test_the_overview_shows_stats_answered_count_and_duration(): void
+    public function test_the_overview_shows_stats_duration(): void
     {
         [$quiz, $attempt, , $student] = $this->lockedQuizWithAttempt();   // 1 question, answered, submitted
         $attempt->forceFill(['time_taken_seconds' => 754])->save();
@@ -56,12 +56,35 @@ class AdminResultsTest extends TestCase
 
         $response->assertOk()->assertSee($student->name)
             ->assertSee(bn(12).' '.__('results_admin.min').' '.bn(34).' '.__('results_admin.sec'))   // 754 s
-            ->assertSee('> / '.bn(1).'</span>', false);                                              // …answered / questions
+            ->assertSee('<span class="inline-grid', false);   // the "submitted #" badge
         $stats = $response->viewData('stats');
         $this->assertSame(1, $stats['attempts']);
         $this->assertSame(1, $stats['students']);
         $this->assertSame(1, $stats['finished']);
         $this->assertSame(754, $stats['average_seconds']);
+    }
+
+    public function test_submitted_order_numbers_who_handed_the_exam_in_first_per_quiz(): void
+    {
+        $quiz = Quiz::factory()->create();
+        QuizBuilder::for($quiz)->question(['A', 'B'], correctPositions: [1], marks: 4);
+        $svc = app(QuizAttemptService::class);
+        $attempts = [];
+        foreach (['7', '8', '9'] as $roll) {
+            $student = $this->makeStudent(['roll' => $roll]);
+            app(PointService::class)->credit($student, 5, PointTransaction::TYPE_ADJUSTMENT, 'seed');
+            $attempts[$roll] = $svc->submit($svc->startOfficial($quiz->fresh(), $student->fresh()));
+        }
+        // roll 9 handed in first, then roll 7, then roll 8
+        foreach (['9' => '2026-03-01 10:00:00', '7' => '2026-03-01 10:05:00', '8' => '2026-03-01 10:09:00'] as $roll => $at) {
+            \App\Models\QuizAttempt::whereKey($attempts[$roll]->id)->update(['submitted_at' => $at]);
+        }
+
+        $rows = $this->actingAs($this->makeAdmin())->get(route('admin.results.index', ['sort' => 'order']))
+            ->assertOk()->viewData('attempts');
+
+        $this->assertSame(['9', '7', '8'], $rows->map(fn ($a) => $a->user->roll)->all());
+        $this->assertSame([1, 2, 3], $rows->map(fn ($a) => (int) $a->submit_order)->all());
     }
 
     public function test_the_overview_can_be_sorted_by_roll_numerically(): void

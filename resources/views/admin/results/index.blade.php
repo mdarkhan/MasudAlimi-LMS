@@ -1,6 +1,4 @@
 @php
-    $statuses = ['submitted', 'expired', 'in_progress', 'voided'];
-    $statusTone = ['submitted' => 'success', 'expired' => 'warning', 'in_progress' => 'info', 'voided' => 'danger'];
     // 754 s -> "12 min 34 sec" (Bengali digits in the Bengali UI); unknown / unfinished -> em dash.
     $fmt = fn (?int $sec) => $sec === null ? '—' : ($sec >= 60
         ? bn(intdiv($sec, 60)).' '.__('results_admin.min').($sec % 60 ? ' '.bn($sec % 60).' '.__('results_admin.sec') : '')
@@ -37,21 +35,15 @@
     </div>
 
     {{-- Filters (official attempts only — practice is not retained) --}}
-    <form method="GET" action="{{ route('admin.results.index') }}" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 mb-5">
+    <form method="GET" action="{{ route('admin.results.index') }}" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-5">
         <x-ui.select name="quiz_id">
             <option value="">{{ __('results_admin.filter_quiz') }}: {{ __('results_admin.all') }}</option>
             @foreach ($quizzes as $q)
                 <option value="{{ $q->id }}" @selected($filters['quiz_id'] == $q->id)>{{ $q->title }}</option>
             @endforeach
         </x-ui.select>
-        <x-ui.select name="status">
-            <option value="">{{ __('results_admin.filter_status') }}: {{ __('results_admin.all') }}</option>
-            @foreach ($statuses as $s)
-                <option value="{{ $s }}" @selected($filters['status'] === $s)>{{ __('results_admin.status_'.$s) }}</option>
-            @endforeach
-        </x-ui.select>
         <x-ui.select name="sort">
-            @foreach (['latest', 'score', 'fastest', 'roll'] as $opt)
+            @foreach (['latest', 'order', 'score', 'fastest', 'roll'] as $opt)
                 <option value="{{ $opt }}" @selected($filters['sort'] === $opt)>{{ __('results_admin.sort') }}: {{ __('results_admin.sort_'.$opt) }}</option>
             @endforeach
         </x-ui.select>
@@ -73,12 +65,10 @@
                     <tr>
                         <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">{{ __('results_admin.col_student') }}</th>
                         <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_quiz') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_started') }}</th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_order') }}</th>
                         <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_submitted') }}</th>
                         <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_duration') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_answered') }}</th>
                         <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_score') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_status') }}</th>
                         <th scope="col" class="px-3 py-2.5 text-center align-middle"><span class="sr-only">{{ __('results_admin.view') }}</span></th>
                     </tr>
                 </thead>
@@ -88,7 +78,6 @@
                             $total = (int) $a->total_marks_snapshot;
                             $percent = $total > 0 ? (int) round($a->final_score * 100 / $total) : null;
                             $live = $a->status === 'in_progress';
-                            $hasAnswers = $a->answer_details_available && ! $a->is_legacy_import;
                         @endphp
                         <tr class="hover:bg-surface-raised/50">
                             <td class="px-4 py-3 align-middle">
@@ -105,19 +94,16 @@
                                 </div>
                             </td>
                             <td class="px-3 py-3 text-center align-middle whitespace-nowrap">{{ $a->quiz->title }}</td>
-                            <td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">
-                                {{ $a->is_legacy_import ? '—' : ($a->started_at?->format('d/m/Y H:i') ?? '—') }}
+                            <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap">
+                                @if ($a->submit_order !== null && $a->submitted_at)
+                                    <span class="inline-grid place-items-center min-w-8 h-8 px-2 rounded-full bg-brand-tint text-brand font-bold">{{ bn($a->submit_order) }}</span>
+                                @else
+                                    <span class="text-muted">—</span>
+                                @endif
                             </td>
                             <td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $a->submitted_at?->format('d/m/Y H:i') ?? '—' }}</td>
                             <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap {{ $live ? 'text-muted' : 'text-ink font-medium' }}">
                                 {{ $live ? __('results_admin.live') : $fmt($a->time_taken_seconds) }}
-                            </td>
-                            <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap">
-                                @if ($hasAnswers)
-                                    <span class="font-medium text-ink">{{ bn($a->answered_count) }}</span><span class="text-muted"> / {{ bn($a->quiz->questions_count) }}</span>
-                                @else
-                                    <span class="text-muted" title="{{ __('results_admin.answers_unavailable') }}">—</span>
-                                @endif
                             </td>
                             <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap">
                                 @if ($live)
@@ -132,7 +118,6 @@
                                     @endif
                                 @endif
                             </td>
-                            <td class="px-3 py-3 text-center align-middle"><x-ui.badge :color="$statusTone[$a->status] ?? 'neutral'">{{ __('results_admin.status_'.$a->status) }}</x-ui.badge></td>
                             <td class="px-3 py-3 text-center align-middle">
                                 <x-ui.button :href="route('admin.results.show', $a)" variant="secondary" size="sm">{{ __('results_admin.view') }}</x-ui.button>
                             </td>
