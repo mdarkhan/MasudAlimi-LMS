@@ -103,7 +103,7 @@
                                     <div class="min-w-0">
                                         <div class="font-semibold text-ink pl-1.5 -ml-1.5">{{ $row['name'] }}</div>
                                         @if ($row['guardian'])
-                                            <div class="text-xs text-muted pl-1.5 -ml-1.5">{{ __('students.guardian_col') }}: {{ $row['guardian'] }}</div>
+                                            <div class="text-xs text-muted pl-1.5 -ml-1.5">{{ $row['guardian'] }}</div>
                                         @endif
                                     </div>
                                 </div>

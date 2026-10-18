@@ -42,7 +42,7 @@
                         <p class="truncate pl-1.5 -ml-1.5">
                             <span class="font-semibold text-ink">{{ $conversation->student->name }}</span>
                             @if ($conversation->student->guardian_name)
-                                <span class="text-sm text-muted">· {{ __('students.guardian_col') }}: {{ $conversation->student->guardian_name }}</span>
+                                <span class="text-sm text-muted">· {{ $conversation->student->guardian_name }}</span>
                             @endif
                         </p>
                         <p class="text-sm text-muted truncate mt-0.5 pl-1.5 -ml-1.5">{{ $conversation->latestMessage?->body ?? '—' }}</p>

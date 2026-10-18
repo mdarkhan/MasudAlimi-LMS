@@ -88,7 +88,7 @@
                                     <div class="min-w-0">
                                         <div class="font-semibold text-ink pl-1.5 -ml-1.5">{{ $a->user->name }}</div>
                                         @if ($a->user->guardian_name)
-                                            <div class="text-xs text-muted pl-1.5 -ml-1.5">{{ __('students.guardian_col') }}: {{ $a->user->guardian_name }}</div>
+                                            <div class="text-xs text-muted pl-1.5 -ml-1.5">{{ $a->user->guardian_name }}</div>
                                         @endif
                                     </div>
                                 </div>

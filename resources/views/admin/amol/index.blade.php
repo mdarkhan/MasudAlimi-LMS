@@ -22,7 +22,7 @@
                         <p class="font-semibold text-ink truncate pl-1.5 -ml-1.5">{{ $student->name }}</p>
                         @if ($student->guardian_name)
                             <p class="text-sm text-muted truncate pl-1.5 -ml-1.5">
-                                <span>{{ __('students.guardian_col') }}:</span> {{ $student->guardian_name }}
+                                {{ $student->guardian_name }}
                             </p>
                         @endif
                     </div>
