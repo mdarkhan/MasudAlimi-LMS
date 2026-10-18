@@ -150,6 +150,22 @@ class MessagingTest extends TestCase
             ->assertJsonCount(0, 'messages');
     }
 
+    public function test_a_thread_with_no_messages_is_not_listed_in_the_inbox(): void
+    {
+        $quiet = $this->makeStudent(['name' => 'Quiet Student']);
+        $talker = $this->makeStudent(['name' => 'Talker Student']);
+        $admin = $this->makeAdmin();
+        $service = app(\App\Services\Messaging\MessageService::class);
+
+        $this->actingAs($admin)->post(route('admin.messages.start'), ['student_id' => $quiet->id])->assertRedirect();
+        $service->send($service->threadFor($talker), $talker, 'আসসালামু আলাইকুম');
+
+        $listed = $this->actingAs($admin)->get(route('admin.messages.index'))
+            ->assertOk()->viewData('conversations');   // (both students are still in the "start" picker)
+
+        $this->assertSame([$talker->id], $listed->pluck('user_id')->all());
+    }
+
     public function test_the_new_conversation_student_list_is_in_numeric_roll_order(): void
     {
         foreach (['100', '2', '10', '1'] as $roll) {

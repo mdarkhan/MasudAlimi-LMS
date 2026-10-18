@@ -193,7 +193,9 @@ class MessageService
      */
     public function inbox(): Collection
     {
+        // A thread opened via "start a new conversation" but never written in stays out of the list.
         return Conversation::query()
+            ->has('messages')
             ->with(['student:id,name,roll', 'latestMessage'])
             ->withCount(['messages as unread_count' => fn ($q) => $q
                 ->whereNull('messages.read_at')
