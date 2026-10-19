@@ -111,13 +111,29 @@
     {{-- "Your rank" jumps here: scroll to whichever of the two layouts (table / cards) is actually visible. --}}
     <script>
         (function () {
-            function go() {
-                if (location.hash !== '#me') return;
-                var el = [document.getElementById('me'), document.getElementById('me-card')].find(function (e) { return e && e.offsetParent !== null; });
-                if (el) el.scrollIntoView({ block: 'center' });
+            // The id lives on the table row (desktop) or the card (phones); only one of them is visible.
+            function visibleRow() {
+                return [document.getElementById('me'), document.getElementById('me-card')].find(function (e) { return e && e.offsetParent !== null; });
             }
-            if (document.readyState === 'complete') go();
-            else window.addEventListener('load', function () { setTimeout(go, 60); });
+            function scrollToMe() {
+                var el = visibleRow();
+                if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }
+            // Arriving via the link (full page load with #me)
+            function onLoad() { if (location.hash === '#me') scrollToMe(); }
+            if (document.readyState === 'complete') onLoad();
+            else window.addEventListener('load', function () { setTimeout(onLoad, 60); });
+            // Clicking "your rank" while already on the right page: the browser would only try to jump to
+            // the hidden desktop row (nothing happens on a phone), so scroll to the visible one ourselves.
+            document.querySelectorAll('a[data-jump-me]').forEach(function (a) {
+                a.addEventListener('click', function (ev) {
+                    var to = new URL(a.href, location.href);
+                    if (to.pathname === location.pathname && to.search === location.search && visibleRow()) {
+                        ev.preventDefault();
+                        scrollToMe();
+                    }
+                });
+            });
         })();
     </script>
 @endif
