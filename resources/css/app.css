@@ -103,6 +103,17 @@
     --accent: #2dd4bf;          /* teal-400 */
 }
 
+/*
+ * English interface: the platform's own UI font (the same stack flynode.io renders with — Segoe UI on
+ * Windows, SF on Apple devices, Roboto on Android), so no extra font is downloaded. Kalpurush stays in
+ * the stack AFTER it: system Latin fonts have no Bengali glyphs, so Bengali content (always Bengali,
+ * even in the English UI) falls through to Kalpurush instead of an arbitrary system fallback.
+ */
+html[lang='en'] {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
+        'kalpurush', 'Twemoji Country Flags', ui-sans-serif, system-ui, sans-serif;
+}
+
 @layer base {
   /* Tailwind v4 preflight resets buttons to the default arrow cursor; restore the hand
      for everything clickable so no control feels dead. */

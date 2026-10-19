@@ -192,6 +192,10 @@ and `super_admin` bypasses `perm:` via `User::hasPermission()`.
   height/legibility, not stroke width, is what "the font looks small" is about.)
   If Kalpurush is ever swapped for a different file, re-measure and re-tune this
   value; don't assume it still applies.
+- **English UI uses the platform's system font stack, not Kalpurush.** `html[lang='en']` re-points `--font-sans` to
+  `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial` (the stack flynode.io renders
+  with — its Geist Sans is declared but never applied) and keeps `'kalpurush'` AFTER it, so Bengali content (always Bengali,
+  even in the English UI) still falls through to Kalpurush. Bengali UI is unchanged (Kalpurush first). No extra font download.
 - **Never put `@disabled` / `@checked` / `@selected` directives inside an `<x-...>`
   component tag** — it generates a dangling `endif`. Use a bound attribute
   (`:disabled="$expr"`) instead. Plain HTML elements are fine.
