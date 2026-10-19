@@ -84,7 +84,7 @@ class LeaderboardPageTest extends TestCase
             ->assertSee('Course')
             ->assertSee('Exam')
             ->assertSee('Seerat Course')
-            ->assertSee('8 min 20 sec')
+            ->assertSee('8m 20s')
             ->assertSee('Overall Me')
             ->assertSee(__('leaderboards.you'));
 

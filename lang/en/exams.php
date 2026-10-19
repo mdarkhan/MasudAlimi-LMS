@@ -13,8 +13,10 @@ return [
 
     'practice_available' => 'Practice available',
     'minutes' => ':count min',
-    'seconds' => ':count sec',
-    'hours' => ':count hr',
+    // Compact elapsed-time units (see duration_label())
+    'dur_h' => ':counth',
+    'dur_m' => ':countm',
+    'dur_s' => ':counts',
     'marks' => ':count marks',
     'points' => ':count points',
 

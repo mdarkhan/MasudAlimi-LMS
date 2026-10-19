@@ -71,7 +71,7 @@ if (! function_exists('bn')) {
 if (! function_exists('duration_label')) {
     /**
      * A student-facing duration in full: hours (only when there are any), then minutes AND seconds
-     * always — 58 s is "0 min 58 sec", 754 s is "12 min 34 sec", 3725 s is "1 hr 2 min 5 sec".
+     * always — 58 s is "0 মিঃ 58 সেঃ", 754 s is "12 মিঃ 34 সেঃ", 3725 s is "1 ঘঃ 2 মিঃ 5 সেঃ" (compact units; en: 12m 34s).
      * Unknown (null) renders as an em dash.
      */
     function duration_label(?int $seconds): string
@@ -83,10 +83,10 @@ if (! function_exists('duration_label')) {
         $seconds = max(0, $seconds);
         $parts = [];
         if ($seconds >= 3600) {
-            $parts[] = __('exams.hours', ['count' => bn(intdiv($seconds, 3600))]);
+            $parts[] = __('exams.dur_h', ['count' => bn(intdiv($seconds, 3600))]);
         }
-        $parts[] = __('exams.minutes', ['count' => bn(intdiv($seconds % 3600, 60))]);
-        $parts[] = __('exams.seconds', ['count' => bn($seconds % 60)]);
+        $parts[] = __('exams.dur_m', ['count' => bn(intdiv($seconds % 3600, 60))]);
+        $parts[] = __('exams.dur_s', ['count' => bn($seconds % 60)]);
 
         return implode(' ', $parts);
     }

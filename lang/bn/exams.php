@@ -13,8 +13,10 @@ return [
 
     'practice_available' => 'অনুশীলন উপলব্ধ',
     'minutes' => ':count মিনিট',
-    'seconds' => ':count সেকেন্ড',
-    'hours' => ':count ঘণ্টা',
+    // Compact elapsed-time units (see duration_label()): ঘণ্টা / মিনিট / সেকেন্ড
+    'dur_h' => ':count ঘঃ',
+    'dur_m' => ':count মিঃ',
+    'dur_s' => ':count সেঃ',
     'marks' => ':count নম্বর',
     'points' => ':count পয়েন্ট',
 

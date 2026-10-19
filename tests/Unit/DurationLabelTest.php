@@ -10,11 +10,11 @@ class DurationLabelTest extends TestCase
     {
         app()->setLocale('en');
 
-        $this->assertSame('0 min 58 sec', duration_label(58));
-        $this->assertSame('0 min 0 sec', duration_label(0));
-        $this->assertSame('1 min 0 sec', duration_label(60));
-        $this->assertSame('11 min 54 sec', duration_label(11 * 60 + 54));
-        $this->assertSame('1 hr 2 min 5 sec', duration_label(3725));
+        $this->assertSame('0m 58s', duration_label(58));
+        $this->assertSame('0m 0s', duration_label(0));
+        $this->assertSame('1m 0s', duration_label(60));
+        $this->assertSame('11m 54s', duration_label(11 * 60 + 54));
+        $this->assertSame('1h 2m 5s', duration_label(3725));
         $this->assertSame('—', duration_label(null));
     }
 
@@ -22,8 +22,8 @@ class DurationLabelTest extends TestCase
     {
         app()->setLocale('bn');
 
-        $this->assertSame('০ মিনিট ৫৮ সেকেন্ড', duration_label(58));
-        $this->assertSame('৮ মিনিট ৫ সেকেন্ড', duration_label(8 * 60 + 5));
-        $this->assertSame('১ ঘণ্টা ২ মিনিট ৫ সেকেন্ড', duration_label(3725));
+        $this->assertSame('০ মিঃ ৫৮ সেঃ', duration_label(58));
+        $this->assertSame('৮ মিঃ ৫ সেঃ', duration_label(8 * 60 + 5));
+        $this->assertSame('১ ঘঃ ২ মিঃ ৫ সেঃ', duration_label(3725));
     }
 }
