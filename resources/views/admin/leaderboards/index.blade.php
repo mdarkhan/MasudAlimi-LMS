@@ -78,7 +78,36 @@
             </x-ui.button>
         </div>
 
-        <div class="overflow-x-auto rounded-2xl border border-line">
+        {{-- Phones: stacked cards instead of a sideways-scrolling table. --}}
+        <div class="sm:hidden space-y-2.5">
+            @foreach ($rows as $row)
+                @php $mPossible = $row['possible'] ?? $row['total']; @endphp
+                <div class="rounded-2xl border border-line bg-card p-4">
+                    <div class="flex items-center gap-3">
+                        @if (isset($medal[$row['rank']]))
+                            <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br {{ $medal[$row['rank']] }} font-black tabular-nums shadow-sm">{{ bn($row['rank']) }}</span>
+                        @else
+                            <span class="shrink-0 grid place-items-center size-10 rounded-full bg-surface-raised text-brand font-black tabular-nums">{{ bn($row['rank']) }}</span>
+                        @endif
+                        <span class="shrink-0 grid place-items-center size-9 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $row['roll']) > 3 ? 'text-[10px]' : 'text-sm' }}">{{ $row['roll'] ? bn($row['roll']) : '—' }}</span>
+                        <div class="min-w-0 flex-1">
+                            <p class="font-semibold text-ink leading-snug pl-1.5 -ml-1.5">{{ $row['name'] }}</p>
+                            @if ($row['guardian'])<p class="text-xs text-muted truncate pl-1.5 -ml-1.5">{{ $row['guardian'] }}</p>@endif
+                        </div>
+                        <div class="text-end shrink-0">
+                            <p class="font-black text-ink tabular-nums">{{ bn($row['obtained']) }}<span class="text-xs text-muted font-normal"> / {{ bn($mPossible) }}</span></p>
+                            <p class="text-xs text-muted tabular-nums">{{ bn(number_format($row['percentage'], 2)) }}%</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 h-1.5 rounded-full bg-line overflow-hidden" aria-hidden="true"><div class="h-full rounded-full bg-brand" style="width: {{ min(100, max(0, $row['percentage'])) }}%"></div></div>
+                    <p class="text-xs text-muted mt-2 tabular-nums">
+                        @unless ($isQuiz){{ __('leaderboards.admin_col_exams') }}: {{ bn($row['exams_counted']) }} · @endunless{{ $fmtTime($row['time_taken_seconds']) }}
+                    </p>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="hidden sm:block overflow-x-auto rounded-2xl border border-line">
             <table class="w-full text-sm">
                 <thead class="bg-surface-raised text-muted">
                     <tr>

@@ -18,6 +18,23 @@
     @if ($students->isEmpty())
         <x-ui.card><x-ui.empty :title="__('points.no_students')" /></x-ui.card>
     @else
+        {{-- Phones: cards (name, roll, status, balance) rather than a 5-column table. --}}
+        <div class="sm:hidden space-y-2.5">
+            @foreach ($students as $student)
+                <a href="{{ route('admin.points.show', $student) }}" class="flex items-center gap-3 rounded-2xl border border-line bg-card p-4 hover:border-brand/40 transition">
+                    <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $student->roll) > 3 ? 'text-xs' : 'text-base' }}">{{ $student->roll ? bn($student->roll) : '—' }}</span>
+                    <div class="min-w-0 flex-1">
+                        <p class="font-semibold text-ink leading-snug pl-1.5 -ml-1.5">{{ $student->name }}</p>
+                        <div class="mt-0.5"><x-ui.status-badge :status="$student->status" /></div>
+                    </div>
+                    <div class="text-end shrink-0">
+                        <p class="font-black text-brand tabular-nums text-lg">{{ bn($student->points_balance) }}</p>
+                        <p class="text-[11px] text-muted">{{ __('points.balance') }}</p>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+        <div class="hidden sm:block">
         <x-ui.table>
             <x-slot:head>
                 <th class="px-4 py-3"><x-ui.sort-link sort="name" :current="$sort" :dir="$dir" :label="__('students.name_col')" /></th>
@@ -36,6 +53,7 @@
                 </tr>
             @endforeach
         </x-ui.table>
+        </div>
         <div class="mt-6">{{ $students->links('components.pagination') }}</div>
     @endif
 </x-layout.admin>

@@ -57,7 +57,44 @@
     @if ($attempts->isEmpty())
         <x-ui.card><x-ui.empty :title="__('results_admin.none')" /></x-ui.card>
     @else
-        <div class="overflow-x-auto rounded-2xl border border-line">
+        {{-- Phones: one card per attempt (the 6-column table needs sideways scrolling there). --}}
+        <div class="sm:hidden space-y-2.5">
+            @foreach ($attempts as $a)
+                @php
+                    $mTotal = (int) $a->total_marks_snapshot;
+                    $mPercent = $mTotal > 0 ? (int) round($a->final_score * 100 / $mTotal) : null;
+                    $mLive = $a->status === 'in_progress';
+                @endphp
+                <a href="{{ route('admin.results.show', $a) }}" class="block rounded-2xl border border-line bg-card p-4 hover:border-brand/40 transition">
+                    <div class="flex items-center gap-3">
+                        <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $a->user->roll) > 3 ? 'text-xs' : 'text-base' }}">{{ $a->user->roll ? bn($a->user->roll) : '—' }}</span>
+                        <div class="min-w-0 flex-1">
+                            <p class="font-semibold text-ink leading-snug pl-1.5 -ml-1.5">{{ $a->user->name }}</p>
+                            @if ($a->user->guardian_name)<p class="text-xs text-muted truncate pl-1.5 -ml-1.5">{{ $a->user->guardian_name }}</p>@endif
+                        </div>
+                        <div class="text-end shrink-0">
+                            @if ($mLive)
+                                <p class="text-sm text-muted">{{ __('results_admin.live') }}</p>
+                            @else
+                                <p class="font-black text-ink tabular-nums">{{ bn($a->final_score) }}<span class="text-xs text-muted font-normal"> / {{ bn($mTotal) }}</span></p>
+                                @if ($mPercent !== null)<p class="text-xs text-muted tabular-nums">{{ bn($mPercent) }}%</p>@endif
+                            @endif
+                        </div>
+                    </div>
+                    @if (! $mLive && $mPercent !== null)
+                        <div class="mt-3 h-1.5 rounded-full bg-line overflow-hidden" aria-hidden="true"><div class="h-full rounded-full bg-brand" style="width: {{ min(100, max(0, $mPercent)) }}%"></div></div>
+                    @endif
+                    <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted tabular-nums">
+                        <span class="font-semibold text-ink">{{ $a->quiz->title }}</span>
+                        @if ($a->submit_order !== null && $a->submitted_at)<span>{{ __('results_admin.col_order') }}: <span class="font-bold text-brand">{{ bn($a->submit_order) }}</span></span>@endif
+                        <span>{{ $mLive ? __('results_admin.live') : $fmt($a->time_taken_seconds) }}</span>
+                        <span>{{ $a->submitted_at?->format('d/m/Y H:i') ?? '—' }}</span>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+
+        <div class="hidden sm:block overflow-x-auto rounded-2xl border border-line">
             <table class="w-full text-sm">
                 <thead class="bg-surface-raised text-muted">
                     <tr>

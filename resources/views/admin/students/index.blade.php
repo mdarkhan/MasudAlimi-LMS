@@ -48,6 +48,29 @@
                     </div>
                 @endif
 
+                {{-- Phones: cards. The checkbox shares the table's `selected` state so bulk actions still work. --}}
+                <div class="sm:hidden space-y-2.5">
+                    @foreach ($students as $student)
+                        <div class="flex items-center gap-3 rounded-2xl border border-line bg-card p-4">
+                            @if (auth()->user()->hasPermission('students.suspend'))
+                                <input type="checkbox" value="{{ $student->id }}" x-model="selected" class="shrink-0 size-4 rounded border-line text-brand focus:ring-brand" aria-label="{{ $student->name }}">
+                            @endif
+                            <a href="{{ route('admin.students.show', $student) }}" class="flex items-center gap-3 min-w-0 flex-1">
+                                <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $student->roll) > 3 ? 'text-xs' : 'text-base' }}">{{ $student->roll ? bn($student->roll) : '—' }}</span>
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-semibold text-ink leading-snug pl-1.5 -ml-1.5">{{ $student->name }}</p>
+                                    @if ($student->guardian_name)<p class="text-xs text-muted truncate pl-1.5 -ml-1.5">{{ $student->guardian_name }}</p>@endif
+                                    <div class="mt-1"><x-ui.status-badge :status="$student->status" /></div>
+                                </div>
+                                <div class="text-end shrink-0">
+                                    <p class="font-black text-ink tabular-nums">{{ bn($student->points_balance) }}</p>
+                                    <p class="text-[11px] text-muted">{{ __('students.points_col') }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="hidden sm:block">
                 <x-ui.table>
                     <x-slot:head>
                         @if (auth()->user()->hasPermission('students.suspend'))
@@ -81,6 +104,7 @@
                         </tr>
                     @endforeach
                 </x-ui.table>
+                </div>
             </form>
         </div>
         <div class="mt-6">{{ $students->links('components.pagination') }}</div>
