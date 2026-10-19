@@ -6,12 +6,23 @@
     {{-- Welcome --}}
     <x-ui.card class="relative overflow-hidden mb-6">
         <div class="absolute inset-0 geo-accent opacity-50" aria-hidden="true"></div>
-        <div class="relative">
-            <p class="text-sm text-muted">{{ __('dashboard.greeting') }}</p>
-            <h2 class="text-2xl font-black text-ink mt-1">{{ $user->name }}</h2>
-            <div class="mt-2 flex flex-wrap items-center gap-2">
-                <x-ui.badge color="neutral">{{ __('dashboard.roll') }}: {{ bn($user->roll) }}</x-ui.badge>
-                <x-ui.badge color="success">{{ __('dashboard.active') }}</x-ui.badge>
+        <div class="relative flex items-center gap-4 sm:gap-5">
+            {{-- Roll number: the number a student logs in with, so it gets the biggest, most recognisable shape. --}}
+            <div class="shrink-0 grid place-items-center size-20 sm:size-24 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink shadow-md ring-4 ring-brand-tint text-center leading-none">
+                <div>
+                    <span class="block text-[11px] sm:text-xs font-semibold opacity-90">{{ __('dashboard.roll') }}</span>
+                    <span class="block font-black tabular-nums mt-1 {{ mb_strlen((string) $user->roll) > 3 ? 'text-xl sm:text-2xl' : 'text-3xl sm:text-4xl' }}">{{ bn($user->roll) }}</span>
+                </div>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm text-muted">{{ __('dashboard.greeting') }}</p>
+                <h2 class="text-2xl font-black text-ink mt-0.5 leading-snug pl-1.5 -ml-1.5">{{ $user->name }}</h2>
+                @if ($user->guardian_name)
+                    <p class="text-sm text-muted leading-snug pl-1.5 -ml-1.5">{{ $user->guardian_name }}</p>
+                @endif
+                <div class="mt-2">
+                    <x-ui.badge color="success">{{ __('dashboard.active') }}</x-ui.badge>
+                </div>
             </div>
         </div>
     </x-ui.card>
