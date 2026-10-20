@@ -97,4 +97,27 @@ class BookBuyLinksTest extends TestCase
         $this->seed(\Database\Seeders\BookSeeder::class);
         $this->assertSame('custom', \Illuminate\Support\Facades\Storage::disk('public')->get($book->cover_path), 'an existing file is left alone');
     }
+
+    public function test_the_catalogue_carries_publisher_and_pages_and_only_fills_blanks_on_a_rerun(): void
+    {
+        Storage::fake('public');
+        $this->seed(BookSeeder::class);
+
+        $this->assertSame(10, Book::query()->whereNotNull('publisher')->count(), 'every catalogue book has a publisher');
+        $this->assertSame(240, Book::query()->where('title', 'সালাফদের জীবনকথা')->value('page_count'));
+        $this->assertNull(Book::query()->where('title', 'ঈমান ভঙ্গের কারণ')->value('page_count'), 'no store lists it, so it stays empty rather than guessed');
+
+        // The admin edits one book and blanks another's fields: a re-run fills only the blank ones.
+        $edited = Book::query()->where('title', 'সালাফদের ক্ষুধা')->firstOrFail();
+        $edited->update(['publisher' => 'Admin Publisher', 'page_count' => 999]);
+        $blank = Book::query()->where('title', 'খুশুখুজু')->firstOrFail();
+        $blank->update(['publisher' => null, 'page_count' => null]);
+
+        $this->seed(BookSeeder::class);
+
+        $this->assertSame('Admin Publisher', $edited->fresh()->publisher, 'an admin-set value is never overwritten');
+        $this->assertSame(999, $edited->fresh()->page_count);
+        $this->assertSame('সমকালীন প্রকাশন', $blank->fresh()->publisher);
+        $this->assertSame(88, $blank->fresh()->page_count);
+    }
 }
