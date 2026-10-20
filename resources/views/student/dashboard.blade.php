@@ -49,7 +49,7 @@
 
         @if ($focus)
             <a href="{{ $focus['href'] }}"
-               class="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong text-brand-ink p-5 sm:p-6 mb-4 shadow-md">
+               class="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-panel to-panel-2 text-white p-5 sm:p-6 mb-4 shadow-md ring-1 ring-white/10">
                 <div class="absolute inset-0 geo-accent opacity-20" aria-hidden="true"></div>
                 <div class="relative flex flex-col sm:flex-row sm:items-center gap-4">
                     <span class="shrink-0 grid place-items-center size-12 rounded-xl bg-white/15"><x-ui.icon :name="$focusIcon" class="w-6 h-6" /></span>
@@ -60,7 +60,7 @@
                             <p class="text-sm opacity-90 mt-1">{{ $focus['meta'] }}</p>
                         @endif
                     </div>
-                    <span class="shrink-0 inline-flex items-center justify-center gap-1.5 self-start sm:self-center rounded-xl bg-white text-brand-strong font-bold px-4 py-2.5 shadow-sm group-hover:shadow-md transition-shadow">
+                    <span class="shrink-0 inline-flex items-center justify-center gap-1.5 self-start sm:self-center rounded-xl bg-white text-panel font-bold px-4 py-2.5 shadow-sm group-hover:shadow-md transition-shadow">
                         {{ $focus['cta'] }} <x-ui.icon name="chevron" class="w-4 h-4" />
                     </span>
                 </div>

@@ -18,7 +18,7 @@
     $prayers = ['fajr', 'zuhr', 'asr', 'maghrib', 'isha'];
 @endphp
 
-<div {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-strong to-brand text-brand-ink p-5 sm:p-7 shadow-lg']) }}>
+<div {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-3xl bg-gradient-to-br from-panel to-panel-2 text-white p-5 sm:p-7 shadow-lg ring-1 ring-white/10']) }}>
     {{-- star lattice + a large star behind the date --}}
     <svg class="absolute inset-0 w-full h-full opacity-[0.07]" aria-hidden="true">
         <defs>
@@ -60,8 +60,8 @@
                     @foreach ($prayers as $key)
                         <li @class([
                             'rounded-xl px-1 py-2',
-                            'bg-white text-brand-strong shadow-sm' => $prayer['next'] === $key,
-                            'bg-white/10' => $prayer['next'] !== $key,
+                            'bg-white text-panel shadow-md' => $prayer['next'] === $key,
+                            'bg-white/10 ring-1 ring-white/20' => $prayer['next'] !== $key,
                         ])>
                             <span class="block text-xs font-semibold {{ $prayer['next'] === $key ? '' : 'opacity-85' }}">{{ __('amol.group_'.$key) }}</span>
                             <span class="block text-sm font-bold tabular-nums">{{ $en ? $prayer['times'][$key]->format('g:i') : bn($prayer['times'][$key]->format('g:i')) }}</span>

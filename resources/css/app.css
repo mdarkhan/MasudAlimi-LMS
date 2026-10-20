@@ -96,6 +96,9 @@
     --color-dock-muted: var(--dock-muted);
     --color-dock-active: var(--dock-active);
     --color-dock-glow: var(--dock-glow);
+    /* deep malachite panels (home Hijri hero) — the SAME in both themes, so white text always reads */
+    --color-panel: #0b3a2c;
+    --color-panel-2: #0f6b4f;
     --color-dock-ring: var(--dock-ring);
 
     --radius-card: 1rem;
