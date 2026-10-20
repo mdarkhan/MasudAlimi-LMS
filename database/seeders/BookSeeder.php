@@ -17,7 +17,7 @@ class BookSeeder extends Seeder
      *
      * `links` are [store name => URL]; the store name is what the site uses to pick the
      * store's logo (see components/ui/buy-links.blade.php). `publisher` / `pages` come from the
-     * stores' own listings (Rokomari spec tab); `pages` is null where no store lists a page count.
+     * stores' own listings (Rokomari spec tab); `pages` is null where no store lists a page count. `author_was` marks a corrected byline (see run()).
      */
     private const BOOKS = [
         [
@@ -77,7 +77,7 @@ class BookSeeder extends Seeder
             ],
         ],
         [
-            'title' => 'খুশুখুজু', 'publisher' => 'সমকালীন প্রকাশন', 'pages' => 88, 'author' => 'মাওলানা মুহাম্মাদ নুমান | রিফাত হাসান', 'cover' => 'khushukhuju.png',
+            'title' => 'খুশুখুজু', 'publisher' => 'সমকালীন প্রকাশন', 'pages' => 88, 'author' => 'আল্লামা ইবনুল কায়্যিম জাওযিয়্যাহ (রহ.) | মাসউদুর রহমান', 'author_was' => 'মাওলানা মুহাম্মাদ নুমান | রিফাত হাসান', 'cover' => 'khushukhuju.png',
             'links' => [
                 'Rokomari' => 'https://www.rokomari.com/book/120306/khushu-khuju',
                 'Wafilife' => 'https://www.wafilife.com/khushu-khuju/pd/3589',
@@ -124,6 +124,11 @@ class BookSeeder extends Seeder
                 }
                 if (blank($existing->page_count) && filled($row['pages'] ?? null)) {
                     $existing->page_count = $row['pages'];
+                }
+                // A catalogue correction to a byline: applied only while the stored author is STILL the exact old
+                // catalogue value (`author_was`) — an author the admin has edited is never overwritten.
+                if (isset($row['author_was']) && $existing->author === $row['author_was']) {
+                    $existing->author = $row['author'];
                 }
                 if ($existing->isDirty()) {
                     $existing->save();

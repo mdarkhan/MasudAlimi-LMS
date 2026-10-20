@@ -120,4 +120,23 @@ class BookBuyLinksTest extends TestCase
         $this->assertSame('সমকালীন প্রকাশন', $blank->fresh()->publisher);
         $this->assertSame(88, $blank->fresh()->page_count);
     }
+
+    public function test_a_corrected_catalogue_author_is_applied_only_while_the_old_value_is_unedited(): void
+    {
+        Storage::fake('public');
+        $this->seed(BookSeeder::class);
+
+        $book = Book::query()->where('title', 'খুশুখুজু')->firstOrFail();
+        $this->assertStringContainsString('ইবনুল কায়্যিম', $book->author);
+
+        // Simulate production, which still holds the OLD catalogue author: the next seed corrects it …
+        $book->update(['author' => 'মাওলানা মুহাম্মাদ নুমান | রিফাত হাসান']);
+        $this->seed(BookSeeder::class);
+        $this->assertStringContainsString('ইবনুল কায়্যিম', $book->fresh()->author);
+
+        // … but an author the admin typed is left alone.
+        $book->update(['author' => 'Admin chosen author']);
+        $this->seed(BookSeeder::class);
+        $this->assertSame('Admin chosen author', $book->fresh()->author);
+    }
 }
