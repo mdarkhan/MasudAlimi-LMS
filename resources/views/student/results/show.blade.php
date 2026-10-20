@@ -45,6 +45,8 @@
             @endif
         </x-ui.card>
 
+        <x-results.share-card :attempt="$attempt" :quiz="$quiz" :rank="$rank" :percentage="$percentage" class="mb-6" />
+
         @if ($legacy)
             <x-ui.alert type="info">{{ __('results.legacy_no_answers') }}</x-ui.alert>
         @else

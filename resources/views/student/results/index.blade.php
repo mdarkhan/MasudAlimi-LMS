@@ -173,6 +173,10 @@
                                 <p class="tabular-nums">{{ date_label($row['attempt']->submitted_at) }}</p>
                             </div>
                         </div>
+                        {{-- no answer sheet for legacy results, but the result page still offers the share card --}}
+                        @if ($row['quiz']->resultsReleasedAt(now()))
+                            <x-ui.button :href="route('student.results.show', $row['attempt'])" variant="secondary" size="sm" class="w-full mt-3"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_card_link') }}</x-ui.button>
+                        @endif
                     </x-ui.card>
                 @endforeach
             </div>
@@ -191,7 +195,12 @@
                     <tbody class="divide-y divide-line">
                         @foreach ($groups['legacy'] as $row)
                             <tr>
-                                <td class="px-4 py-3 text-center font-semibold text-ink">{{ $row['quiz']->title }}</td>
+                                <td class="px-4 py-3 text-center font-semibold text-ink">
+                                    {{ $row['quiz']->title }}
+                                    @if ($row['quiz']->resultsReleasedAt(now()))
+                                        <a href="{{ route('student.results.show', $row['attempt']) }}" class="mt-0.5 flex items-center justify-center gap-1 text-xs font-semibold text-brand hover:underline"><x-ui.icon name="share" class="w-3.5 h-3.5" /> {{ __('results.share_card_link') }}</a>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ date_label($row['attempt']->submitted_at) }}</td>
                                 <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ $row['percentage'] !== null ? bn(number_format($row['percentage'], 2)).'%' : '—' }}</td>

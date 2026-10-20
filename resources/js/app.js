@@ -64,6 +64,8 @@ window.pollWhenVisible = function (task, { base, max = base * 4, backoff = 1.5 }
 
 // Full emoji set for the chat picker: ~110 KB, so it is a separate chunk fetched on first open only.
 window.loadEmojiData = () => import('./emoji-data.js').then((m) => m.default);
+// Result share card renderer (results page only) — fetched on first use.
+window.loadShareCard = () => import('./share-card.js').then((m) => m.default);
 
 // Shared key behaviour for plain <textarea> comment boxes (the chat has its own, in thread.blade.php):
 //   Enter -> onEnter() (submit)    Shift+Enter -> new line    Ctrl/Cmd+B -> wrap/unwrap the selection in *bold*

@@ -1,0 +1,62 @@
+@props(['attempt', 'quiz', 'rank' => null, 'percentage' => 0])
+{{-- A shareable picture of a RELEASED result (the caller has already release-gated the page). Drawn in the
+     browser (resources/js/share-card.js); nothing is uploaded or stored. Only what the result page itself
+     shows goes on it: exam, score, percentage, rank, the student's own name and roll. --}}
+@php
+    $card = [
+        'brand' => 'মাসউদ আলিমী',
+        'title' => $quiz->title,
+        'course' => $quiz->course?->title,
+        'scoreLabel' => __('results.card_score_label'),
+        'score' => bn($attempt->final_score),
+        'total' => bn($attempt->total_marks_snapshot),
+        'percent' => bn(number_format($percentage, 1)).'%',
+        'rank' => $rank ? __('results.card_rank', ['rank' => bn($rank)]) : null,
+        'name' => $attempt->user->name,
+        'roll' => __('results.card_roll', ['roll' => bn($attempt->user->roll)]),
+        'footer' => date_label($attempt->submitted_at).'  ·  '.parse_url(config('app.url'), PHP_URL_HOST),
+    ];
+    $file = 'result-'.\App\Support\Slug::make($quiz->title).'.jpg';
+@endphp
+
+<x-ui.card {{ $attributes->merge(['class' => 'print:hidden']) }}
+    x-data="{
+        card: @js($card), url: null, blob: null, busy: false, canShare: false,
+        async make() {
+            this.busy = true;
+            try {
+                const render = await window.loadShareCard();
+                this.blob = await render(this.card);
+                this.url = URL.createObjectURL(this.blob);
+                const file = new File([this.blob], @js($file), { type: 'image/jpeg' });
+                this.canShare = !! (navigator.canShare && navigator.canShare({ files: [file] }));
+            } finally { this.busy = false; }
+        },
+        async share() {
+            const file = new File([this.blob], @js($file), { type: 'image/jpeg' });
+            try { await navigator.share({ files: [file], title: this.card.title }); } catch (e) {}
+        },
+    }">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="min-w-0">
+            <h3 class="font-bold text-ink flex items-center gap-2"><x-ui.icon name="share" class="w-4 h-4 text-brand" /> {{ __('results.share_heading') }}</h3>
+            <p class="text-sm text-muted mt-0.5">{{ __('results.share_hint') }}</p>
+        </div>
+        <x-ui.button type="button" x-show="! url" @click="make()" ::disabled="busy">
+            <span x-show="! busy">{{ __('results.share_make') }}</span>
+            <span x-show="busy" x-cloak>{{ __('results.share_making') }}</span>
+        </x-ui.button>
+    </div>
+
+    <template x-if="url">
+        <div class="mt-4 flex flex-col sm:flex-row gap-4 sm:items-end">
+            <img :src="url" alt="{{ __('results.share_preview_alt') }}" class="w-full sm:w-64 rounded-xl border border-line shadow-sm aspect-[4/5] object-cover">
+            <div class="flex flex-wrap gap-2">
+                <x-ui.button type="button" x-show="canShare" @click="share()"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_button') }}</x-ui.button>
+                <a :href="url" download="{{ $file }}" class="inline-flex items-center gap-1.5 rounded-xl border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-ink/5">
+                    <x-ui.icon name="download" class="w-4 h-4" /> {{ __('results.share_download') }}
+                </a>
+            </div>
+        </div>
+    </template>
+</x-ui.card>

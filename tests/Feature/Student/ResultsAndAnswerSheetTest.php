@@ -86,6 +86,24 @@ class ResultsAndAnswerSheetTest extends TestCase
             ->assertSee(__('results.correct_answer'));
     }
 
+    public function test_a_released_result_offers_a_share_card_with_only_the_students_own_details(): void
+    {
+        $student = $this->makeStudent(['name' => 'শেয়ার শিক্ষার্থী', 'email' => 'private@example.test']);
+        [$quiz, $attempt] = $this->sitExam($student);
+        $this->release($quiz);
+
+        $html = $this->actingAs($student)->get(route('student.results.show', $attempt))
+            ->assertOk()
+            ->assertSee(__('results.share_heading'))
+            ->assertSee('loadShareCard', false)
+            ->getContent();
+
+        // the card data carries the student's own name/roll, never contact details or the answer key
+        $this->assertStringContainsString('শেয়ার শিক্ষার্থী', $html);
+        $this->assertStringNotContainsString('private@example.test', $html);
+        $this->assertStringNotContainsString('is_correct', $html);
+    }
+
     public function test_a_student_cannot_open_another_students_answer_sheet(): void
     {
         $owner = $this->makeStudent();
