@@ -95,34 +95,45 @@
                 {{ $slot }}
             </main>
 
-            {{-- Phones: the few destinations a student uses every day, one tap away at the bottom
-                 (the full list stays in the menu). Hidden on large screens, where the sidebar shows. --}}
+            {{-- Phones: the few destinations a student uses every day, one tap away in a floating dock
+                 (the full list stays in the menu). Hidden on large screens, where the sidebar shows.
+                 A highlight + underline marks the current tab; tapping another slides it there at once,
+                 so the tap is acknowledged while the next page loads (every page is a full load). --}}
             @if (! empty($bottomNav))
-                <nav class="lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 backdrop-blur print:hidden pb-[env(safe-area-inset-bottom)]"
-                     aria-label="{{ __('nav.bottom_nav') }}">
-                    <ul class="grid" style="grid-template-columns: repeat({{ count($bottomNav) }}, minmax(0, 1fr))">
-                        @foreach ($bottomNav as $tab)
-                            <li>
-                                <a href="{{ $tab['href'] }}" @if ($tab['active'] ?? false) aria-current="page" @endif
-                                   @class([
-                                       'relative flex flex-col items-center justify-center gap-1 min-h-16 px-1 text-xs font-semibold transition-colors',
-                                       'text-brand' => $tab['active'] ?? false,
-                                       'text-muted hover:text-ink' => ! ($tab['active'] ?? false),
-                                   ])>
-                                    @if ($tab['active'] ?? false)
-                                        <span class="absolute top-0 inset-x-5 h-0.5 rounded-full bg-brand" aria-hidden="true"></span>
-                                    @endif
-                                    <span class="relative">
-                                        <x-ui.icon :name="$tab['icon']" class="w-6 h-6" />
-                                        @if (! empty($tab['badge']))
-                                            <span class="absolute -top-1.5 -right-2.5 min-w-[1.15rem] h-[1.15rem] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold grid place-items-center leading-none tabular-nums">{{ $tab['badge'] > 9 ? bn(9).'+' : bn($tab['badge']) }}</span>
-                                        @endif
-                                    </span>
-                                    <span class="truncate max-w-full">{{ $tab['label'] }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                @php
+                    $tabCount = count($bottomNav);
+                    $activeTab = collect($bottomNav)->search(fn ($t) => $t['active'] ?? false);
+                @endphp
+                <nav class="lg:hidden fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pointer-events-none print:hidden"
+                     aria-label="{{ __('nav.bottom_nav') }}"
+                     x-data="{ at: {{ $activeTab === false ? -1 : $activeTab }} }">
+                    <div class="pointer-events-auto relative mx-auto max-w-md rounded-[1.4rem] bg-dock text-dock-muted shadow-[0_12px_32px_-8px_rgb(0_0_0/0.45)] ring-1 ring-white/10 p-1.5">
+                        {{-- the sliding highlight --}}
+                        <span class="absolute top-1.5 bottom-1.5 left-1.5 rounded-2xl bg-dock-active transition-[transform,opacity] duration-300 ease-out"
+                              style="width: calc((100% - 0.75rem) / {{ $tabCount }})"
+                              :style="{ transform: `translateX(${Math.max(at, 0) * 100}%)`, opacity: at < 0 ? 0 : 1 }"
+                              @if ($activeTab === false) hidden @endif x-bind:hidden="at < 0" aria-hidden="true">
+                            <span class="absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[3px] w-6 rounded-full bg-dock-glow shadow-[0_0_10px_var(--color-dock-glow)]"></span>
+                        </span>
+                        <ul class="relative grid" style="grid-template-columns: repeat({{ $tabCount }}, minmax(0, 1fr))">
+                            @foreach ($bottomNav as $i => $tab)
+                                <li>
+                                    <a href="{{ $tab['href'] }}" @if ($tab['active'] ?? false) aria-current="page" @endif
+                                       @click="at = {{ $i }}"
+                                       class="group flex flex-col items-center justify-center gap-1 min-h-16 px-1 pb-2 rounded-2xl text-xs font-semibold transition-colors duration-200 hover:text-dock-ink focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-dock-glow"
+                                       :class="at === {{ $i }} ? 'text-dock-ink' : ''">
+                                        <span class="relative transition-transform duration-300 ease-out" :class="at === {{ $i }} ? '-translate-y-0.5 scale-110' : ''">
+                                            <x-ui.icon :name="$tab['icon']" class="w-[1.4rem] h-[1.4rem]" />
+                                            @if (! empty($tab['badge']))
+                                                <span class="absolute -top-1.5 -right-2.5 min-w-[1.15rem] h-[1.15rem] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold grid place-items-center leading-none tabular-nums ring-2 ring-dock">{{ $tab['badge'] > 9 ? bn(9).'+' : bn($tab['badge']) }}</span>
+                                            @endif
+                                        </span>
+                                        <span class="truncate max-w-full">{{ $tab['label'] }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </nav>
             @endif
         </div>
