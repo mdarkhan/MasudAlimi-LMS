@@ -17,7 +17,7 @@
         notifications: @js($bellRecent),
         bengali: {{ app()->getLocale() !== 'en' ? 'true' : 'false' }},
      })">
-    <button @click="toggle()" :aria-expanded="open.toString()" aria-haspopup="true" class="relative p-2 rounded-lg text-muted hover:text-ink hover:bg-ink/5 transition-colors" aria-label="{{ __('notifications.heading') }}">
+    <button @click="toggle()" :aria-expanded="open.toString()" aria-haspopup="true" class="relative size-11 grid place-items-center rounded-lg text-muted hover:text-ink hover:bg-ink/5 transition-colors" aria-label="{{ __('notifications.heading') }}">
         <x-ui.icon name="bell" class="w-5 h-5" />
         <span x-show="unread > 0" x-cloak x-text="badgeText()"
               class="absolute top-0.5 right-0.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold grid place-items-center leading-none"></span>
@@ -39,7 +39,7 @@
                     <a :href="n.openUrl" class="flex-1 min-w-0 px-4 py-3" @click="n.read = true">
                         <p class="text-sm font-semibold text-ink truncate" x-text="n.title"></p>
                         <p class="text-xs text-muted truncate mt-0.5" x-show="n.body" x-text="n.body"></p>
-                        <p class="text-[11px] text-muted mt-1" x-text="n.at"></p>
+                        <p class="text-xs text-muted mt-1" x-text="n.at"></p>
                     </a>
                     <button type="button" @click="remove(n)" class="p-3 text-muted hover:text-rose-600 shrink-0" aria-label="{{ __('notifications.delete') }}">
                         <x-ui.icon name="trash" class="w-3.5 h-3.5" />

@@ -18,7 +18,7 @@
                 </div>
             @endforeach
         </div>
-        <p class="text-[11px] text-muted mt-2">{{ __('amol.prayer_times_note') }}</p>
+        <p class="text-xs text-muted mt-2">{{ __('amol.prayer_times_note') }}</p>
     </x-ui.card>
 
     <x-amol.summary-strip :stats="$stats" />

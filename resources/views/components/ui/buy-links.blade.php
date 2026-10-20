@@ -11,7 +11,7 @@
     ];
 
     $pill = $size === 'sm'
-        ? 'gap-1.5 px-2 py-1 text-[11px]'
+        ? 'gap-1.5 px-2 py-1 text-xs'
         : 'gap-2.5 px-3.5 py-2 text-sm';
     $logoHeight = $size === 'sm' ? 'h-3.5' : 'h-5';
 

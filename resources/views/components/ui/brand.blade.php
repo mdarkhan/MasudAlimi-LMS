@@ -5,6 +5,6 @@
     </span>
     <span class="leading-tight whitespace-nowrap">
         <span class="block font-black text-ink">মাসউদ আলিমী</span>
-        @if ($sub)<span class="hidden sm:block text-[11px] text-muted -mt-0.5">{{ __('nav.subtitle') }}</span>@endif
+        @if ($sub)<span class="hidden sm:block text-xs text-muted -mt-0.5">{{ __('nav.subtitle') }}</span>@endif
     </span>
 </a>

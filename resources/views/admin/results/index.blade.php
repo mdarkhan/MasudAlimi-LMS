@@ -149,7 +149,7 @@
                                         <div class="mt-1 mx-auto h-1.5 w-20 rounded-full bg-line overflow-hidden" aria-hidden="true">
                                             <div class="h-full rounded-full bg-brand" style="width: {{ min(100, max(0, $percent)) }}%"></div>
                                         </div>
-                                        <div class="text-[11px] text-muted mt-0.5">{{ bn($percent) }}%</div>
+                                        <div class="text-xs text-muted mt-0.5">{{ bn($percent) }}%</div>
                                     @endif
                                 @endif
                             </td>

@@ -12,8 +12,8 @@
    {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 hover:text-ink transition-colors '.($active ? 'text-ink font-semibold' : '')]) }}>
     {{ $label }}
     @if ($active)
-        <span class="text-brand text-[10px] leading-none">{{ $dir === 'asc' ? '▲' : '▼' }}</span>
+        <span class="text-brand text-xs leading-none">{{ $dir === 'asc' ? '▲' : '▼' }}</span>
     @else
-        <span class="text-muted/30 text-[10px] leading-none">↕</span>
+        <span class="text-muted/30 text-xs leading-none">↕</span>
     @endif
 </a>

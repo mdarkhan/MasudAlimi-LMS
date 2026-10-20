@@ -34,7 +34,7 @@
                         <div class="min-w-0">
                             <p class="font-semibold text-ink truncate pl-1.5 -ml-1.5">
                                 {{ $row['name'] }}
-                                @if ($mine)<span class="ms-1 inline-block rounded-full bg-brand px-2 py-0.5 align-middle text-[11px] font-bold text-brand-ink">{{ __('leaderboards.you') }}</span>@endif
+                                @if ($mine)<span class="ms-1 inline-block rounded-full bg-brand px-2 py-0.5 align-middle text-xs font-bold text-brand-ink">{{ __('leaderboards.you') }}</span>@endif
                             </p>
                             <p class="text-xs text-muted tabular-nums">{{ $row['roll'] ? bn($row['roll']) : '—' }}</p>
                         </div>
@@ -89,7 +89,7 @@
                                 </span>
                                 <span @class(['font-semibold pl-1.5 -ml-1.5', 'text-brand-strong text-base' => $mine, 'text-ink' => ! $mine])>
                                     {{ $row['name'] }}
-                                    @if ($mine)<span class="ms-1 inline-block rounded-full bg-brand px-2 py-0.5 align-middle text-[11px] font-bold text-brand-ink">{{ __('leaderboards.you') }}</span>@endif
+                                    @if ($mine)<span class="ms-1 inline-block rounded-full bg-brand px-2 py-0.5 align-middle text-xs font-bold text-brand-ink">{{ __('leaderboards.you') }}</span>@endif
                                 </span>
                             </div>
                         </td>

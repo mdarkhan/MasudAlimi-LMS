@@ -4,6 +4,7 @@
     'nav' => [],
     'context' => null,   // small label under the brand, e.g. "শিক্ষার্থী" / "অ্যাডমিন"
     'searchRoute' => null,   // optional header search icon (admin-wide search)
+    'bottomNav' => [],       // phones only: up to 5 top-level destinations in a bottom tab bar
 ])
 
 @php $user = auth()->user(); @endphp
@@ -18,12 +19,12 @@
             </div>
             <nav class="flex-1 p-3 space-y-1 overflow-y-auto hide-scrollbar">
                 @if ($context)
-                    <p class="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ $context }}</p>
+                    <p class="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-muted">{{ $context }}</p>
                 @endif
                 @php $prevGroup = null; @endphp
                 @foreach ($nav as $item)
                     @if (($item['group'] ?? null) && $item['group'] !== 'main' && $item['group'] !== $prevGroup)
-                        <p class="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ __('nav.group_'.$item['group']) }}</p>
+                        <p class="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wider text-muted">{{ __('nav.group_'.$item['group']) }}</p>
                     @endif
                     @php $prevGroup = $item['group'] ?? null; @endphp
                     <x-layout.nav-item :item="$item" />
@@ -45,7 +46,7 @@
                     @php $prevGroup = null; @endphp
                     @foreach ($nav as $item)
                         @if (($item['group'] ?? null) && $item['group'] !== 'main' && $item['group'] !== $prevGroup)
-                            <p class="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ __('nav.group_'.$item['group']) }}</p>
+                            <p class="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wider text-muted">{{ __('nav.group_'.$item['group']) }}</p>
                         @endif
                         @php $prevGroup = $item['group'] ?? null; @endphp
                         <x-layout.nav-item :item="$item" />
@@ -58,29 +59,29 @@
         <div class="flex-1 min-w-0 flex flex-col">
             <header class="h-16 shrink-0 sticky top-0 z-30 bg-surface/80 backdrop-blur border-b border-line flex items-center justify-between px-4 sm:px-6 print:hidden">
                 <div class="flex items-center gap-3 min-w-0">
-                    <button @click="mobileNav = true" class="lg:hidden p-2 -ml-2 text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}"><x-ui.icon name="menu" /></button>
+                    <button @click="mobileNav = true" class="lg:hidden size-11 -ml-2.5 grid place-items-center rounded-lg text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}"><x-ui.icon name="menu" /></button>
                     <h1 class="font-bold text-ink truncate">{{ $heading ?? $title }}</h1>
                 </div>
                 <div class="flex items-center gap-1 sm:gap-2">
                     @if ($searchRoute)
-                        <a href="{{ $searchRoute }}" class="p-2 rounded-lg text-muted hover:text-ink hover:bg-ink/5" aria-label="{{ __('ui.search') }}">
+                        <a href="{{ $searchRoute }}" class="size-11 grid place-items-center rounded-lg text-muted hover:text-ink hover:bg-ink/5" aria-label="{{ __('ui.search') }}">
                             <x-ui.icon name="search" class="w-5 h-5" />
                         </a>
                     @endif
                     <x-ui.locale-toggle />
-                    <x-ui.theme-toggle />
+                    <x-ui.theme-toggle class="size-11 grid place-items-center" />
                     @auth
                         <x-layout.notification-bell />
                     @endauth
                     <div class="hidden sm:flex items-center gap-2 pl-2 ml-1 border-l border-line">
                         <div class="text-right leading-tight">
                             <p class="text-sm font-semibold text-ink truncate max-w-[10rem]">{{ $user?->name }}</p>
-                            <p class="text-[11px] text-muted">{{ $context }}</p>
+                            <p class="text-xs text-muted">{{ $context }}</p>
                         </div>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button class="p-2 rounded-lg text-muted hover:text-rose-600 hover:bg-rose-500/10 transition-colors" aria-label="{{ __('nav.logout') }}"><x-ui.icon name="logout" /></button>
+                        <button class="size-11 grid place-items-center rounded-lg text-muted hover:text-rose-600 hover:bg-rose-500/10 transition-colors" aria-label="{{ __('nav.logout') }}"><x-ui.icon name="logout" /></button>
                     </form>
                 </div>
             </header>
@@ -89,10 +90,41 @@
                  shell re-renders fresh on EVERY sidebar click (no client-side routing), so a
                  0.4s opacity/translate entrance would replay on every navigation — reads as a
                  momentary "wrong, then corrected" flash rather than a nice touch. --}}
-            <main class="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto">
+            <main @class(['flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto', 'pb-28 lg:pb-6' => ! empty($bottomNav)])>
                 <x-flash />
                 {{ $slot }}
             </main>
+
+            {{-- Phones: the few destinations a student uses every day, one tap away at the bottom
+                 (the full list stays in the menu). Hidden on large screens, where the sidebar shows. --}}
+            @if (! empty($bottomNav))
+                <nav class="lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 backdrop-blur print:hidden pb-[env(safe-area-inset-bottom)]"
+                     aria-label="{{ __('nav.bottom_nav') }}">
+                    <ul class="grid" style="grid-template-columns: repeat({{ count($bottomNav) }}, minmax(0, 1fr))">
+                        @foreach ($bottomNav as $tab)
+                            <li>
+                                <a href="{{ $tab['href'] }}" @if ($tab['active'] ?? false) aria-current="page" @endif
+                                   @class([
+                                       'relative flex flex-col items-center justify-center gap-1 min-h-16 px-1 text-xs font-semibold transition-colors',
+                                       'text-brand' => $tab['active'] ?? false,
+                                       'text-muted hover:text-ink' => ! ($tab['active'] ?? false),
+                                   ])>
+                                    @if ($tab['active'] ?? false)
+                                        <span class="absolute top-0 inset-x-5 h-0.5 rounded-full bg-brand" aria-hidden="true"></span>
+                                    @endif
+                                    <span class="relative">
+                                        <x-ui.icon :name="$tab['icon']" class="w-6 h-6" />
+                                        @if (! empty($tab['badge']))
+                                            <span class="absolute -top-1.5 -right-2.5 min-w-[1.15rem] h-[1.15rem] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold grid place-items-center leading-none tabular-nums">{{ $tab['badge'] > 9 ? bn(9).'+' : bn($tab['badge']) }}</span>
+                                        @endif
+                                    </span>
+                                    <span class="truncate max-w-full">{{ $tab['label'] }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </nav>
+            @endif
         </div>
     </div>
 

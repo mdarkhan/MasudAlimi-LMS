@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="text-end shrink-0">
                                     <p class="font-black text-ink tabular-nums">{{ bn($student->points_balance) }}</p>
-                                    <p class="text-[11px] text-muted">{{ __('students.points_col') }}</p>
+                                    <p class="text-xs text-muted">{{ __('students.points_col') }}</p>
                                 </div>
                             </a>
                         </div>

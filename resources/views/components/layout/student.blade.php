@@ -29,7 +29,18 @@
         : collect();
 @endphp
 
-<x-layout.app :title="$title" :heading="$heading" :nav="$nav" :context="__('nav.context_student')">
+@php
+    // Phones: five everyday destinations in a bottom tab bar (the menu still lists everything).
+    $bottomNav = [
+        ['label' => __('nav.tab_home'), 'href' => route('student.dashboard'), 'icon' => 'dashboard', 'active' => request()->routeIs('student.dashboard')],
+        ['label' => __('nav.tab_exams'), 'href' => route('student.exams.index'), 'icon' => 'exam', 'active' => request()->routeIs('student.exams.*') || request()->routeIs('student.attempts.*') || request()->routeIs('student.results.*')],
+        ['label' => __('nav.tab_amol'), 'href' => route('student.amol.index'), 'icon' => 'checklist', 'active' => request()->routeIs('student.amol.*'), 'badge' => $unseenAmolNotes ?: null],
+        ['label' => __('nav.tab_leaderboard'), 'href' => route('student.leaderboards.overall'), 'icon' => 'leaderboard', 'active' => request()->routeIs('student.leaderboards.*')],
+        ['label' => __('nav.tab_messages'), 'href' => route('student.messages.index'), 'icon' => 'message', 'active' => request()->routeIs('student.messages.*'), 'badge' => $unreadMessages ?: null],
+    ];
+@endphp
+
+<x-layout.app :title="$title" :heading="$heading" :nav="$nav" :bottom-nav="$bottomNav" :context="__('nav.context_student')">
     {{ $slot }}
 
     @if ($pendingRewards->isNotEmpty())

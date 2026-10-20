@@ -86,4 +86,5 @@ return [
     'student_cta_title' => 'নিবন্ধিত শিক্ষার্থী?',
     'student_cta_sub' => 'পরীক্ষা দিতে, ফলাফল দেখতে ও অনুশীলন করতে লগইন করুন।',
     'student_cta_button' => 'লগইনে যান',
+    'courses_coming_soon' => 'ক্লাস শীঘ্রই আসছে',
 ];

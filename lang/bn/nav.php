@@ -48,4 +48,10 @@ return [
     'group_academic' => 'শিক্ষা',
     'group_content' => 'কনটেন্ট ও যোগাযোগ',
     'group_system' => 'সিস্টেম',
+    'bottom_nav' => 'প্রধান মেনু',
+    'tab_home' => 'হোম',
+    'tab_exams' => 'পরীক্ষা',
+    'tab_amol' => 'আমল',
+    'tab_leaderboard' => 'মেধাতালিকা',
+    'tab_messages' => 'মেসেজ',
 ];

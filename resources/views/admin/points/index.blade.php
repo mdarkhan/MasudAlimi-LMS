@@ -29,7 +29,7 @@
                     </div>
                     <div class="text-end shrink-0">
                         <p class="font-black text-brand tabular-nums text-lg">{{ bn($student->points_balance) }}</p>
-                        <p class="text-[11px] text-muted">{{ __('points.balance') }}</p>
+                        <p class="text-xs text-muted">{{ __('points.balance') }}</p>
                     </div>
                 </a>
             @endforeach

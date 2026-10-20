@@ -98,10 +98,10 @@
             </a>
         @endforeach
     </div>
-    <div class="flex justify-between text-[10px] text-muted tabular-nums mt-1">
+    <div class="flex justify-between text-xs text-muted tabular-nums mt-1">
         <span>{{ bn(1) }}</span><span>{{ bn(count($stats['days'])) }}</span>
     </div>
-    <p class="text-[11px] text-muted mt-2 flex items-center gap-3">
+    <p class="text-xs text-muted mt-2 flex items-center gap-3">
         <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-brand"></span>{{ __('amol.legend_full') }}</span>
         <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-brand/50"></span>{{ __('amol.legend_partial') }}</span>
     </p>

@@ -86,4 +86,5 @@ return [
     'student_cta_title' => 'Registered student?',
     'student_cta_sub' => 'Sign in to take exams, see your results and practice.',
     'student_cta_button' => 'Go to login',
+    'courses_coming_soon' => 'Classes coming soon',
 ];

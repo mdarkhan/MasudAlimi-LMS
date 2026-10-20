@@ -48,4 +48,10 @@ return [
     'group_academic' => 'Academic',
     'group_content' => 'Content & communication',
     'group_system' => 'System',
+    'bottom_nav' => 'Main menu',
+    'tab_home' => 'Home',
+    'tab_exams' => 'Exams',
+    'tab_amol' => 'Amol',
+    'tab_leaderboard' => 'Ranking',
+    'tab_messages' => 'Messages',
 ];

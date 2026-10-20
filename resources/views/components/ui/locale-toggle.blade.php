@@ -9,7 +9,7 @@
             @csrf
             <input type="hidden" name="locale" value="{{ $code }}">
             <button type="submit"
-                    class="px-2 py-1 rounded-md text-xs font-bold transition-colors {{ $current === $code ? 'bg-brand text-brand-ink' : 'text-muted hover:text-ink' }}"
+                    class="min-w-9 px-2 py-1.5 rounded-md text-xs font-bold transition-colors {{ $current === $code ? 'bg-brand text-brand-ink' : 'text-muted hover:text-ink' }}"
                     @if ($current === $code) aria-current="true" @endif>
                 {{ $label }}
             </button>

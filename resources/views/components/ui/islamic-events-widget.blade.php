@@ -28,7 +28,7 @@
                         <div class="flex-1 bg-brand-tint rounded-full h-1.5 overflow-hidden">
                             <div class="bg-brand h-1.5 rounded-full" style="width: {{ $closeness }}%"></div>
                         </div>
-                        <span class="text-[11px] text-muted whitespace-nowrap">{{ __('public.days_remaining', ['count' => bn($event['days_until'])]) }}</span>
+                        <span class="text-xs text-muted whitespace-nowrap">{{ __('public.days_remaining', ['count' => bn($event['days_until'])]) }}</span>
                     </div>
                 </div>
             @endforeach

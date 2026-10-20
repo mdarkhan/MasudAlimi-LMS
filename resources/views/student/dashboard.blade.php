@@ -10,7 +10,7 @@
             {{-- Roll number: the number a student logs in with, so it gets the biggest, most recognisable shape. --}}
             <div class="shrink-0 grid place-items-center size-20 sm:size-24 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink shadow-md ring-4 ring-brand-tint text-center leading-none">
                 <div>
-                    <span class="block text-[11px] sm:text-xs font-semibold opacity-90">{{ __('dashboard.roll') }}</span>
+                    <span class="block text-xs sm:text-xs font-semibold opacity-90">{{ __('dashboard.roll') }}</span>
                     <span class="block font-black tabular-nums mt-1 {{ mb_strlen((string) $user->roll) > 3 ? 'text-xl sm:text-2xl' : 'text-3xl sm:text-4xl' }}">{{ bn($user->roll) }}</span>
                 </div>
             </div>
@@ -131,13 +131,17 @@
                                 <x-ui.badge color="success"><x-ui.icon name="flag" class="w-3 h-3" /> {{ __('dashboard.course_completed') }}</x-ui.badge>
                             @endif
                         </div>
-                        <p class="text-xs text-muted">{{ __('dashboard.lessons_count', ['count' => bn($course->lessons_count)]) }}</p>
+                        @if ($course->lessons_count > 0)
+                            <p class="text-xs text-muted">{{ __('dashboard.lessons_count', ['count' => bn($course->lessons_count)]) }}</p>
+                        @else
+                            <p class="text-xs text-muted">{{ __('public.courses_coming_soon') }}</p>
+                        @endif
                         @if ($progress['total'] > 0)
                             <div class="mt-2 flex items-center gap-2">
                                 <div class="h-1.5 flex-1 rounded-full bg-surface-raised overflow-hidden">
                                     <div class="h-full rounded-full bg-brand" style="width: {{ round($progress['viewed'] / $progress['total'] * 100) }}%"></div>
                                 </div>
-                                <span class="text-[11px] text-muted shrink-0 tabular-nums">{{ __('dashboard.course_progress', ['viewed' => bn($progress['viewed']), 'total' => bn($progress['total'])]) }}</span>
+                                <span class="text-xs text-muted shrink-0 tabular-nums">{{ __('dashboard.course_progress', ['viewed' => bn($progress['viewed']), 'total' => bn($progress['total'])]) }}</span>
                             </div>
                         @endif
                     </div>

@@ -38,7 +38,7 @@
                         <p class="text-sm text-muted mt-1.5 flex-1 line-clamp-3">{{ $post->excerptText(160) }}</p>
                         <div class="mt-3 pt-3 border-t border-line flex items-center justify-between text-xs text-muted">
                             <span>{{ $fmtDate($post->published_at) }}</span>
-                            <a href="{{ route('blog.show', $post) }}" class="text-brand font-semibold hover:underline">{{ __('posts.read_more') }} →</a>
+                            <a href="{{ route('blog.show', $post) }}" class="text-brand font-semibold hover:underline">{{ __('posts.read_more') }}</a>
                         </div>
                     </article>
                 @endforeach

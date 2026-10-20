@@ -32,13 +32,13 @@
                         <div x-show="open" x-cloak class="px-4 pb-3 grid gap-3 sm:grid-cols-2">
                             @if ($log->before)
                                 <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-wider text-muted mb-1">before</p>
+                                    <p class="text-xs font-semibold uppercase tracking-wider text-muted mb-1">before</p>
                                     <pre class="text-xs bg-surface-raised rounded-lg p-3 overflow-x-auto">{{ json_encode($log->before, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) }}</pre>
                                 </div>
                             @endif
                             @if ($log->after)
                                 <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-wider text-muted mb-1">after</p>
+                                    <p class="text-xs font-semibold uppercase tracking-wider text-muted mb-1">after</p>
                                     <pre class="text-xs bg-surface-raised rounded-lg p-3 overflow-x-auto">{{ json_encode($log->after, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) }}</pre>
                                 </div>
                             @endif
