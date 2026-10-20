@@ -57,7 +57,7 @@
 
         {{-- Main column --}}
         <div class="flex-1 min-w-0 flex flex-col">
-            <header class="h-16 shrink-0 sticky top-0 z-30 bg-surface/80 backdrop-blur border-b border-line flex items-center justify-between px-4 sm:px-6 print:hidden">
+            <header class="[view-transition-name:app-header] h-16 shrink-0 sticky top-0 z-30 bg-surface/80 backdrop-blur border-b border-line flex items-center justify-between px-4 sm:px-6 print:hidden">
                 <div class="flex items-center gap-3 min-w-0">
                     <button @click="mobileNav = true" class="lg:hidden size-11 -ml-2.5 grid place-items-center rounded-lg text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}"><x-ui.icon name="menu" /></button>
                     <h1 class="font-bold text-ink truncate">{{ $heading ?? $title }}</h1>
@@ -123,28 +123,25 @@
                              try { sessionStorage.setItem('dock-anim', i); } catch (e) {}
                          },
                      }">
-                    <div class="pointer-events-auto relative mx-auto max-w-md rounded-[1.4rem] bg-dock text-dock-muted shadow-[0_12px_32px_-8px_rgb(0_0_0/0.45)] ring-1 ring-white/10 p-1.5">
+                    {{-- The current tab is rendered on the server (data-on, the highlight's offset) so the first paint is
+                         already final — Alpine only takes over on a tap. Nothing moves when a page arrives. --}}
+                    <div class="pointer-events-auto relative mx-auto max-w-md rounded-[1.4rem] bg-dock text-dock-muted shadow-[0_12px_32px_-8px_rgb(0_0_0/0.45)] ring-1 ring-white/10 p-1.5 [view-transition-name:dock]">
                         {{-- the sliding highlight --}}
-                        <span class="absolute top-1.5 bottom-1.5 left-1.5 rounded-2xl bg-dock-active transition-[transform,opacity] duration-300 ease-out"
-                              style="width: calc((100% - 0.75rem) / {{ $tabCount }})"
-                              :style="{ transform: `translateX(${Math.max(at, 0) * 100}%)`, opacity: at < 0 ? 0 : 1 }"
+                        <span class="absolute top-1.5 bottom-1.5 left-1.5 rounded-2xl bg-dock-active transition-transform duration-300 ease-out [view-transition-name:dock-pill]"
+                              style="width: calc((100% - 0.75rem) / {{ $tabCount }}); transform: translateX({{ max((int) $activeTab, 0) * 100 }}%)"
+                              :style="{ transform: `translateX(${Math.max(at, 0) * 100}%)` }"
                               @if ($activeTab === false) hidden @endif x-bind:hidden="at < 0" aria-hidden="true">
                             <span class="absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[3px] w-6 rounded-full bg-dock-glow shadow-[0_0_10px_var(--color-dock-glow)]"></span>
                         </span>
                         <ul class="relative grid" style="grid-template-columns: repeat({{ $tabCount }}, minmax(0, 1fr))">
                             @foreach ($bottomNav as $i => $tab)
                                 <li>
-                                    <a href="{{ $tab['href'] }}" @if ($tab['active'] ?? false) aria-current="page" @endif
-                                       @click="tap({{ $i }})"
-                                       class="group flex flex-col items-center justify-center gap-1 min-h-16 px-1 pb-2 rounded-2xl text-xs font-semibold transition-colors duration-200 hover:text-dock-ink focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-dock-glow"
-                                       :class="at === {{ $i }} ? 'text-dock-ink' : ''">
-                                        <span class="relative transition-transform duration-300 ease-out" :class="at === {{ $i }} ? '-translate-y-0.5 scale-110' : ''">
+                                    <a href="{{ $tab['href'] }}" @if ($tab['active'] ?? false) aria-current="page" data-on @endif
+                                       @click="tap({{ $i }})" :data-on="at === {{ $i }} ? '' : null"
+                                       class="group flex flex-col items-center justify-center gap-1 min-h-16 px-1 pb-2 rounded-2xl text-xs font-semibold transition-colors duration-200 hover:text-dock-ink data-on:text-dock-ink [-webkit-tap-highlight-color:transparent] focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-dock-glow">
+                                        <span class="relative transition-transform duration-300 ease-out group-data-on:-translate-y-0.5 group-data-on:scale-110">
                                             <span class="block" :class="anim === {{ $i }} ? 'dock-anim-{{ $tab['anim'] ?? 'pop' }}' : ''" @animationend="anim = -1">
-                                                @if ($tab['fill_active'] ?? false)
-                                                    <x-ui.icon :name="$tab['icon']" class="w-[1.4rem] h-[1.4rem]" x-bind:class="{ 'fill-current': at === {{ $i }} }" />
-                                                @else
-                                                    <x-ui.icon :name="$tab['icon']" class="w-[1.4rem] h-[1.4rem]" />
-                                                @endif
+                                                <x-ui.icon :name="$tab['icon']" :class="'w-[1.4rem] h-[1.4rem]'.(($tab['fill_active'] ?? false) ? ' group-data-on:fill-current' : '')" />
                                             </span>
                                             @if (! empty($tab['badge']))
                                                 <span class="absolute -top-1.5 -right-2.5 min-w-[1.15rem] h-[1.15rem] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold grid place-items-center leading-none tabular-nums ring-2 ring-dock">{{ $tab['badge'] > 9 ? bn(9).'+' : bn($tab['badge']) }}</span>

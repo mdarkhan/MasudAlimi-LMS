@@ -261,3 +261,39 @@ html[lang='en'] {
 .dock-anim-bounce { animation: dock-bounce .6s ease-out both; }
 .dock-anim-swing { animation: dock-swing .7s ease-in-out both; transform-origin: 50% 0; }
 .dock-anim-shake { animation: dock-shake .5s ease-in-out both; }
+
+/*
+ * App-like page changes. Every page is a full load (no SPA), so the browser's cross-document View
+ * Transitions swap pages with a short cross-fade instead of a blank flash and a jump. The header and the
+ * phone dock carry their own transition names, so they stay perfectly still while only the content
+ * fades; the dock's highlight glides to its new tab. Browsers without support simply load as before.
+ */
+@view-transition {
+    navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 180ms;
+    animation-timing-function: ease-out;
+}
+::view-transition-group(dock-pill) {
+    animation-duration: 260ms;
+    animation-timing-function: cubic-bezier(.3, .7, .3, 1);
+}
+::view-transition-old(dock),
+::view-transition-new(dock),
+::view-transition-old(app-header),
+::view-transition-new(app-header) {
+    animation: none;
+}
+::view-transition-old(dock),
+::view-transition-old(app-header) {
+    display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}
