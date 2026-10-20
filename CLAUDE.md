@@ -152,8 +152,11 @@ and `super_admin` bypasses `perm:` via `User::hasPermission()`.
   `components/layout/*` (base, guest, public, student, admin, app shell).
 - **Design tokens** are semantic CSS custom properties in `resources/css/app.css`
   (`bg-surface`, `text-ink`, `border-line`, `text-brand`, …), re-pointed under `.dark`.
-  Use the tokens, not raw palette values, so both themes stay consistent. Emerald/teal
-  on warm neutral. Respect `prefers-reduced-motion` (already handled globally).
+  Use the tokens, not raw palette values, so both themes stay consistent. Palette is
+  "manuscript": ink `#1F2A26`, malachite `brand` `#0F6B4F`, `lapis` `#234E8C` (info), `gold`
+  `#B98B2E` (**achievements only**; as text use `gold-ink`), paper `#F5F7F4`, cloud `#DCE3DE` —
+  every text pairing measured ≥ 4.5:1 in both themes (values + ratios commented in app.css).
+  Respect `prefers-reduced-motion` (already handled globally).
 - **Tailwind v4 via Vite.** Never the CDN. `npm run build` compiles CSS/JS into
   `public/build`. Node is a build-time dependency only.
 - **Kalpurush (the Bengali body font) is base64-inlined directly into the compiled
@@ -175,9 +178,11 @@ and `super_admin` bypasses `perm:` via `User::hasPermission()`.
   the only way to make this deterministic rather than probabilistic. There is no
   separate `Vite::fonts()` call, `fonts-manifest.json`, or fallback face (`fontaine`
   was removed as a dependency) — plain `@vite(...)` is enough, because this is just a
-  CSS asset now, not laravel-vite-plugin's dedicated fonts feature. The Arabic face
-  (`--font-arabic`, bismillah/Qur'anic passages) is NOT self-hosted or inlined — it
-  relies on the visitor's own system fonts.
+  CSS asset now, not laravel-vite-plugin's dedicated fonts feature. **h1/h2 use Tiro Bangla**
+  (`--font-display`, Bengali block only, regular weight — no faux bold, `size-adjust: 112%` measured
+  the same way) and **`.font-arabic` uses Amiri subset to the bismillah glyphs only** (20 KB); both
+  are inlined the same way (`vite.config.js` list). If `.font-arabic` is used for any new Arabic
+  text, re-subset Amiri to include it (OFL licences in `resources/fonts/`).
 - **Kalpurush's `@font-face` carries `size-adjust: 112%`.** Its own glyphs sit
   noticeably smaller within their em-box than the system Bengali fonts this site
   used to fall back to — measured via canvas pixel bounds at a large declared size,
