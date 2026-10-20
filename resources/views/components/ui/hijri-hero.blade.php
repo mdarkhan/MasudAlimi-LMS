@@ -36,7 +36,7 @@
         <div class="flex items-center justify-between gap-3">
             <span class="flex items-center gap-2 text-sm font-semibold opacity-90"><x-ui.icon name="calendar" class="w-4 h-4" /> {{ __('calendar.today') }}</span>
             @if (filled($calendar['location'] ?? null))
-                <span class="rounded-full bg-white/15 dark:bg-brand-ink/10 px-2.5 py-0.5 text-xs font-semibold">{{ $calendar['location'] }}</span>
+                <span class="inline-flex items-center gap-1 rounded-full bg-white/15 dark:bg-brand-ink/10 pl-2 pr-2.5 py-0.5 text-xs font-semibold"><x-ui.icon name="location" class="w-3.5 h-3.5" />{{ $calendar['location'] }}</span>
             @endif
         </div>
 
