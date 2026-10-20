@@ -31,6 +31,7 @@ class ZakatController extends Controller
             $request->assets(),
             $request->input('liabilities'),
             $request->input('basis'),
+            $request->input('custom_rate'),
         );
 
         return view('public.zakat', array_merge($this->pageData(), [

@@ -31,7 +31,7 @@ return [
     'yesterday' => 'গতকাল',
     'am' => 'AM',
     'pm' => 'PM',
-    'emoji_search' => 'ইমোজি খুঁজুন (ইংরেজিতে)',
+    'emoji_search' => 'ইমোজি খুঁজুন (ইংরেজি শব্দে, যেমন: smile, heart)',
     'emoji_none' => 'কিছু পাওয়া যায়নি',
     'emoji_recent' => 'সাম্প্রতিক',
     'emoji_recent_empty' => 'এখনো কোনো ইমোজি ব্যবহার করা হয়নি।',

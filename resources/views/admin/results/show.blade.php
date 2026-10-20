@@ -1,6 +1,6 @@
 @php
     $statusTone = ['submitted' => 'success', 'expired' => 'warning', 'in_progress' => 'info', 'voided' => 'danger'][$attempt->status] ?? 'neutral';
-    $fmt = fn ($d) => $d?->format('d/m/Y H:i');
+    $fmt = fn ($d) => dt_label($d);
     $canAdjust = auth()->user()->hasPermission('results.adjust') && $attempt->isTerminal() && $attempt->isOfficial();
 @endphp
 

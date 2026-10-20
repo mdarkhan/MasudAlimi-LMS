@@ -26,7 +26,7 @@
     </form>
 
     @if ($posts->isEmpty())
-        <x-ui.card><x-ui.empty :title="__('posts.none')" /></x-ui.card>
+        <x-ui.card><x-ui.empty :title="__('posts.none')"><x-slot:action><x-ui.button :href="route('admin.posts.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('posts.create') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
         <div class="overflow-x-auto rounded-2xl border border-line">
             <table class="w-full text-sm">

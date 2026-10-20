@@ -92,14 +92,34 @@
             <p class="text-xs text-muted mb-4">
                 {{ ($goldUpdatedAt || $silverUpdatedAt) ? __('settings.rates_updated', ['when' => $when($goldUpdatedAt ?? $silverUpdatedAt)]) : __('settings.rates_never') }}
             </p>
-            <form method="POST" action="{{ route('admin.settings.zakat') }}" class="space-y-4">
+            @php
+                // Reference weights come from the calculator itself so this preview can never disagree with it.
+                $zk = [
+                    'goldGrams' => (float) \App\Services\Zakat\ZakatCalculatorService::NISAB_GOLD_GRAMS,
+                    'silverGrams' => (float) \App\Services\Zakat\ZakatCalculatorService::NISAB_SILVER_GRAMS,
+                    'vori' => (float) \App\Services\Zakat\ZakatCalculatorService::VORI_TO_GRAM,
+                    'bn' => app()->getLocale() !== 'en',
+                    'gold' => (string) old('gold_price_per_gram', $zakat['gold_price_per_gram']),
+                    'silver' => (string) old('silver_price_per_gram', $zakat['silver_price_per_gram']),
+                    'cur' => (string) old('currency_label', $zakat['currency_label']),
+                ];
+            @endphp
+            <form method="POST" action="{{ route('admin.settings.zakat') }}" class="space-y-4"
+                  x-data="{ z: @js($zk),
+                      fmt(n) { let s = (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); if (this.z.bn) s = s.replace(/[0-9]/g, c => '০১২৩৪৫৬৭৮৯'[c]); return s; },
+                      line(label, grams, rate) {
+                          const r = parseFloat(rate);
+                          const vori = Math.round(grams / this.z.vori * 100) / 100;
+                          const base = label + ': ' + this.fmt(grams) + ' ' + @js(__('settings.grams')) + ' (' + this.fmt(vori) + ' ' + @js(__('settings.vori')) + ')';
+                          return (r > 0) ? base + ' × ' + this.z.cur + ' ' + this.fmt(r) + ' = ' + this.z.cur + ' ' + this.fmt(grams * r) : base + ' — ' + @js(__('settings.price_missing'));
+                      } }">
                 @csrf @method('PUT')
                 <div class="grid grid-cols-2 gap-3">
                     <x-ui.field :label="__('settings.gold_price')" name="gold_price_per_gram">
-                        <x-ui.input type="number" step="0.01" min="0" name="gold_price_per_gram" value="{{ old('gold_price_per_gram', $zakat['gold_price_per_gram']) }}" />
+                        <x-ui.input type="number" step="0.01" min="0" name="gold_price_per_gram" x-model="z.gold" value="{{ old('gold_price_per_gram', $zakat['gold_price_per_gram']) }}" />
                     </x-ui.field>
                     <x-ui.field :label="__('settings.silver_price')" name="silver_price_per_gram">
-                        <x-ui.input type="number" step="0.01" min="0" name="silver_price_per_gram" value="{{ old('silver_price_per_gram', $zakat['silver_price_per_gram']) }}" />
+                        <x-ui.input type="number" step="0.01" min="0" name="silver_price_per_gram" x-model="z.silver" value="{{ old('silver_price_per_gram', $zakat['silver_price_per_gram']) }}" />
                     </x-ui.field>
                     <x-ui.field :label="__('settings.nisab_basis')" name="nisab_basis">
                         <x-ui.select name="nisab_basis">
@@ -108,9 +128,17 @@
                         </x-ui.select>
                     </x-ui.field>
                     <x-ui.field :label="__('settings.currency_label')" name="currency_label" :required="true">
-                        <x-ui.input name="currency_label" value="{{ old('currency_label', $zakat['currency_label']) }}" required />
+                        <x-ui.input name="currency_label" x-model="z.cur" value="{{ old('currency_label', $zakat['currency_label']) }}" required />
                     </x-ui.field>
                 </div>
+
+                {{-- Live preview: what the public calculator will use as the Nisab, so a typo in a price is obvious before saving. --}}
+                <div class="rounded-xl bg-brand-tint/50 border border-line p-3 text-sm space-y-1.5" aria-live="polite">
+                    <p class="text-xs font-semibold text-muted">{{ __('settings.nisab_preview') }}</p>
+                    <p class="text-ink tabular-nums" x-text="line(@js(__('settings.basis_silver')), z.silverGrams, z.silver)"></p>
+                    <p class="text-ink tabular-nums" x-text="line(@js(__('settings.basis_gold')), z.goldGrams, z.gold)"></p>
+                </div>
+
                 <x-ui.button type="submit">{{ __('settings.save') }}</x-ui.button>
             </form>
         </x-ui.card>

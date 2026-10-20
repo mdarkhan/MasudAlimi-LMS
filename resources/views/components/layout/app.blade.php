@@ -20,7 +20,12 @@
                 @if ($context)
                     <p class="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ $context }}</p>
                 @endif
+                @php $prevGroup = null; @endphp
                 @foreach ($nav as $item)
+                    @if (($item['group'] ?? null) && $item['group'] !== 'main' && $item['group'] !== $prevGroup)
+                        <p class="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ __('nav.group_'.$item['group']) }}</p>
+                    @endif
+                    @php $prevGroup = $item['group'] ?? null; @endphp
                     <x-layout.nav-item :item="$item" />
                 @endforeach
             </nav>
@@ -36,8 +41,13 @@
                     <x-ui.brand :sub="false" />
                     <button @click="mobileNav = false" class="p-2 text-muted" aria-label="{{ __('nav.close_menu') }}"><x-ui.icon name="close" /></button>
                 </div>
-                <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+                <nav class="flex-1 p-3 space-y-1 overflow-y-auto pb-10 [mask-image:linear-gradient(to_bottom,black_calc(100%-2.5rem),transparent)]">
+                    @php $prevGroup = null; @endphp
                     @foreach ($nav as $item)
+                        @if (($item['group'] ?? null) && $item['group'] !== 'main' && $item['group'] !== $prevGroup)
+                            <p class="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">{{ __('nav.group_'.$item['group']) }}</p>
+                        @endif
+                        @php $prevGroup = $item['group'] ?? null; @endphp
                         <x-layout.nav-item :item="$item" />
                     @endforeach
                 </nav>

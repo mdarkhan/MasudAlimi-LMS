@@ -13,6 +13,9 @@
         'vori' => (float) $constants['vori_to_gram'],
         'bnDigits' => ! $en,
         'basis' => old('basis', $old['basis'] ?? $basis),
+        'goldGrams' => (float) $constants['gold_nisab_grams'],
+        'silverGrams' => (float) $constants['silver_nisab_grams'],
+        'customRate' => (string) old('custom_rate', $old['custom_rate'] ?? ''),
     ];
     $server = $result ?? null;
 @endphp
@@ -74,6 +77,14 @@
                             </x-ui.select>
                         </x-ui.field>
                     </div>
+                    {{-- Only when the admin has not set this metal's price: let the visitor supply their own for THIS calculation (never stored). --}}
+                    @if ($goldNisab === null || $silverNisab === null)
+                        <div x-show="needsCustomRate()" class="mt-3">
+                            <x-ui.field :label="__('zakat.custom_rate')" name="custom_rate" :hint="__('zakat.custom_rate_hint')">
+                                <x-ui.input type="number" step="0.01" min="0" name="custom_rate" x-model="customRate" value="{{ $val('custom_rate') }}" placeholder="0" />
+                            </x-ui.field>
+                        </div>
+                    @endif
                     <x-ui.button type="submit" class="mt-4 w-full sm:w-auto">{{ __('zakat.calculate') }}</x-ui.button>
                 </x-ui.card>
             </div>
@@ -117,13 +128,21 @@
                 v: { cash: {{ (float) $val('cash') ?: 0 }}, bank: {{ (float) $val('bank') ?: 0 }}, gold_value: {{ (float) $val('gold_value') ?: 0 }}, silver_value: {{ (float) $val('silver_value') ?: 0 }}, inventory: {{ (float) $val('inventory') ?: 0 }}, investments: {{ (float) $val('investments') ?: 0 }}, receivable: {{ (float) $val('receivable') ?: 0 }}, other: {{ (float) $val('other') ?: 0 }}, liabilities: {{ (float) $val('liabilities') ?: 0 }} },
                 w: { gold_g: 0, gold_v: 0, silver_g: 0, silver_v: 0 },
                 basis: boot.basis,
+                customRate: boot.customRate,
                 _b: boot,
 
                 num(x) { const n = parseFloat(x); return isNaN(n) || n < 0 ? 0 : n; },
                 get gross() { return ['cash','bank','gold_value','silver_value','inventory','investments','receivable','other'].reduce((s,k)=>s+this.num(this.v[k]),0); },
                 get deductible() { return Math.min(this.num(this.v.liabilities), this.gross); },
                 get net() { return Math.max(0, this.gross - this.deductible); },
-                get nisab() { const n = this.basis === 'gold' ? this._b.goldNisab : this._b.silverNisab; return n === null ? null : parseFloat(n); },
+                get serverNisab() { const n = this.basis === 'gold' ? this._b.goldNisab : this._b.silverNisab; return n === null ? null : parseFloat(n); },
+                // The admin's price always wins; the visitor's own price is a fallback for this calculation only.
+                get nisab() {
+                    if (this.serverNisab !== null) return this.serverNisab;
+                    const r = this.num(this.customRate);
+                    return r > 0 ? (this.basis === 'gold' ? this._b.goldGrams : this._b.silverGrams) * r : null;
+                },
+                needsCustomRate() { return this.serverNisab === null; },
                 reached() { return this.nisab !== null && this.net >= this.nisab; },
                 get due() { return this.reached() ? this.net * this._b.rate : 0; },
                 ratesMissing() { return this.nisab === null; },

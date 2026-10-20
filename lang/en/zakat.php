@@ -39,8 +39,10 @@ return [
     'below' => 'Below Nisab — no Zakat due',
     'due' => 'Estimated Zakat due',
     'rate_line' => 'Rate: 2.5% of net zakatable wealth',
-    'rates_missing' => 'The :basis rate is not configured, so the Nisab cannot be computed. Please check back later.',
+    'rates_missing' => 'The :basis rate is not configured, so the Nisab cannot be computed. Enter a price you know below to calculate.',
     'rates_updated' => 'Reference rate updated: :when',
 
     'disclaimer' => 'This calculator gives a general estimate based on the values you enter and the selected Nisab basis. For complex situations, please consult a qualified scholar.',
+    'custom_rate' => "Today's market price you know (per gram)",
+    'custom_rate_hint' => 'The admin has not set a price for this metal yet. Enter the price you know and it is used for this calculation only — it is not stored anywhere.',
 ];

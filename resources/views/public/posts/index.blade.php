@@ -21,7 +21,7 @@
             <form method="GET" action="{{ route('blog.index') }}" class="sm:ms-auto flex gap-2">
                 @if ($activeCategory)<input type="hidden" name="category" value="{{ $activeCategory->slug }}">@endif
                 <x-ui.input name="q" value="{{ $q }}" placeholder="{{ __('posts.search_placeholder') }}" class="sm:w-56" />
-                <x-ui.button type="submit" variant="secondary"><x-ui.icon name="search" class="w-4 h-4" /></x-ui.button>
+                <x-ui.button type="submit" variant="secondary" aria-label="{{ __('ui.search') }}"><x-ui.icon name="search" class="w-4 h-4" /></x-ui.button>
             </form>
         </div>
 

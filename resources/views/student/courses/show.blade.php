@@ -56,7 +56,8 @@
                         </div>
                     </div>
                     @if ($lesson->media_url)
-                        <x-ui.button :href="$lesson->media_url" target="_blank" rel="noopener" variant="secondary" class="mt-3 w-full">
+                        <p class="mt-2 text-xs text-muted">{{ __('lessons.audio_not_playing_hint') }}</p>
+                        <x-ui.button :href="$lesson->media_url" target="_blank" rel="noopener" variant="secondary" class="mt-2 w-full">
                             <x-ui.icon name="download" class="w-4 h-4" /> {{ __('lessons.open_in_drive') }}
                         </x-ui.button>
                     @endif

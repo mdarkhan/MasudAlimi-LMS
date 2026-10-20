@@ -30,6 +30,7 @@
                 <h1 class="text-2xl sm:text-3xl font-black text-ink leading-tight">{{ $book->title }}</h1>
                 <p class="text-muted mt-1">{{ __('public.books_by') }}: {{ $book->author }}</p>
 
+                @if ($book->publisher || $book->page_count)
                 <dl class="grid grid-cols-2 gap-x-4 gap-y-2 mt-4 text-sm max-w-xs">
                     @if ($book->publisher)
                         <dt class="text-muted">{{ __('public.book_publisher') }}</dt>
@@ -40,6 +41,7 @@
                         <dd class="text-ink font-semibold tabular-nums">{{ bn($book->page_count) }}</dd>
                     @endif
                 </dl>
+                @endif
 
                 @if ($book->purchaseLinks->isNotEmpty())
                     <p class="text-xs font-semibold text-muted mt-5 mb-2">{{ __('public.book_buy_heading') }}</p>

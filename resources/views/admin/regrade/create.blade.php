@@ -22,7 +22,7 @@
 
     <x-ui.alert type="warning" class="mb-5">{{ __('results_admin.regrade_intro') }}</x-ui.alert>
 
-    <div x-data="regradeForm()" x-init="init(@js($boot))" class="grid gap-5 lg:grid-cols-2">
+    <div x-data="regradeForm()" x-init="setup(@js($boot))" class="grid gap-5 lg:grid-cols-2">
         {{-- Correction form --}}
         <form method="POST" action="{{ route('admin.quizzes.regrade.apply', $quiz) }}" class="space-y-4">
             @csrf
@@ -119,7 +119,7 @@
                 correct: [], marks: 1, type: 'single', explanation: '', reason: '',
                 preview: null, loading: false, previewUrl: '', csrf: '',
 
-                init(data) {
+                setup(data) {   // not init(): Alpine auto-calls init() with no argument
                     this.questions = data.questions || [];
                     this.previewUrl = data.previewUrl;
                     this.csrf = data.csrf;

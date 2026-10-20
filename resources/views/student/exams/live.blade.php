@@ -23,7 +23,7 @@
 @endphp
 
 <x-layout.base :title="$quiz->title">
-    <div x-data="examRunner()" x-init="init(@js($boot))" class="min-h-screen flex flex-col bg-surface text-ink">
+    <div x-data="examRunner()" x-init="setup(@js($boot))" class="min-h-screen flex flex-col bg-surface text-ink">
 
         {{-- Header: title, live timer, answered count --}}
         <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur border-b border-line">
@@ -204,7 +204,9 @@
                 _poll: null,
                 _retry: null,
 
-                init(data) {
+                // NOT named init(): Alpine 3 calls a component's init() by itself, with no argument, which threw
+                // "Cannot read properties of undefined" before x-init ran this with the boot payload.
+                setup(data) {
                     this.questions = data.questions || [];
                     this.answers = data.selections || {};
                     this.remaining = data.remaining;

@@ -45,4 +45,7 @@ return [
     'open_menu' => 'Open menu',
     'close_menu' => 'Close menu',
     'profile_requests' => 'Profile requests',
+    'group_academic' => 'Academic',
+    'group_content' => 'Content & communication',
+    'group_system' => 'System',
 ];

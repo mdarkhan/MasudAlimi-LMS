@@ -29,6 +29,22 @@ class ZakatAndSettingsTest extends TestCase
             ->assertSee('2500.00');
     }
 
+    public function test_without_an_admin_price_the_page_offers_a_price_field_and_uses_the_visitors_figure(): void
+    {
+        app(SettingService::class)->set(['silver_price_per_gram' => '', 'gold_price_per_gram' => '', 'nisab_basis' => 'silver']);
+
+        // The empty-rates page offers the visitor's own price field.
+        $this->get(route('zakat.index'))->assertOk()->assertSee('name="custom_rate"', false);
+
+        // 100,000 net with the visitor's own silver price 90 → nisab 55,112.40 → due 2,500.
+        $this->post(route('zakat.calculate'), ['cash' => '100000', 'basis' => 'silver', 'custom_rate' => '90'])
+            ->assertOk()->assertSee('55112.40')->assertSee('2500.00');
+
+        // Once the admin sets a price the field is not offered any more.
+        app(SettingService::class)->set(['silver_price_per_gram' => '100', 'gold_price_per_gram' => '8000']);
+        $this->get(route('zakat.index'))->assertOk()->assertDontSee('name="custom_rate"', false);
+    }
+
     public function test_the_calculator_persists_nothing(): void
     {
         $this->post(route('zakat.calculate'), ['cash' => '50000', 'basis' => 'silver'])->assertOk();

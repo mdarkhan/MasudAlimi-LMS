@@ -42,4 +42,11 @@ return [
     'save_failed' => ':count টি তথ্য ঠিক নয় — সংরক্ষণ হয়নি',
     'developed_by' => 'ডেভেলপার:',
     'copyright' => 'সর্বস্বত্ব সংরক্ষিত © :year',
+    // Month names for dt_label(). Keep য়/ড়/ঢ় precomposed (U+09DF/09DC/09DD) — see CLAUDE.md "Bengali text".
+    'months' => [
+        1 => "\u{099C}\u{09BE}\u{09A8}\u{09C1}\u{09DF}\u{09BE}\u{09B0}\u{09BF}",
+        2 => "\u{09AB}\u{09C7}\u{09AC}\u{09CD}\u{09B0}\u{09C1}\u{09DF}\u{09BE}\u{09B0}\u{09BF}",
+        3 => 'মার্চ', 4 => 'এপ্রিল', 5 => 'মে', 6 => 'জুন', 7 => 'জুলাই', 8 => 'আগস্ট',
+        9 => 'সেপ্টেম্বর', 10 => 'অক্টোবর', 11 => 'নভেম্বর', 12 => 'ডিসেম্বর',
+    ],
 ];

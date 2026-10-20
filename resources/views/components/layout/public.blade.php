@@ -60,7 +60,7 @@
                         {{-- Wrapper does the hiding: x-ui.button forces inline-flex, so `hidden` on the button itself never wins. --}}
                         <span class="hidden sm:inline-flex"><x-ui.button :href="route('login')" size="sm">{{ __('nav.login') }}</x-ui.button></span>
                     @endauth
-                    <button @click="open = !open" class="xl:hidden p-1.5 sm:p-2 text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}">
+                    <button @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" class="xl:hidden p-1.5 sm:p-2 text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}">
                         <x-ui.icon name="menu" />
                     </button>
                 </div>
@@ -70,10 +70,10 @@
             <div x-show="open" x-cloak class="xl:hidden border-t border-line bg-surface" style="display:none">
                 <nav class="max-w-6xl mx-auto px-4 py-2 space-y-1">
                     @foreach ($nav as $item)
-                        <a href="{{ $item['href'] }}" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-ink hover:bg-ink/5">{{ $item['label'] }}</a>
+                        <a href="{{ $item['href'] }}" @click="open = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-ink hover:bg-ink/5">{{ $item['label'] }}</a>
                     @endforeach
                     @guest
-                        <a href="{{ route('login') }}" class="block px-3 py-2.5 rounded-lg text-sm font-semibold text-brand-strong bg-brand-tint">{{ __('nav.login') }}</a>
+                        <a href="{{ route('login') }}" @click="open = false" class="block px-3 py-2.5 rounded-lg text-sm font-semibold text-brand-strong bg-brand-tint">{{ __('nav.login') }}</a>
                     @endguest
                     @auth
                         {{-- The header's dashboard button is hidden on very narrow phones, so it lives here too. --}}

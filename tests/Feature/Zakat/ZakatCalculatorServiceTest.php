@@ -125,4 +125,30 @@ class ZakatCalculatorServiceTest extends TestCase
     {
         $this->assertSame('80000.00', $this->zakat->metalValueFromGrams('10', 'gold'));   // 10g × 8000
     }
+
+    public function test_a_visitors_own_price_is_used_only_when_the_admin_set_none(): void
+    {
+        // Admin price present: it wins, the visitor's figure is ignored.
+        $withAdmin = $this->zakat->calculate($this->assets(['cash' => '70000']), '0', 'silver', '1');
+        $this->assertSame('61236.00', $withAdmin['nisab']);
+        $this->assertFalse($withAdmin['rates_missing']);
+
+        // Admin left the silver price empty: without a visitor price the calculator fails safe…
+        $this->settings->set(['silver_price_per_gram' => '']);
+        $none = $this->zakat->calculate($this->assets(['cash' => '70000']), '0', 'silver');
+        $this->assertTrue($none['rates_missing']);
+        $this->assertNull($none['nisab']);
+        $this->assertSame('0.00', $none['due']);
+
+        // …and with one it computes (612.36 g × 90 = 55,112.40; 70,000 is above it; 2.5% = 1,750).
+        $own = $this->zakat->calculate($this->assets(['cash' => '70000']), '0', 'silver', '90');
+        $this->assertFalse($own['rates_missing']);
+        $this->assertSame('55112.40', $own['nisab']);
+        $this->assertSame('1750.00', $own['due']);
+
+        // Garbage / zero / negative visitor prices never invent a threshold.
+        foreach (['0', '-5', 'abc', ''] as $bad) {
+            $this->assertTrue($this->zakat->calculate($this->assets(['cash' => '70000']), '0', 'silver', $bad)['rates_missing'], "price '$bad'");
+        }
+    }
 }

@@ -52,7 +52,7 @@
                             <x-ui.badge color="brand">{{ bn($conversation->unread_count) }} {{ __('messages.unread_badge') }}</x-ui.badge>
                         @endif
                         <p class="text-[11px] text-muted tabular-nums mt-1 whitespace-nowrap">
-                            {{ $conversation->last_message_at?->format('d/m/Y H:i') ?? '—' }}
+                            {{ dt_label($conversation->last_message_at) ?? '—' }}
                         </p>
                     </div>
                 </a>

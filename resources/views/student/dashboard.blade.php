@@ -170,7 +170,7 @@
                         @endif
                     </a>
                 @empty
-                    <div class="px-4 py-8 text-center text-sm text-muted">{{ __('results.none_yet') }}</div>
+                    <div class="px-4 py-4 text-center text-sm text-muted">{{ __('results.none_yet') }}</div>
                 @endforelse
             </x-ui.card>
 
@@ -190,7 +190,7 @@
                         </span>
                     </div>
                 @empty
-                    <div class="px-4 py-8 text-center text-sm text-muted">{{ __('dashboard.no_transactions') }}</div>
+                    <div class="px-4 py-4 text-center text-sm text-muted">{{ __('dashboard.no_transactions') }}</div>
                 @endforelse
             </x-ui.card>
         </div>

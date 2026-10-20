@@ -76,4 +76,5 @@ return [
     'status_duplicate' => 'Duplicate — skipped',
     'status_error' => 'Error — skipped',
     'confirm_import_count' => 'Confirm import of :count',
+    'clear_selection' => 'Clear selection',
 ];

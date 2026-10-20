@@ -45,4 +45,7 @@ return [
     'open_menu' => 'মেনু খুলুন',
     'close_menu' => 'মেনু বন্ধ করুন',
     'profile_requests' => 'সংশোধনের অনুরোধ',
+    'group_academic' => 'শিক্ষা',
+    'group_content' => 'কনটেন্ট ও যোগাযোগ',
+    'group_system' => 'সিস্টেম',
 ];

@@ -6,4 +6,5 @@
     </div>
     <p class="font-semibold text-ink">{{ $title }}</p>
     @if (trim($slot) !== '')<p class="text-sm text-muted mt-1 max-w-sm mx-auto">{{ $slot }}</p>@endif
+    @isset($action)<div class="mt-5 flex justify-center">{{ $action }}</div>@endisset
 </div>

@@ -4,7 +4,7 @@
     </div>
 
     @if ($courses->isEmpty())
-        <x-ui.card><x-ui.empty :title="__('courses.no_courses_admin')">{{ __('courses.create_first_course') }}</x-ui.empty></x-ui.card>
+        <x-ui.card><x-ui.empty :title="__('courses.no_courses_admin')">{{ __('courses.create_first_course') }}<x-slot:action><x-ui.button :href="route('admin.courses.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('courses.new_course') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
         <x-ui.table>
             <x-slot:head>

@@ -88,7 +88,7 @@
                         <span class="font-semibold text-ink">{{ $a->quiz->title }}</span>
                         @if ($a->submit_order !== null && $a->submitted_at)<span>{{ __('results_admin.col_order') }}: <span class="font-bold text-brand">{{ bn($a->submit_order) }}</span></span>@endif
                         <span>{{ $mLive ? __('results_admin.live') : $fmt($a->time_taken_seconds) }}</span>
-                        <span>{{ $a->submitted_at?->format('d/m/Y H:i') ?? '—' }}</span>
+                        <span>{{ dt_label($a->submitted_at) ?? '—' }}</span>
                     </div>
                 </a>
             @endforeach
@@ -136,7 +136,7 @@
                                     <span class="text-muted">—</span>
                                 @endif
                             </td>
-                            <td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $a->submitted_at?->format('d/m/Y H:i') ?? '—' }}</td>
+                            <td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ dt_label($a->submitted_at) ?? '—' }}</td>
                             <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap {{ $live ? 'text-muted' : 'text-ink font-medium' }}">
                                 {{ $live ? __('results_admin.live') : $fmt($a->time_taken_seconds) }}
                             </td>

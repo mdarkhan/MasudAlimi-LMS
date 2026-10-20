@@ -68,4 +68,8 @@ return [
     'dev_name_en' => 'Name (English)',
     'dev_whatsapp_url' => 'WhatsApp link',
     'dev_linkedin_url' => 'LinkedIn link',
+    'nisab_preview' => 'Nisab preview — check it before saving',
+    'grams' => 'g',
+    'vori' => 'bhori',
+    'price_missing' => 'price not set',
 ];

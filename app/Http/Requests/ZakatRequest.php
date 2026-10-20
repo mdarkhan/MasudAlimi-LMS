@@ -32,6 +32,7 @@ class ZakatRequest extends FormRequest
             'receivable' => $money,
             'other' => $money,
             'liabilities' => $money,
+            'custom_rate' => ['nullable', 'numeric', 'min:0', 'max:99999999'],   // visitor's own per-gram price (only used when the admin set none)
             'basis' => ['required', Rule::in([ZakatCalculatorService::BASIS_GOLD, ZakatCalculatorService::BASIS_SILVER])],
         ];
     }

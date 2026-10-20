@@ -4,7 +4,7 @@
     </div>
 
     @if ($books->isEmpty())
-        <x-ui.card><x-ui.empty :title="__('books.no_books')" /></x-ui.card>
+        <x-ui.card><x-ui.empty :title="__('books.no_books')"><x-slot:action><x-ui.button :href="route('admin.books.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('books.new_book') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
         <x-ui.table>
             <x-slot:head>

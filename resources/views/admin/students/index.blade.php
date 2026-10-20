@@ -25,7 +25,7 @@
     </div>
 
     @if ($students->isEmpty())
-        <x-ui.card><x-ui.empty :title="__('students.no_students')" /></x-ui.card>
+        <x-ui.card><x-ui.empty :title="__('students.no_students')"><x-slot:action><x-ui.button :href="route('admin.students.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('students.new') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
         <div x-data="{ selected: [] }">
             <form method="POST" action="{{ route('admin.students.bulk-status') }}"
@@ -37,7 +37,7 @@
 
                 @if (auth()->user()->hasPermission('students.suspend'))
                     <div x-show="selected.length > 0" x-cloak
-                         class="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-brand/30 bg-brand-tint/40 p-3">
+                         class="sticky top-20 z-20 mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-brand/40 bg-surface shadow-lg ring-1 ring-brand/20 p-3">
                         <span class="text-sm font-semibold text-ink" x-text="selected.length + ' {{ __('students.selected_suffix') }}'"></span>
                         <x-ui.select name="status" class="sm:w-48">
                             <option value="active">{{ __('students.status_active') }}</option>
@@ -45,6 +45,7 @@
                             <option value="archived">{{ __('students.status_archived') }}</option>
                         </x-ui.select>
                         <x-ui.button type="submit" size="sm">{{ __('students.apply_bulk') }}</x-ui.button>
+                        <button type="button" @click="selected = []" class="ms-auto text-xs font-semibold text-muted hover:text-ink">{{ __('students.clear_selection') }}</button>
                     </div>
                 @endif
 

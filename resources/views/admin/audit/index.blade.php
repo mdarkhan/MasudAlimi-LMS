@@ -17,7 +17,7 @@
             @foreach ($logs as $log)
                 <div x-data="{ open: false }" class="rounded-xl border border-line bg-card overflow-hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-[auto_auto_1fr_auto] items-center gap-2 sm:gap-4 px-4 py-3 text-sm">
-                        <span class="text-muted whitespace-nowrap text-xs">{{ $log->created_at->format('d/m/Y H:i') }}</span>
+                        <span class="text-muted whitespace-nowrap text-xs">{{ dt_label($log->created_at) }}</span>
                         <span class="text-ink">{{ $log->user?->name ?? __('dashboard.system') }}</span>
                         <code class="text-xs font-mono text-brand-strong">{{ $log->action }}</code>
                         <span class="text-muted text-xs">

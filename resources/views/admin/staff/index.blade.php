@@ -4,7 +4,7 @@
     </div>
 
     @if ($staff->isEmpty())
-        <x-ui.card><x-ui.empty :title="__('staff.no_staff')" /></x-ui.card>
+        <x-ui.card><x-ui.empty :title="__('staff.no_staff')"><x-slot:action><x-ui.button :href="route('admin.staff.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('staff.new_staff') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
         <x-ui.table>
             <x-slot:head>

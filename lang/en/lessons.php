@@ -37,4 +37,5 @@ return [
     'next_lesson' => 'Next class',
     'viewed_by_col' => 'Viewed by',
     'syllabus' => 'Next preparation / Syllabus',
+    'audio_not_playing_hint' => "If the audio does not play, open or download it with the button below. If Drive asks you to sign in, sign in to your Google account once and try again.",
 ];

@@ -53,7 +53,7 @@
                     </x-slot:head>
                     @foreach ($transactions as $tx)
                         <tr>
-                            <td class="px-4 py-3 text-muted whitespace-nowrap">{{ $tx->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3 text-muted whitespace-nowrap">{{ dt_label($tx->created_at) }}</td>
                             <td class="px-4 py-3"><x-ui.badge :color="$tx->amount >= 0 ? 'success' : 'danger'">{{ $tx->type }}</x-ui.badge></td>
                             <td class="px-4 py-3 text-ink">{{ $tx->reason ?? '—' }}</td>
                             <td class="px-4 py-3 text-muted hidden sm:table-cell">{{ $tx->performedBy?->name ?? __('dashboard.system') }}</td>

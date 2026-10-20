@@ -98,7 +98,7 @@
                         <div class="flex items-center justify-between px-5 py-3">
                             <div class="min-w-0">
                                 <p class="text-sm text-ink truncate">{{ $tx->reason ?? __('students.adjustment') }}</p>
-                                <p class="text-xs text-muted">{{ $tx->created_at->format('d/m/Y H:i') }} · {{ $tx->performedBy?->name ?? __('dashboard.system') }}</p>
+                                <p class="text-xs text-muted">{{ dt_label($tx->created_at) }} · {{ $tx->performedBy?->name ?? __('dashboard.system') }}</p>
                             </div>
                             <span class="font-bold tabular-nums {{ $tx->amount >= 0 ? 'text-brand' : 'text-rose-500' }}">{{ $tx->amount >= 0 ? '+' : '' }}{{ bn($tx->amount) }}</span>
                         </div>
@@ -115,7 +115,7 @@
                         <div class="flex items-center justify-between px-5 py-3">
                             <div class="min-w-0">
                                 <p class="text-sm text-ink truncate">{{ $attempt->quiz?->title ?? '—' }}</p>
-                                <p class="text-xs text-muted">{{ $attempt->submitted_at?->format('d/m/Y') ?? '—' }}</p>
+                                <p class="text-xs text-muted">{{ date_label($attempt->submitted_at) ?? '—' }}</p>
                             </div>
                             <span class="text-sm font-semibold text-ink tabular-nums">{{ bn($attempt->final_score) }}/{{ bn($attempt->total_marks_snapshot) }}</span>
                         </div>

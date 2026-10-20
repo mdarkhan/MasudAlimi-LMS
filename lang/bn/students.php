@@ -76,4 +76,5 @@ return [
     'status_duplicate' => 'ডুপ্লিকেট — বাদ',
     'status_error' => 'ত্রুটি — বাদ',
     'confirm_import_count' => ':count জন ইমপোর্ট নিশ্চিত করুন',
+    'clear_selection' => 'নির্বাচন বাতিল',
 ];

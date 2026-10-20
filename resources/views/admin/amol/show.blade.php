@@ -16,7 +16,7 @@
 
     <x-ui.card>
         <div class="flex items-center gap-3 mb-4">
-            <h3 class="font-bold text-ink whitespace-nowrap">{{ bn($date->format('d/m/Y')) }}</h3>
+            <h3 class="font-bold text-ink whitespace-nowrap">{{ date_label($date) }}</h3>
             <span class="flex-1 min-w-0 text-center text-sm font-semibold text-muted tabular-nums">
                 {{ __('amol.progress', ['done' => bn($checklist->where('is_done', true)->count()), 'total' => bn($checklist->count())]) }}
             </span>
@@ -47,7 +47,7 @@
             <div x-show="!editing" x-cloak>
                 <p class="text-sm text-ink leading-relaxed whitespace-pre-wrap [&_strong]:font-extrabold rounded-xl bg-surface-raised border border-line px-4 py-3">{!! chat_format($note->note) !!}</p>
                 <p class="text-xs text-muted mt-2">
-                    {{ __('amol.note_by', ['name' => $note->commentedBy?->name ?? '—', 'at' => $note->commented_at?->format('d/m/Y H:i') ?? '']) }}
+                    {{ __('amol.note_by', ['name' => $note->commentedBy?->name ?? '—', 'at' => dt_label($note->commented_at) ?? '']) }}
                 </p>
 
                 <div class="mt-3 flex flex-wrap justify-end gap-2">

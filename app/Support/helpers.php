@@ -91,3 +91,31 @@ if (! function_exists('duration_label')) {
         return implode(' ', $parts);
     }
 }
+
+
+if (! function_exists('dt_label')) {
+    /**
+     * Readable date (+ time) for the admin panel: "10 অক্টোবর 2026, 11:44 PM" style — day, month NAME, year, then a
+     * 12-hour clock. Bengali digits and month names in the Bengali UI, Latin in the English UI. Null in, null out,
+     * so `dt_label($x) ?? '—'` works. (Eloquent datetimes are already in the app timezone, Asia/Dhaka.)
+     */
+    function dt_label(?\DateTimeInterface $date, bool $withTime = true): ?string
+    {
+        if ($date === null) {
+            return null;
+        }
+
+        $month = trans('ui.months')[(int) $date->format('n')] ?? $date->format('M');
+        $out = bn($date->format('j')).' '.$month.' '.bn($date->format('Y'));
+
+        return $withTime ? $out.', '.bn($date->format('g:i')).' '.$date->format('A') : $out;
+    }
+}
+
+if (! function_exists('date_label')) {
+    /** Date only — see dt_label(). */
+    function date_label(?\DateTimeInterface $date): ?string
+    {
+        return dt_label($date, false);
+    }
+}

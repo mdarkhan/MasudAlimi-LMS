@@ -4,7 +4,7 @@
             <h1 class="text-2xl sm:text-3xl font-black text-ink">{{ __('public.search_heading') }}</h1>
             <form method="GET" action="{{ route('search.index') }}" class="mt-4 flex gap-2">
                 <x-ui.input type="search" name="q" value="{{ $q }}" placeholder="{{ __('public.search_placeholder') }}" class="flex-1" autofocus />
-                <x-ui.button type="submit"><x-ui.icon name="search" class="w-4 h-4" /></x-ui.button>
+                <x-ui.button type="submit" aria-label="{{ __('ui.search') }}"><x-ui.icon name="search" class="w-4 h-4" /></x-ui.button>
             </form>
         </header>
 

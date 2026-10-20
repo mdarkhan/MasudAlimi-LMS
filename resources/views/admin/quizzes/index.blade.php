@@ -39,7 +39,7 @@
     </div>
 
     @if ($quizzes->isEmpty())
-        <x-ui.card><x-ui.empty :title="__('quizzes.no_quizzes')">{{ __('quizzes.no_quizzes_hint') }}</x-ui.empty></x-ui.card>
+        <x-ui.card><x-ui.empty :title="__('quizzes.no_quizzes')">{{ __('quizzes.no_quizzes_hint') }}<x-slot:action><x-ui.button :href="route('admin.quizzes.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('quizzes.new_quiz') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
         <x-ui.table>
             <x-slot:head>
@@ -64,7 +64,7 @@
                             @if ($quiz->practice_enabled) · {{ __('quizzes.practice_suffix') }} @endif
                         </p>
                         @if ($quiz->starts_at)
-                            <p class="text-xs text-muted mt-0.5">{{ $quiz->starts_at->format('d/m/Y H:i') }}@if ($quiz->ends_at) – {{ $quiz->ends_at->format('d/m H:i') }}@endif</p>
+                            <p class="text-xs text-muted mt-0.5">{{ dt_label($quiz->starts_at) }}@if ($quiz->ends_at) – {{ $quiz->ends_at->format('d/m H:i') }}@endif</p>
                         @endif
                     </td>
                     <td class="px-4 py-3 text-muted text-sm hidden md:table-cell">

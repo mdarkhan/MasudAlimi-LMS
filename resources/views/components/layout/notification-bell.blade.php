@@ -16,9 +16,8 @@
         unread: {{ (int) $bellUnread }},
         notifications: @js($bellRecent),
         bengali: {{ app()->getLocale() !== 'en' ? 'true' : 'false' }},
-     })"
-     x-init="init()">
-    <button @click="toggle()" class="relative p-2 rounded-lg text-muted hover:text-ink hover:bg-ink/5 transition-colors" aria-label="{{ __('notifications.heading') }}">
+     })">
+    <button @click="toggle()" :aria-expanded="open.toString()" aria-haspopup="true" class="relative p-2 rounded-lg text-muted hover:text-ink hover:bg-ink/5 transition-colors" aria-label="{{ __('notifications.heading') }}">
         <x-ui.icon name="bell" class="w-5 h-5" />
         <span x-show="unread > 0" x-cloak x-text="badgeText()"
               class="absolute top-0.5 right-0.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold grid place-items-center leading-none"></span>

@@ -31,7 +31,7 @@ return [
     'yesterday' => 'Yesterday',
     'am' => 'AM',
     'pm' => 'PM',
-    'emoji_search' => 'Search emoji',
+    'emoji_search' => 'Search emoji (e.g. smile, heart)',
     'emoji_none' => 'No emoji found',
     'emoji_recent' => 'Recent',
     'emoji_recent_empty' => 'No emoji used yet.',

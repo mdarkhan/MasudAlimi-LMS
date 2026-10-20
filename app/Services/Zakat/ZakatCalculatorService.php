@@ -45,13 +45,14 @@ class ZakatCalculatorService
      * @param  array<string, string|float|int|null>  $assets   keyed by ASSET_KEYS (currency values)
      * @param  string|float|int|null  $liabilities             eligible short-term liabilities
      * @param  string|null  $basis                             'gold'|'silver'; defaults to the configured basis
+     * @param  string|float|int|null  $customRate              the visitor's own per-gram price, used ONLY when the admin has not set one (never stored)
      * @return array{
      *     gross: string, deductible: string, net: string, basis: string,
      *     nisab: ?string, nisab_reached: bool, rate: string, due: string,
      *     rates_missing: bool, currency: string, updated_at: ?string
      * }
      */
-    public function calculate(array $assets, string|float|int|null $liabilities, ?string $basis = null): array
+    public function calculate(array $assets, string|float|int|null $liabilities, ?string $basis = null, string|float|int|null $customRate = null): array
     {
         $basis = in_array($basis, [self::BASIS_GOLD, self::BASIS_SILVER], true)
             ? $basis
@@ -67,7 +68,7 @@ class ZakatCalculatorService
         $deductible = bccomp($liab, $gross, self::CALC_SCALE) > 0 ? $gross : $liab;
         $net = bcsub($gross, $deductible, self::CALC_SCALE);
 
-        $nisab = $this->nisabValue($basis);
+        $nisab = $this->nisabValue($basis, $customRate);
         $ratesMissing = $nisab === null;
 
         $reached = ! $ratesMissing && bccomp($net, $nisab, self::CALC_SCALE) >= 0;
@@ -93,7 +94,7 @@ class ZakatCalculatorService
      * is not configured (or zero) — the calculator then fails safe with a warning rather
      * than inventing a threshold.
      */
-    public function nisabValue(string $basis): ?string
+    public function nisabValue(string $basis, string|float|int|null $customRate = null): ?string
     {
         [$grams, $rateKey] = $basis === self::BASIS_GOLD
             ? [self::NISAB_GOLD_GRAMS, 'gold_price_per_gram']
@@ -101,7 +102,12 @@ class ZakatCalculatorService
 
         $rate = $this->settings->get($rateKey);
         if ($rate === null || $rate === '' || bccomp($this->decimal($rate), '0', self::CALC_SCALE) <= 0) {
-            return null;
+            // No admin-set price. Fall back to the visitor's own figure for THIS calculation only — the
+            // admin's price always wins when it exists, and nothing the visitor types is persisted.
+            $rate = $customRate;
+            if ($rate === null || $rate === '' || bccomp($this->decimal($rate), '0', self::CALC_SCALE) <= 0) {
+                return null;
+            }
         }
 
         return bcmul($grams, $this->decimal($rate), self::CALC_SCALE);

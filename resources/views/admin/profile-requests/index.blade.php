@@ -12,7 +12,7 @@
                             <a href="{{ route('admin.students.show', $r->student) }}" class="font-bold text-ink hover:text-brand">{{ $r->student->name }}</a>
                             <span class="text-sm text-muted tabular-nums"> · {{ __('students.roll_col') }} {{ bn($r->student->roll) }}</span>
                         </div>
-                        <span class="text-xs text-muted tabular-nums">{{ $r->created_at->format('d/m/Y H:i') }}</span>
+                        <span class="text-xs text-muted tabular-nums">{{ dt_label($r->created_at) }}</span>
                     </div>
 
                     <div class="grid sm:grid-cols-2 gap-3 mb-3">
@@ -63,7 +63,7 @@
                     <td class="px-4 py-3">{{ $r->student?->name }}</td>
                     <td class="px-4 py-3 text-muted"><s>{{ $r->old_name }}</s> → {{ $r->new_name }}</td>
                     <td class="px-4 py-3 text-center"><x-ui.badge :color="$r->status === 'approved' ? 'success' : 'danger'">{{ __('profile_requests.status_'.$r->status) }}</x-ui.badge></td>
-                    <td class="px-4 py-3 text-xs text-muted">{{ $r->reviewer?->name ?? '—' }} · {{ $r->reviewed_at?->format('d/m/Y H:i') }}</td>
+                    <td class="px-4 py-3 text-xs text-muted">{{ $r->reviewer?->name ?? '—' }} · {{ dt_label($r->reviewed_at) }}</td>
                 </tr>
             @endforeach
         </x-ui.table>

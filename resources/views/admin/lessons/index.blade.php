@@ -12,7 +12,7 @@
     </div>
 
     @if ($lessons->isEmpty())
-        <x-ui.card><x-ui.empty :title="__('lessons.no_lessons')" /></x-ui.card>
+        <x-ui.card><x-ui.empty :title="__('lessons.no_lessons')"><x-slot:action><x-ui.button :href="route('admin.lessons.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('lessons.new_lesson') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
         <x-ui.table>
             <x-slot:head>
