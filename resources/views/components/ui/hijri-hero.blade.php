@@ -40,12 +40,17 @@
             @endif
         </div>
 
-        {{-- Hijri: the day as the big number --}}
-        <div class="mt-3 flex items-end gap-3">
-            <span class="text-7xl sm:text-8xl font-black leading-none tabular-nums">{{ bn($h['day']) }}</span>
-            <span class="pb-1.5">
-                <span class="block text-2xl sm:text-3xl font-black leading-tight">{{ $h['month_name'] }}</span>
-                <span class="block text-base font-semibold opacity-90">{{ bn($h['year']) }} {{ __('calendar.ah') }}</span>
+        {{-- Hijri: the day as the big number; a live clock beside it --}}
+        <div class="mt-3 flex items-end justify-between gap-3">
+            <div class="flex items-end gap-3 min-w-0">
+                <span class="text-7xl sm:text-8xl font-black leading-none tabular-nums">{{ bn($h['day']) }}</span>
+                <span class="pb-1.5 min-w-0">
+                    <span class="block text-2xl sm:text-3xl font-black leading-tight">{{ $h['month_name'] }}</span>
+                    <span class="block text-base font-semibold opacity-90">{{ bn($h['year']) }} {{ __('calendar.ah') }}</span>
+                </span>
+            </div>
+            <span class="shrink-0 grid place-items-center size-20 sm:size-24 rounded-full bg-white/10 ring-1 ring-white/20 dark:bg-brand-ink/10 dark:ring-brand-ink/20">
+                <x-ui.live-clock :now="$g['carbon'] ?? null" second="text-gold dark:text-brand-ink" class="size-16 sm:size-20" />
             </span>
         </div>
         <p class="mt-3 text-sm sm:text-base opacity-95">{{ $bangla }} <span class="opacity-60 mx-1">·</span> {{ $gregorian }}</p>
@@ -71,10 +76,10 @@
             </div>
         @endif
 
-        <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs opacity-85">
+        <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold">
             <x-ui.icon name="sun" class="w-4 h-4" />
             <span>{{ __('calendar.sunset', ['time' => $clock($sunset)]) }}</span>
-            <span class="opacity-70">— {{ __('calendar.sunset_note') }}</span>
+            <span>— {{ __('calendar.sunset_note') }}</span>
         </p>
     </div>
 </div>
