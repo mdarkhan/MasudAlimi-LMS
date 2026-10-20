@@ -31,7 +31,8 @@
     <div x-data="{ mobileNav: false }" class="min-h-screen lg:flex">
 
         {{-- Sidebar (desktop) --}}
-        <aside class="hidden lg:flex lg:flex-col w-64 shrink-0 border-r border-line bg-surface-raised print:hidden">
+        {{-- sticky + full viewport height: the menu stays put while the page scrolls (its own list scrolls if long) --}}
+        <aside class="hidden lg:flex lg:flex-col w-64 shrink-0 lg:sticky lg:top-0 lg:h-dvh border-r border-line bg-surface-raised print:hidden">
             <div class="h-16 flex items-center px-5 border-b border-line">
                 <x-ui.brand :sub="false" />
             </div>

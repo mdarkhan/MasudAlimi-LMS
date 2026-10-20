@@ -8,9 +8,10 @@
     $disabled = $item['disabled'] ?? false;
     $badge = $item['badge'] ?? null;
 
+    // Current page = solid brand (the strongest mark on the menu); hover = a light brand wash.
     $cls = $active
-        ? 'bg-brand-tint text-brand-strong font-semibold'
-        : 'text-muted hover:text-white hover:bg-brand';
+        ? 'bg-brand text-brand-ink font-semibold shadow-sm'
+        : 'text-muted hover:text-brand-strong hover:bg-brand-tint';
 @endphp
 
 @if ($disabled)
@@ -26,7 +27,7 @@
         <span class="truncate">{{ $label }}</span>
         @if ($badge)
             {{-- Unread count. Numeric badges render in the UI locale's digits. --}}
-            <span class="ml-auto shrink-0 min-w-5 px-1.5 py-0.5 rounded-full bg-brand text-brand-ink text-xs font-bold text-center tabular-nums">{{ is_numeric($badge) ? bn($badge) : $badge }}</span>
+            <span class="ml-auto shrink-0 min-w-5 px-1.5 py-0.5 rounded-full {{ $active ? 'bg-brand-ink text-brand' : 'bg-brand text-brand-ink' }} text-xs font-bold text-center tabular-nums">{{ is_numeric($badge) ? bn($badge) : $badge }}</span>
         @endif
     </a>
 @endif
