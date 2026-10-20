@@ -28,7 +28,7 @@
 @endphp
 
 <x-layout.base :title="$title" :description="$description" :canonical="$canonical" :og-image="$ogImage">
-    <div x-data="{ open: false }" class="min-h-screen flex flex-col">
+    <div x-data="{ open: false }" @keydown.escape.window="open = false" class="min-h-screen flex flex-col">
         <header class="sticky top-0 z-30 bg-surface/85 backdrop-blur border-b border-line">
             <div class="max-w-6xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
                 <x-ui.brand class="min-w-0" />
@@ -60,14 +60,24 @@
                         {{-- Wrapper does the hiding: x-ui.button forces inline-flex, so `hidden` on the button itself never wins. --}}
                         <span class="hidden sm:inline-flex"><x-ui.button :href="route('login')" size="sm">{{ __('nav.login') }}</x-ui.button></span>
                     @endauth
-                    <button @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" class="xl:hidden p-1.5 sm:p-2 text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}">
-                        <x-ui.icon name="menu" />
+                    <button x-ref="menuButton" @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" class="xl:hidden p-1.5 sm:p-2 text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}">
+                        <x-ui.icon name="menu" x-show="! open" />
+                        <x-ui.icon name="close" x-show="open" x-cloak />
                     </button>
                 </div>
             </div>
 
-            {{-- Mobile/tablet menu (below lg) --}}
-            <div x-show="open" x-cloak class="xl:hidden border-t border-line bg-surface" style="display:none">
+            {{-- Mobile/tablet menu (below xl). It DROPS OVER the page (absolute, under the header) instead of
+                 sitting in the header's flow: in flow it made the sticky header taller and shoved the page the
+                 reader was on downward. Tapping outside, a link, the ✕ or Escape closes it; the page never moves. --}}
+            <div x-show="open" x-cloak @click="open = false"
+                 x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition-opacity duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="xl:hidden absolute inset-x-0 top-full h-dvh bg-black/40" style="display:none" aria-hidden="true"></div>
+            <div x-show="open" x-cloak @click.outside="if (! $refs.menuButton.contains($event.target)) open = false"
+                 x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition duration-150 ease-in" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
+                 class="xl:hidden absolute inset-x-0 top-full border-y border-line bg-surface shadow-xl max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain" style="display:none">
                 <nav class="max-w-6xl mx-auto px-4 py-2 space-y-1">
                     @foreach ($nav as $item)
                         <a href="{{ $item['href'] }}" @click="open = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-ink hover:bg-ink/5">{{ $item['label'] }}</a>
