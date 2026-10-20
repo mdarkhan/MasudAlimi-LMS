@@ -178,10 +178,9 @@ and `super_admin` bypasses `perm:` via `User::hasPermission()`.
   the only way to make this deterministic rather than probabilistic. There is no
   separate `Vite::fonts()` call, `fonts-manifest.json`, or fallback face (`fontaine`
   was removed as a dependency) — plain `@vite(...)` is enough, because this is just a
-  CSS asset now, not laravel-vite-plugin's dedicated fonts feature. **h1/h2 use Tiro Bangla**
-  (`--font-display`, Bengali block only, regular weight — no faux bold, `size-adjust: 112%` measured
-  the same way) and **`.font-arabic` uses Amiri subset to the bismillah glyphs only** (20 KB); both
-  are inlined the same way (`vite.config.js` list). If `.font-arabic` is used for any new Arabic
+  CSS asset now, not laravel-vite-plugin's dedicated fonts feature. Headings stay in Kalpurush (Tiro Bangla was
+  tried and rejected by the owner). **`.font-arabic` uses Amiri subset to the bismillah glyphs only**
+  (20 KB), inlined the same way (`vite.config.js` list). If `.font-arabic` is used for any new Arabic
   text, re-subset Amiri to include it (OFL licences in `resources/fonts/`).
 - **Kalpurush's `@font-face` carries `size-adjust: 112%`.** Its own glyphs sit
   noticeably smaller within their em-box than the system Bengali fonts this site

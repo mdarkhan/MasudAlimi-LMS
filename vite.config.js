@@ -19,8 +19,8 @@ export default defineConfig({
         // moment no matter how HTTP caching or font-display are tuned. Inlining it
         // into the render-blocking stylesheet removes that request entirely. See the
         // font-face comment in app.css and CLAUDE.md for the full history.
-        // The heading face (Tiro Bangla) and the bismillah's Amiri subset are inlined for the same reason.
-        assetsInlineLimit: (filePath) => ['kalpurush.woff2', 'tiro-bangla.woff2', 'amiri-bismillah.woff2'].some((f) => filePath.endsWith(f)) ? true : undefined,
+        // The bismillah's Amiri subset is inlined for the same reason.
+        assetsInlineLimit: (filePath) => ['kalpurush.woff2', 'amiri-bismillah.woff2'].some((f) => filePath.endsWith(f)) ? true : undefined,
     },
     server: {
         watch: {

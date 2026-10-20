@@ -45,25 +45,6 @@
 }
 
 /*
- * Headings (h1/h2): Tiro Bangla, a calligraphic book serif in the spirit of the institution's printed
- * covers. Bengali block only (unicode-range), so Latin in a heading falls through to the body stack.
- * Inlined into this stylesheet exactly like Kalpurush (vite.config.js), for the same no-flash reason.
- * Source: Fontsource @fontsource/tiro-bangla (SIL OFL 1.1), the "bengali" subset, regular weight —
- * the family has no bold, so headings never synthesise one (see the h1/h2 rule below).
- */
-@font-face {
-    font-family: 'tiro-bangla';
-    font-style: normal;
-    font-weight: 400;
-    font-display: block;
-    src: url('../fonts/tiro-bangla.woff2') format('woff2');
-    /* measured like Kalpurush (canvas, 128px, Bengali sample): Tiro's glyphs stood ~11% shorter than
-       Kalpurush's (already size-adjusted), so headings would read smaller than the text beside them */
-    size-adjust: 112%;
-    unicode-range: U+0951-0952, U+0964-0965, U+0980-09FE, U+1CD0, U+1CD2, U+1CD5-1CD6, U+1CD8, U+1CE1, U+1CEA, U+1CED, U+1CF2, U+1CF5-1CF7, U+200C-200D, U+20B9, U+25CC, U+A8F1;
-}
-
-/*
  * Arabic (.font-arabic — the bismillah): Amiri, self-hosted and inlined. Subset to ONLY the glyphs of the
  * two bismillah spellings the views use (108 KB -> 20 KB); add the text to the subset if .font-arabic is
  * ever used for anything else. Source: Fontsource @fontsource/amiri (SIL OFL 1.1).
@@ -92,7 +73,6 @@
  */
 @theme {
     --font-sans: 'kalpurush', 'Twemoji Country Flags', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'tiro-bangla', 'kalpurush', 'Twemoji Country Flags', ui-sans-serif, system-ui, sans-serif;
     --font-arabic: 'amiri', 'Noto Naskh Arabic', serif;
 
     --color-surface: var(--surface);
@@ -151,12 +131,12 @@
     /* Native controls (date/time pickers' calendar icon, scrollbars, select arrows) follow the theme;
        without this the date icon stays black on the dark surface and cannot be seen. */
     color-scheme: dark;
-    --surface: #0d1512;         /* ink-dark paper (green-black, not blue slate) */
-    --surface-raised: #121b18;
-    --card: #16211d;
-    --ink: #e9f0ec;             /* 16:1 */
-    --muted: #9daea7;           /* 8:1 */
-    --line: #26332e;
+    --surface: #0b1220;
+    --surface-raised: #0f172a;  /* slate-900 */
+    --card: #172033;
+    --ink: #f1f5f9;             /* slate-100 */
+    --muted: #94a3b8;           /* slate-400, 7.5:1 */
+    --line: #263043;
     --brand: #34c08e;           /* 8:1; dark ink on it 7.2:1 */
     --brand-strong: #6ad7ae;
     --brand-ink: #04231a;
@@ -184,9 +164,6 @@
 html[lang='en'] {
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
         'kalpurush', 'Twemoji Country Flags', ui-sans-serif, system-ui, sans-serif;
-    /* headings: Bengali in Tiro Bangla, English in the system face */
-    --font-display: 'tiro-bangla', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
-        'kalpurush', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -216,12 +193,6 @@ html[lang='en'] {
     }
 
     /* Arabic passages (bismillah, du'a) opt into a naskh face and larger leading. */
-    h1, h2 {
-        font-family: var(--font-display);
-        font-synthesis-weight: none;
-        letter-spacing: 0;
-    }
-
     .font-arabic {
         font-family: var(--font-arabic);
         line-height: 2;
