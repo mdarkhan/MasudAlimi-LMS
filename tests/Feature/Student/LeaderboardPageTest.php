@@ -104,7 +104,7 @@ class LeaderboardPageTest extends TestCase
         $response = $this->actingAs($me)->get(route('student.leaderboards.quiz', $quiz));
 
         $response->assertOk()
-            ->assertSee('<h1 class="font-bold text-ink truncate">Leaderboard</h1>', false)
+            ->assertSee('<h1 class="text-xl sm:text-2xl font-bold text-ink leading-snug text-balance">Leaderboard</h1>', false)
             ->assertSee('Aqidah Course')
             ->assertSee('Changed Exam Name')
             ->assertSee('Time taken')

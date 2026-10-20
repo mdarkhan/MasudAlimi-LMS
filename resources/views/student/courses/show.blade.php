@@ -1,4 +1,4 @@
-<x-layout.student :title="$lesson->title" :heading="$lesson->title">
+<x-layout.student :title="$lesson->title" :heading="false">
     <x-ui.breadcrumbs :items="[
         'কোর্স' => route('student.courses.index'),
         $lesson->course->title => route('student.courses.index', ['course' => $lesson->course->slug]),

@@ -54,4 +54,5 @@ return [
     'tab_amol' => 'Amol',
     'tab_leaderboard' => 'Ranking',
     'tab_messages' => 'Messages',
+    'you_are_here' => 'You are here',
 ];

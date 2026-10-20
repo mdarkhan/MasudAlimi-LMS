@@ -1,4 +1,5 @@
-@props(['sub' => true])
+@props(['sub' => true, 'compact' => false])
+{{-- compact: the mark only (the phone app header) --}}
 {{-- Mark: an open book (the Qur'an / tafsir) beneath a mihrab arch, with a small star at the apex.
      The same drawing is the favicon (public/favicon.svg) — keep the two in step. --}}
 <a href="{{ url('/') }}" {{ $attributes->merge(['class' => 'flex items-center gap-2.5']) }} aria-label="মাসউদ আলিমী">
@@ -10,5 +11,5 @@
             <path d="M11.4 18.3c-1.3-1-2.9-1.4-4.3-1.25v-5.4c1.5-.2 3.1.3 4.3 1.35Z M12.6 18.3c1.3-1 2.9-1.4 4.3-1.25v-5.4c-1.5-.2-3.1.3-4.3 1.35Z" fill="currentColor"/>
         </svg>
     </span>
-    <span class="font-black text-ink text-lg leading-none whitespace-nowrap">মাসউদ আলিমী</span>
+    @unless ($compact)<span class="font-black text-ink text-lg leading-none whitespace-nowrap">মাসউদ আলিমী</span>@endunless
 </a>

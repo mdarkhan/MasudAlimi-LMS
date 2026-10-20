@@ -7,7 +7,25 @@
     'bottomNav' => [],       // phones only: up to 5 top-level destinations in a bottom tab bar
 ])
 
-@php $user = auth()->user(); @endphp
+@php
+    $user = auth()->user();
+
+    // "Where am I": the page title lives at the top of the CONTENT (full width, wraps, never truncated —
+    // the header bar was too narrow on phones), with a trail above it: area › section › parent page.
+    // Pass heading=false when the page renders its own big title (e.g. a lesson).
+    $pageHeading = $heading === false ? null : ($heading ?? $title);
+    $activeItem = collect($nav)->first(fn ($item) => $item['active'] ?? false);
+    $trail = [];
+    if ($context) {
+        $trail[] = ['label' => $context, 'href' => null];
+    }
+    if ($activeItem && ! in_array($activeItem['group'] ?? 'main', ['main', null], true)) {
+        $trail[] = ['label' => __('nav.group_'.$activeItem['group']), 'href' => null];
+    }
+    if ($activeItem && $activeItem['label'] !== ($heading ?: $title)) {
+        $trail[] = ['label' => $activeItem['label'], 'href' => $activeItem['href']];
+    }
+@endphp
 
 <x-layout.base :title="$title" :noindex="true">
     <div x-data="{ mobileNav: false }" class="min-h-screen lg:flex">
@@ -58,9 +76,22 @@
         {{-- Main column --}}
         <div class="flex-1 min-w-0 flex flex-col">
             <header class="[view-transition-name:app-header] h-16 shrink-0 sticky top-0 z-30 bg-surface/80 backdrop-blur border-b border-line flex items-center justify-between px-4 sm:px-6 print:hidden">
-                <div class="flex items-center gap-3 min-w-0">
+                <div class="flex items-center gap-2 min-w-0">
                     <button @click="mobileNav = true" class="lg:hidden size-11 -ml-2.5 grid place-items-center rounded-lg text-muted hover:text-ink" aria-label="{{ __('nav.open_menu') }}"><x-ui.icon name="menu" /></button>
-                    <h1 class="font-bold text-ink truncate">{{ $heading ?? $title }}</h1>
+                    {{-- phones: just the logo mark here; the page title sits in the content below --}}
+                    <x-ui.brand :compact="true" class="lg:hidden" />
+                    {{-- desktop: the trail to this page --}}
+                    <nav class="hidden lg:flex items-center gap-1.5 min-w-0 text-sm text-muted" aria-label="{{ __('nav.you_are_here') }}">
+                        @foreach ($trail as $crumb)
+                            @if ($crumb['href'])
+                                <a href="{{ $crumb['href'] }}" class="shrink-0 px-0.5 hover:text-ink hover:underline underline-offset-4">{{ $crumb['label'] }}</a>
+                            @else
+                                <span class="shrink-0 px-0.5">{{ $crumb['label'] }}</span>
+                            @endif
+                            <x-ui.icon name="chevron" class="w-3.5 h-3.5 shrink-0 opacity-60" />
+                        @endforeach
+                        <span class="px-0.5 font-semibold text-ink truncate" aria-current="page">{{ $heading ?: $title }}</span>
+                    </nav>
                 </div>
                 <div class="flex items-center gap-1 sm:gap-2">
                     @if ($searchRoute)
@@ -92,6 +123,23 @@
                  momentary "wrong, then corrected" flash rather than a nice touch. --}}
             <main @class(['flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto', 'pb-28 lg:pb-6' => ! empty($bottomNav)])>
                 <x-flash />
+                @if ($pageHeading)
+                    <div class="mb-5">
+                        @if (! empty($trail))
+                            <p class="lg:hidden mb-1 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs text-muted">
+                                @foreach ($trail as $crumb)
+                                    @if ($crumb['href'])
+                                        <a href="{{ $crumb['href'] }}" class="hover:text-ink underline underline-offset-2 decoration-line">{{ $crumb['label'] }}</a>
+                                    @else
+                                        <span>{{ $crumb['label'] }}</span>
+                                    @endif
+                                    @unless ($loop->last)<x-ui.icon name="chevron" class="w-3 h-3 opacity-60" />@endunless
+                                @endforeach
+                            </p>
+                        @endif
+                        <h1 class="text-xl sm:text-2xl font-bold text-ink leading-snug text-balance">{{ $pageHeading }}</h1>
+                    </div>
+                @endif
                 {{ $slot }}
             </main>
 

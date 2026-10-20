@@ -54,4 +54,5 @@ return [
     'tab_amol' => 'আমল',
     'tab_leaderboard' => 'মেধাতালিকা',
     'tab_messages' => 'মেসেজ',
+    'you_are_here' => 'আপনি এখানে আছেন',
 ];
