@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\Quiz;
 use App\Models\User;
 use App\Services\Calendar\CalendarService;
+use App\Services\Calendar\PrayerTimeService;
 use App\Services\Settings\SettingService;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
@@ -20,6 +21,7 @@ class PublicController extends Controller
     public function __construct(
         private readonly CalendarService $calendar,
         private readonly SettingService $settings,
+        private readonly PrayerTimeService $prayers,
     ) {}
 
     public function home(): View
@@ -32,6 +34,7 @@ class PublicController extends Controller
 
         return view('public.home', [
             'calendar' => $this->calendar->all(),
+            'prayer' => $this->prayers->status(),
             'upcomingEvents' => $this->calendar->upcomingIslamicOccasions(),
             'books' => Book::query()->published()->with('purchaseLinks')->orderBy('sort_order')->limit(10)->get(),
             'courses' => $courses,

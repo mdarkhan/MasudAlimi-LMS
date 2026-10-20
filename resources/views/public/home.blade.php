@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="lg:col-span-5 flex flex-col gap-4">
-                    <x-ui.date-widget :calendar="$calendar" class="shadow-[--shadow-soft]" />
+                    <x-ui.hijri-hero :calendar="$calendar" :prayer="$prayer" />
                     <x-ui.islamic-events-widget :events="$upcomingEvents" class="shadow-[--shadow-soft]" />
                 </div>
             </div>
