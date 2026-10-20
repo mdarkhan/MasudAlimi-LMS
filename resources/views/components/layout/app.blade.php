@@ -152,7 +152,7 @@
                     $tabCount = count($bottomNav);
                     $activeTab = collect($bottomNav)->search(fn ($t) => $t['active'] ?? false);
                 @endphp
-                <nav class="lg:hidden fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pointer-events-none print:hidden"
+                <nav class="lg:hidden fixed inset-x-0 bottom-0 z-40 px-3 pt-10 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-linear-to-t from-surface from-45% to-transparent pointer-events-none print:hidden"
                      aria-label="{{ __('nav.bottom_nav') }}"
                      x-data="{
                          at: {{ $activeTab === false ? -1 : $activeTab }},
@@ -173,7 +173,7 @@
                      }">
                     {{-- The current tab is rendered on the server (data-on, the highlight's offset) so the first paint is
                          already final — Alpine only takes over on a tap. Nothing moves when a page arrives. --}}
-                    <div class="pointer-events-auto relative mx-auto max-w-md rounded-[1.4rem] bg-dock text-dock-muted shadow-[0_12px_32px_-8px_rgb(0_0_0/0.45)] ring-1 ring-white/10 p-1.5 [view-transition-name:dock]">
+                    <div class="pointer-events-auto relative mx-auto max-w-md rounded-[1.4rem] bg-dock text-dock-muted shadow-[0_12px_32px_-8px_rgb(0_0_0/0.45)] ring-1 ring-dock-ring p-1.5 [view-transition-name:dock]">
                         {{-- the sliding highlight --}}
                         <span class="absolute top-1.5 bottom-1.5 left-1.5 rounded-2xl bg-dock-active transition-transform duration-300 ease-out [view-transition-name:dock-pill]"
                               style="width: calc((100% - 0.75rem) / {{ $tabCount }}); transform: translateX({{ max((int) $activeTab, 0) * 100 }}%)"

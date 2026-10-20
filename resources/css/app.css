@@ -72,6 +72,7 @@
     --color-dock-muted: var(--dock-muted);
     --color-dock-active: var(--dock-active);
     --color-dock-glow: var(--dock-glow);
+    --color-dock-ring: var(--dock-ring);
 
     --radius-card: 1rem;
     --shadow-soft: 0 4px 20px -2px rgb(0 0 0 / 0.06);
@@ -94,6 +95,7 @@
     --dock-muted: #9cc3b5;
     --dock-active: rgb(255 255 255 / 0.09);
     --dock-glow: #34d399;
+    --dock-ring: rgb(255 255 255 / 0.08);
 }
 
 .dark {
@@ -111,11 +113,12 @@
     --brand-ink: #04231a;
     --brand-tint: #0b2f27;
     --accent: #2dd4bf;          /* teal-400 */
-    --dock: #1f2b45;
-    --dock-ink: #f1f5f9;
-    --dock-muted: #8796ad;
-    --dock-active: rgb(255 255 255 / 0.07);
+    --dock: #0f3b31;
+    --dock-ink: #ffffff;
+    --dock-muted: #9fd4c1;
+    --dock-active: rgb(52 211 153 / 0.16);
     --dock-glow: #34d399;
+    --dock-ring: rgb(52 211 153 / 0.35);
 }
 
 /*
