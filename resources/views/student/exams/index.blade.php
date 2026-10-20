@@ -35,7 +35,7 @@
 
                             <dl class="mt-3 space-y-1.5 text-sm text-muted">
                                 @if ($quiz->starts_at)
-                                    <div class="flex items-center gap-2"><x-ui.icon name="calendar" class="w-4 h-4" /> {{ $quiz->starts_at->format('d/m/Y H:i') }}</div>
+                                    <div class="flex items-center gap-2"><x-ui.icon name="calendar" class="w-4 h-4" /> {{ dt_label($quiz->starts_at) }}</div>
                                 @endif
                                 <div class="flex items-center gap-4">
                                     @if ($quiz->duration_seconds)<span class="flex items-center gap-1.5"><x-ui.icon name="clock" class="w-4 h-4" /> {{ __('exams.minutes', ['count' => bn(intdiv($quiz->duration_seconds, 60))]) }}</span>@endif

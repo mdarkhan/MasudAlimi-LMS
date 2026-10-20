@@ -35,7 +35,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <span>{{ $upcomingExam['state'] === 'open'
                         ? __('dashboard.exam_open_body', ['title' => $q->title])
-                        : __('dashboard.exam_upcoming_body', ['title' => $q->title, 'when' => $q->starts_at?->format('d/m/Y H:i')]) }}</span>
+                        : __('dashboard.exam_upcoming_body', ['title' => $q->title, 'when' => dt_label($q->starts_at)]) }}</span>
                     <x-ui.button :href="route('student.exams.index')" size="sm" variant="secondary">{{ __('dashboard.exam_view') }}</x-ui.button>
                 </div>
             </x-ui.alert>
@@ -165,7 +165,7 @@
                        class="flex items-center justify-between px-4 py-3 hover:bg-surface-raised/50">
                         <div class="min-w-0">
                             <p class="text-sm text-ink truncate">{{ $attempt->quiz->title }}</p>
-                            <p class="text-xs text-muted">{{ $attempt->submitted_at?->format('d/m/Y') }}</p>
+                            <p class="text-xs text-muted">{{ date_label($attempt->submitted_at) }}</p>
                         </div>
                         @if ($released)
                             <span class="font-bold text-brand tabular-nums">{{ bn($attempt->final_score) }}/{{ bn($attempt->total_marks_snapshot) }}</span>
@@ -187,7 +187,7 @@
                     <div class="flex items-center justify-between px-4 py-3">
                         <div class="min-w-0">
                             <p class="text-sm text-ink truncate">{{ $tx->reason ?? __('dashboard.point_adjustment') }}</p>
-                            <p class="text-xs text-muted">{{ $tx->created_at->format('d/m/Y') }}</p>
+                            <p class="text-xs text-muted">{{ date_label($tx->created_at) }}</p>
                         </div>
                         <span class="font-bold {{ $tx->amount >= 0 ? 'text-brand' : 'text-rose-500' }} tabular-nums">
                             {{ $tx->amount >= 0 ? '+' : '' }}{{ bn($tx->amount) }}

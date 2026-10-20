@@ -45,7 +45,7 @@
                 @if ($attempt->submitted_at)
                     <div>
                         <dt class="text-muted">{{ __('exams.result_submitted_at') }}</dt>
-                        <dd class="font-semibold text-ink tabular-nums">{{ $attempt->submitted_at->format('d/m/Y H:i') }}</dd>
+                        <dd class="font-semibold text-ink tabular-nums">{{ dt_label($attempt->submitted_at) }}</dd>
                     </div>
                 @endif
                 @if ($attempt->time_taken_seconds !== null)

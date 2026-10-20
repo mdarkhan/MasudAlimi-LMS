@@ -16,7 +16,7 @@
                 <div class="bg-card border border-line rounded-[--radius-card] shadow-[--shadow-soft] p-4 flex items-center justify-between gap-3">
                     <div class="min-w-0">
                         <p class="text-sm text-ink">{{ $tx->reason ?? __('points.adjustment') }}</p>
-                        <p class="text-xs text-muted tabular-nums mt-0.5">{{ $tx->created_at->format('d/m/Y') }}</p>
+                        <p class="text-xs text-muted tabular-nums mt-0.5">{{ date_label($tx->created_at) }}</p>
                     </div>
                     <div class="text-end shrink-0">
                         <p class="font-bold tabular-nums {{ $tx->amount >= 0 ? 'text-brand' : 'text-rose-500' }}">
@@ -38,7 +38,7 @@
                 </x-slot:head>
                 @foreach ($transactions as $tx)
                     <tr>
-                        <td class="px-4 py-3 text-center text-muted whitespace-nowrap">{{ $tx->created_at->format('d/m/Y') }}</td>
+                        <td class="px-4 py-3 text-center text-muted whitespace-nowrap">{{ date_label($tx->created_at) }}</td>
                         <td class="px-4 py-3 text-ink">{{ $tx->reason ?? __('points.adjustment') }}</td>
                         <td class="px-4 py-3 text-center font-bold tabular-nums {{ $tx->amount >= 0 ? 'text-brand' : 'text-rose-500' }}">
                             {{ $tx->amount >= 0 ? '+' : '' }}{{ bn($tx->amount) }}

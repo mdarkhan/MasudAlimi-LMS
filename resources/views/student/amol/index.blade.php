@@ -65,7 +65,7 @@
         @if ($note && $note->note !== '')
             <p class="text-sm text-ink leading-relaxed whitespace-pre-wrap [&_strong]:font-extrabold">{!! chat_format($note->note) !!}</p>
             <p class="text-xs text-muted mt-2">
-                {{ __('amol.note_by', ['name' => $note->commentedBy?->name ?? '—', 'at' => $note->commented_at?->format('d/m/Y H:i') ?? '']) }}
+                {{ __('amol.note_by', ['name' => $note->commentedBy?->name ?? '—', 'at' => dt_label($note->commented_at) ?? '']) }}
             </p>
         @else
             <p class="text-sm text-muted italic">{{ __('amol.no_note') }}</p>

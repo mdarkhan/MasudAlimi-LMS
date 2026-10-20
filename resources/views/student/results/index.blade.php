@@ -70,7 +70,7 @@
                                 <p class="tabular-nums">{{ $row['rank'] ? bn($row['rank']) : '—' }}</p>
                             </div>
                         </div>
-                        <p class="text-xs text-muted mt-3 tabular-nums">{{ $row['attempt']->submitted_at?->format('d/m/Y H:i') }}</p>
+                        <p class="text-xs text-muted mt-3 tabular-nums">{{ dt_label($row['attempt']->submitted_at) }}</p>
                         @if ($row['reviewable'])
                             <x-ui.button :href="route('student.results.show', $row['attempt'])" variant="secondary" size="sm" class="w-full mt-3">{{ __('results.view_answer_sheet') }}</x-ui.button>
                         @else
@@ -101,7 +101,7 @@
                                     <div class="font-semibold text-ink">{{ $row['quiz']->title }}</div>
                                     @if ($row['quiz']->course)<div class="text-xs text-muted">{{ $row['quiz']->course->title }}</div>@endif
                                 </td>
-                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y H:i') }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ dt_label($row['attempt']->submitted_at) }}</td>
                                 <td class="px-4 py-3 text-center"><x-ui.badge :color="$statusTone($row['attempt']->status)">{{ $statusLabel($row['attempt']->status) }}</x-ui.badge></td>
                                 <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums whitespace-nowrap">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ bn(number_format($row['percentage'], 2)) }}%</td>
@@ -137,7 +137,7 @@
                                 </div>
                                 <x-ui.badge :color="$statusTone($row['attempt']->status)">{{ $statusLabel($row['attempt']->status) }}</x-ui.badge>
                             </div>
-                            <p class="text-xs text-muted mt-2 tabular-nums">{{ $row['attempt']->submitted_at?->format('d/m/Y H:i') }}</p>
+                            <p class="text-xs text-muted mt-2 tabular-nums">{{ dt_label($row['attempt']->submitted_at) }}</p>
                             <p class="text-sm text-muted mt-2">{{ __('results.pending_note') }}</p>
                         </x-ui.card>
                     @endforeach
@@ -170,7 +170,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-muted">{{ __('results.col_date') }}</p>
-                                <p class="tabular-nums">{{ $row['attempt']->submitted_at?->format('d/m/Y') }}</p>
+                                <p class="tabular-nums">{{ date_label($row['attempt']->submitted_at) }}</p>
                             </div>
                         </div>
                     </x-ui.card>
@@ -192,7 +192,7 @@
                         @foreach ($groups['legacy'] as $row)
                             <tr>
                                 <td class="px-4 py-3 text-center font-semibold text-ink">{{ $row['quiz']->title }}</td>
-                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ $row['attempt']->submitted_at?->format('d/m/Y') }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ date_label($row['attempt']->submitted_at) }}</td>
                                 <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ $row['percentage'] !== null ? bn(number_format($row['percentage'], 2)).'%' : '—' }}</td>
                                 <td class="px-4 py-3 text-center text-muted tabular-nums">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
