@@ -27,6 +27,97 @@
         </div>
     </x-ui.card>
 
+    {{-- Today: one focus card (the single next step) + three small facts. Everything here is a link. --}}
+    @php
+        $focusLabel = $focus ? [
+            'resume' => __('dashboard.resume_heading'),
+            'exam_open' => __('dashboard.exam_open_title'),
+            'exam_upcoming' => __('dashboard.exam_upcoming_title'),
+            'lesson' => $focus['meta'],   // "continue where you left off" / "up next"
+        ][$focus['kind']] : null;
+        $focusIcon = $focus ? ['resume' => 'clock', 'exam_open' => 'exam', 'exam_upcoming' => 'calendar', 'lesson' => 'lessons'][$focus['kind']] : null;
+        $amolToday = $today['amol'];
+        $amolPct = $amolToday['total'] > 0 ? (int) round($amolToday['done'] * 100 / $amolToday['total']) : 0;
+        $latest = $today['result'];
+        $fullMarks = $latest && $latest->final_score >= $latest->total_marks_snapshot && $latest->total_marks_snapshot > 0;
+    @endphp
+    <section class="mb-6" aria-labelledby="today-heading">
+        <div class="flex items-baseline justify-between gap-3 mb-3">
+            <h2 id="today-heading" class="text-lg font-bold text-ink">{{ __('dashboard.today') }}</h2>
+            <span class="text-sm text-muted">{{ date_label($today['date']) }}</span>
+        </div>
+
+        @if ($focus)
+            <a href="{{ $focus['href'] }}"
+               class="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong text-brand-ink p-5 sm:p-6 mb-4 shadow-md">
+                <div class="absolute inset-0 geo-accent opacity-20" aria-hidden="true"></div>
+                <div class="relative flex flex-col sm:flex-row sm:items-center gap-4">
+                    <span class="shrink-0 grid place-items-center size-12 rounded-xl bg-white/15"><x-ui.icon :name="$focusIcon" class="w-6 h-6" /></span>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-semibold opacity-90">{{ $focusLabel }}</p>
+                        <p class="text-xl sm:text-2xl font-black leading-snug mt-0.5">{{ $focus['title'] }}</p>
+                        @if ($focus['meta'] && $focus['kind'] !== 'lesson')
+                            <p class="text-sm opacity-90 mt-1">{{ $focus['meta'] }}</p>
+                        @endif
+                    </div>
+                    <span class="shrink-0 inline-flex items-center justify-center gap-1.5 self-start sm:self-center rounded-xl bg-white text-brand-strong font-bold px-4 py-2.5 shadow-sm group-hover:shadow-md transition-shadow">
+                        {{ $focus['cta'] }} <x-ui.icon name="chevron" class="w-4 h-4" />
+                    </span>
+                </div>
+            </a>
+        @endif
+
+        <div class="grid gap-3 sm:grid-cols-3">
+            {{-- today's amol --}}
+            <a href="{{ route('student.amol.index') }}" class="flex items-center gap-4 rounded-2xl border border-line bg-card p-4 hover:border-brand/40 transition-colors">
+                <span class="relative shrink-0 size-14" aria-hidden="true">
+                    <svg viewBox="0 0 36 36" class="size-14 -rotate-90">
+                        <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-line)" stroke-width="3.5"/>
+                        @if ($amolPct > 0)
+                            <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-brand)" stroke-width="3.5" stroke-linecap="round"
+                                    stroke-dasharray="{{ round(97.4 * $amolPct / 100, 1) }} 97.4"/>
+                        @endif
+                    </svg>
+                    <span class="absolute inset-0 grid place-items-center text-xs font-bold text-ink tabular-nums">{{ bn($amolPct) }}%</span>
+                </span>
+                <div class="min-w-0">
+                    <p class="text-sm text-muted">{{ __('dashboard.today_amol') }}</p>
+                    <p class="font-bold text-ink tabular-nums">{{ __('dashboard.today_amol_done', ['done' => bn($amolToday['done']), 'total' => bn($amolToday['total'])]) }}</p>
+                    @if ($today['streak'] > 0)
+                        <p class="text-xs font-semibold text-gold-ink">{{ __('dashboard.today_streak', ['count' => bn($today['streak'])]) }}</p>
+                    @endif
+                </div>
+            </a>
+
+            {{-- next prayer --}}
+            <a href="{{ route('student.amol.index') }}" class="flex items-center gap-4 rounded-2xl border border-line bg-card p-4 hover:border-brand/40 transition-colors">
+                <span class="shrink-0 grid place-items-center size-14 rounded-full bg-lapis-tint text-lapis"><x-ui.icon name="clock" class="w-6 h-6" /></span>
+                <div class="min-w-0">
+                    <p class="text-sm text-muted">{{ __('amol.next_prayer') }}</p>
+                    <p class="font-bold text-ink">{{ __('amol.group_'.$today['prayer']['next']) }}</p>
+                    <p class="text-sm text-lapis font-semibold tabular-nums">{{ bn($today['prayer']['next_at']->format('h:i')) }} {{ $today['prayer']['next_at']->format('A') }}</p>
+                </div>
+            </a>
+
+            {{-- latest released result --}}
+            <a href="{{ $latest && $latest->answer_details_available ? route('student.results.show', $latest) : route('student.results.index') }}"
+               class="flex items-center gap-4 rounded-2xl border bg-card p-4 transition-colors {{ $fullMarks ? 'border-gold/60 hover:border-gold' : 'border-line hover:border-brand/40' }}">
+                <span class="shrink-0 grid place-items-center size-14 rounded-full {{ $fullMarks ? 'bg-gold-tint text-gold-ink' : 'bg-brand-tint text-brand' }}"><x-ui.icon :name="$fullMarks ? 'leaderboard' : 'results'" class="w-6 h-6" /></span>
+                <div class="min-w-0">
+                    <p class="text-sm text-muted">{{ __('dashboard.today_latest_result') }}</p>
+                    @if ($latest)
+                        <p class="font-bold text-ink truncate">{{ $latest->quiz->title }}</p>
+                        <p class="text-sm font-semibold tabular-nums {{ $fullMarks ? 'text-gold-ink' : 'text-brand' }}">
+                            {{ bn($latest->final_score) }}/{{ bn($latest->total_marks_snapshot) }}@if ($fullMarks) · {{ __('dashboard.today_full_marks') }}@endif
+                        </p>
+                    @else
+                        <p class="font-semibold text-muted">{{ __('dashboard.today_no_result') }}</p>
+                    @endif
+                </div>
+            </a>
+        </div>
+    </section>
+
     {{-- Action items: exam banner, resume, unseen results, practice suggestions --}}
     <div class="space-y-3 mb-6">
         @if ($upcomingExam)

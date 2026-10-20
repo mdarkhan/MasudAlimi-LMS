@@ -8,6 +8,9 @@ use App\Models\Notice;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\User;
+use App\Services\Amol\AmolService;
+use App\Services\Amol\AmolStatsService;
+use App\Services\Calendar\PrayerTimeService;
 use App\Services\Progress\LessonProgressService;
 use App\Services\Quiz\LeaderboardService;
 use Carbon\CarbonImmutable;
@@ -18,6 +21,9 @@ class DashboardController extends Controller
     public function __construct(
         private readonly LeaderboardService $leaderboards,
         private readonly LessonProgressService $progress,
+        private readonly AmolService $amol,
+        private readonly AmolStatsService $amolStats,
+        private readonly PrayerTimeService $prayers,
     ) {}
 
     public function index(): View
@@ -49,6 +55,20 @@ class DashboardController extends Controller
         $nextLesson = $this->progress->nextUnviewedLesson($user, $continueLesson?->course)
             ?? $this->progress->nextUnviewedLesson($user);
 
+        $upcomingExam = $this->upcomingOfficialExam($user, $now);
+        $resumableAttempts = $this->resumableAttempts($user, $now);
+        $recent = QuizAttempt::query()
+            ->where('user_id', $user->getKey())
+            ->where('kind', QuizAttempt::KIND_OFFICIAL)
+            ->whereIn('status', QuizAttempt::RANKABLE_STATUSES)
+            ->with('quiz')
+            ->orderByDesc('submitted_at')
+            ->limit(5)
+            ->get();
+
+        // "Today": ONE focus card — the single most useful next step — and three small facts.
+        $focus = $this->focus($resumableAttempts->first(), $upcomingExam, $continueLesson, $nextLesson);
+
         return view('student.dashboard', [
             'user' => $user,
             'completed' => $completed,
@@ -60,14 +80,7 @@ class DashboardController extends Controller
                 ->orderByDesc('priority')
                 ->limit(3)
                 ->get(),
-            'recent' => QuizAttempt::query()
-                ->where('user_id', $user->getKey())
-                ->where('kind', QuizAttempt::KIND_OFFICIAL)
-                ->whereIn('status', QuizAttempt::RANKABLE_STATUSES)
-                ->with('quiz')
-                ->orderByDesc('submitted_at')
-                ->limit(5)
-                ->get(),
+            'recent' => $recent,
             'recentPoints' => $user->pointTransactions()->latest('id')->limit(5)->get(),
             'courses' => $courses,
             'courseProgress' => $courses->mapWithKeys(fn (Course $course) => [
@@ -76,13 +89,68 @@ class DashboardController extends Controller
                     'completed' => $this->progress->hasCompletedCourse($user, $course),
                 ],
             ]),
-            'continueLesson' => $continueLesson,
-            'nextLesson' => $nextLesson,
-            'upcomingExam' => $this->upcomingOfficialExam($user, $now),
-            'resumableAttempts' => $this->resumableAttempts($user, $now),
+            // whatever the focus card shows is not repeated further down
+            'continueLesson' => ($focus['kind'] ?? null) === 'lesson' ? null : $continueLesson,
+            'nextLesson' => ($focus['kind'] ?? null) === 'lesson' ? null : $nextLesson,
+            'upcomingExam' => in_array($focus['kind'] ?? null, ['exam_open', 'exam_upcoming'], true) ? null : $upcomingExam,
+            'resumableAttempts' => ($focus['kind'] ?? null) === 'resume' ? $resumableAttempts->slice(1)->values() : $resumableAttempts,
+            'focus' => $focus,
+            'today' => [
+                'date' => $now,
+                'amol' => $this->amol->todayProgress($user),
+                'streak' => $this->amolStats->forStudent($user, null, $now->startOfDay())['current_active'],
+                'prayer' => $this->prayers->status($now),
+                // the newest result the student may already see (release-gated, like everywhere else)
+                'result' => $recent->first(fn (QuizAttempt $a) => $a->quiz->resultsReleasedAt($now)),
+            ],
             'unseenResults' => $this->unseenResults($user, $now),
             'practiceSuggestions' => $this->practiceSuggestions($user, $now),
         ]);
+    }
+
+    /**
+     * The one thing to do next, in priority order: finish an attempt already running → sit an exam
+     * that is open now → the next scheduled exam → carry on with lessons. Title/schedule only —
+     * never marks, questions or the answer key.
+     *
+     * @return array{kind: string, title: string, href: string, cta: string, meta: ?string}|null
+     */
+    private function focus(?QuizAttempt $resume, ?array $exam, $continueLesson, $nextLesson): ?array
+    {
+        if ($resume) {
+            return [
+                'kind' => 'resume',
+                'title' => $resume->quiz->title,
+                'href' => $resume->isOfficial() ? route('student.attempts.show', $resume) : route('student.practice.show', $resume),
+                'cta' => __('dashboard.resume_button'),
+                'meta' => $resume->isOfficial() ? __('dashboard.resume_official') : __('dashboard.resume_practice'),
+            ];
+        }
+        if ($exam) {
+            $open = $exam['state'] === Quiz::STATE_OPEN;
+
+            return [
+                'kind' => $open ? 'exam_open' : 'exam_upcoming',
+                'title' => $exam['quiz']->title,
+                'href' => route('student.exams.index'),
+                'cta' => $open ? __('dashboard.focus_exam_go') : __('dashboard.exam_view'),
+                'meta' => $open
+                    ? ($exam['quiz']->ends_at ? __('dashboard.focus_closes', ['when' => dt_label($exam['quiz']->ends_at)]) : null)
+                    : __('dashboard.focus_starts', ['when' => dt_label($exam['quiz']->starts_at)]),
+            ];
+        }
+        $lesson = $continueLesson ?? $nextLesson;
+        if ($lesson) {
+            return [
+                'kind' => 'lesson',
+                'title' => $lesson->title,
+                'href' => route('student.courses.show', $lesson->slug),
+                'cta' => $continueLesson ? __('dashboard.continue_button') : __('dashboard.next_lesson_button'),
+                'meta' => $continueLesson ? __('dashboard.continue_heading') : __('dashboard.next_lesson_heading'),
+            ];
+        }
+
+        return null;
     }
 
     /**
