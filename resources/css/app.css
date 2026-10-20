@@ -337,3 +337,12 @@ html[lang='en'] {
         animation: none !important;
     }
 }
+
+/* Ticking clock face (student dashboard "next prayer" tile): each hand starts at its server-rendered
+   angle (--a) and turns one full circle per minute / hour / 12 h. Reduced motion freezes it globally. */
+@keyframes clock-turn { from { transform: rotate(var(--a)); } to { transform: rotate(calc(var(--a) + 360deg)); } }
+.clock-hand {
+    transform-origin: 20px 20px;
+    transform: rotate(var(--a));
+    animation: clock-turn linear infinite;
+}

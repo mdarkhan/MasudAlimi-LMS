@@ -91,11 +91,29 @@
 
             {{-- next prayer --}}
             <a href="{{ route('student.amol.index') }}" class="flex items-center gap-4 rounded-2xl border border-line bg-card p-4 hover:border-brand/40 transition-colors">
-                <span class="shrink-0 grid place-items-center size-14 rounded-full bg-lapis-tint text-lapis"><x-ui.icon name="clock" class="w-6 h-6" /></span>
+                {{-- a real clock: hands start at the current Dhaka time (server-rendered) and keep turning --}}
+                @php
+                    $nowT = $today['date'];
+                    $secA = $nowT->second * 6;
+                    $minA = $nowT->minute * 6 + $nowT->second * 0.1;
+                    $hourA = ($nowT->hour % 12) * 30 + $nowT->minute * 0.5;
+                @endphp
+                <span class="shrink-0 grid place-items-center size-14 rounded-full bg-brand-tint text-brand-strong" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" class="size-11">
+                        <circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2.2"/>
+                        @foreach (range(0, 11) as $tick)
+                            <line x1="20" y1="5.5" x2="20" y2="{{ $tick % 3 === 0 ? 8.5 : 7.2 }}" stroke="currentColor" stroke-width="{{ $tick % 3 === 0 ? 1.8 : 1.1 }}" stroke-linecap="round" transform="rotate({{ $tick * 30 }} 20 20)"/>
+                        @endforeach
+                        <line class="clock-hand" style="--a: {{ $hourA }}deg; animation-duration: 43200s" x1="20" y1="20" x2="20" y2="11.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                        <line class="clock-hand" style="--a: {{ $minA }}deg; animation-duration: 3600s" x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        <line class="clock-hand text-gold" style="--a: {{ $secA }}deg; animation-duration: 60s; animation-timing-function: steps(60)" x1="20" y1="23" x2="20" y2="7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+                        <circle cx="20" cy="20" r="1.8" fill="currentColor"/>
+                    </svg>
+                </span>
                 <div class="min-w-0">
                     <p class="text-sm text-muted">{{ __('amol.next_prayer') }}</p>
                     <p class="font-bold text-ink">{{ __('amol.group_'.$today['prayer']['next']) }}</p>
-                    <p class="text-sm text-lapis font-semibold tabular-nums">{{ bn($today['prayer']['next_at']->format('h:i')) }} {{ $today['prayer']['next_at']->format('A') }}</p>
+                    <p class="text-sm text-brand-strong font-semibold tabular-nums">{{ bn($today['prayer']['next_at']->format('h:i')) }} {{ $today['prayer']['next_at']->format('A') }}</p>
                 </div>
             </a>
 

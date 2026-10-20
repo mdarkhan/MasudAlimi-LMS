@@ -18,7 +18,7 @@
     $prayers = ['fajr', 'zuhr', 'asr', 'maghrib', 'isha'];
 @endphp
 
-<div {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-3xl bg-gradient-to-br from-panel to-panel-2 text-white p-5 sm:p-7 shadow-lg ring-1 ring-white/10']) }}>
+<div {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-3xl bg-gradient-to-br from-panel to-panel-2 text-white dark:from-brand-strong dark:to-brand dark:text-brand-ink p-5 sm:p-7 shadow-lg ring-1 ring-white/10 dark:ring-0']) }}>
     {{-- star lattice + a large star behind the date --}}
     <svg class="absolute inset-0 w-full h-full opacity-[0.07]" aria-hidden="true">
         <defs>
@@ -28,7 +28,7 @@
         </defs>
         <rect width="100%" height="100%" fill="url(#hijri-stars)"/>
     </svg>
-    <svg class="absolute -right-16 -top-16 w-72 h-72 text-white/10" viewBox="0 0 100 100" aria-hidden="true">
+    <svg class="absolute -right-16 -top-16 w-72 h-72 text-white/10 dark:text-brand-ink/10" viewBox="0 0 100 100" aria-hidden="true">
         <path d="M50 4l9.4 14.1 16.6-3.3-3.3 16.6L86.8 40.8 72.7 50.2 76 66.8l-16.6-3.3L50 77.6l-9.4-14.1L24 66.8l3.3-16.6L13.2 40.8l14.1-9.4L24 14.8l16.6 3.3Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
     </svg>
 
@@ -36,7 +36,7 @@
         <div class="flex items-center justify-between gap-3">
             <span class="flex items-center gap-2 text-sm font-semibold opacity-90"><x-ui.icon name="calendar" class="w-4 h-4" /> {{ __('calendar.today') }}</span>
             @if (filled($calendar['location'] ?? null))
-                <span class="rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-semibold">{{ $calendar['location'] }}</span>
+                <span class="rounded-full bg-white/15 dark:bg-brand-ink/10 px-2.5 py-0.5 text-xs font-semibold">{{ $calendar['location'] }}</span>
             @endif
         </div>
 
@@ -51,7 +51,7 @@
         <p class="mt-3 text-sm sm:text-base opacity-95">{{ $bangla }} <span class="opacity-60 mx-1">·</span> {{ $gregorian }}</p>
 
         @if ($prayer)
-            <div class="mt-5 pt-4 border-t border-white/20">
+            <div class="mt-5 pt-4 border-t border-white/20 dark:border-brand-ink/20">
                 <p class="text-sm opacity-90">
                     {{ __('amol.next_prayer') }}:
                     <strong class="font-bold">{{ __('amol.group_'.$prayer['next']) }} · {{ $clock($prayer['next_at']) }}</strong>
@@ -61,7 +61,7 @@
                         <li @class([
                             'rounded-xl px-1 py-2',
                             'bg-white text-panel shadow-md' => $prayer['next'] === $key,
-                            'bg-white/10 ring-1 ring-white/20' => $prayer['next'] !== $key,
+                            'bg-white/10 ring-1 ring-white/20 dark:bg-brand-ink/10 dark:ring-brand-ink/25' => $prayer['next'] !== $key,
                         ])>
                             <span class="block text-xs font-semibold {{ $prayer['next'] === $key ? '' : 'opacity-85' }}">{{ __('amol.group_'.$key) }}</span>
                             <span class="block text-sm font-bold tabular-nums">{{ $en ? $prayer['times'][$key]->format('g:i') : bn($prayer['times'][$key]->format('g:i')) }}</span>
