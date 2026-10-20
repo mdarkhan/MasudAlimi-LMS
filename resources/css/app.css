@@ -247,3 +247,17 @@ html[lang='en'] {
     display: none !important;
 }
 
+/*
+ * Phone dock (components/layout/app.blade.php): each tab's icon plays ONE short animation when tapped,
+ * then rests. Transform-only, so nothing reflows; prefers-reduced-motion already zeroes animations globally.
+ */
+@keyframes dock-pop { 0% { transform: scale(1); } 35% { transform: scale(.78); } 70% { transform: scale(1.18); } 100% { transform: scale(1); } }
+@keyframes dock-wiggle { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-14deg); } 45% { transform: rotate(11deg); } 70% { transform: rotate(-6deg); } 85% { transform: rotate(3deg); } }
+@keyframes dock-bounce { 0%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } 55% { transform: translateY(0); } 72% { transform: translateY(-3px); } }
+@keyframes dock-swing { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(16deg); } 40% { transform: rotate(-12deg); } 60% { transform: rotate(7deg); } 80% { transform: rotate(-3deg); } }
+@keyframes dock-shake { 0%, 100% { transform: translateX(0) rotate(0); } 20% { transform: translateX(-3px) rotate(-6deg); } 40% { transform: translateX(3px) rotate(6deg); } 60% { transform: translateX(-2px) rotate(-3deg); } 80% { transform: translateX(1px) rotate(1deg); } }
+.dock-anim-pop { animation: dock-pop .5s cubic-bezier(.3, .7, .4, 1.4) both; }
+.dock-anim-wiggle { animation: dock-wiggle .6s ease-in-out both; transform-origin: 50% 85%; }
+.dock-anim-bounce { animation: dock-bounce .6s ease-out both; }
+.dock-anim-swing { animation: dock-swing .7s ease-in-out both; transform-origin: 50% 0; }
+.dock-anim-shake { animation: dock-shake .5s ease-in-out both; }
