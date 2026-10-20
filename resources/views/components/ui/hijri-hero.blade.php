@@ -49,9 +49,7 @@
                     <span class="block text-base font-semibold opacity-90">{{ bn($h['year']) }} {{ __('calendar.ah') }}</span>
                 </span>
             </div>
-            <span class="shrink-0 grid place-items-center size-20 sm:size-24 rounded-full bg-white/10 ring-1 ring-white/20 dark:bg-brand-ink/10 dark:ring-brand-ink/20">
-                <x-ui.live-clock :now="$g['carbon'] ?? null" second="text-gold dark:text-brand-ink" class="size-16 sm:size-20" />
-            </span>
+            <x-ui.live-clock :now="$g['carbon'] ?? null" second="text-gold dark:text-brand-ink" class="shrink-0 size-20 sm:size-24" />
         </div>
         <p class="mt-3 text-sm sm:text-base opacity-95">{{ $bangla }} <span class="opacity-60 mx-1">·</span> {{ $gregorian }}</p>
 

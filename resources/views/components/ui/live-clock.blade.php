@@ -9,7 +9,7 @@
     $hourA = ($now->hour % 12) * 30 + $now->minute * 0.5;
 @endphp
 <svg viewBox="0 0 40 40" {{ $attributes->merge(['class' => 'size-11']) }} aria-hidden="true">
-    <circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2.2"/>
+    <circle cx="20" cy="20" r="17.5" fill="none" stroke="currentColor" stroke-width="1.3"/>
     @foreach (range(0, 11) as $tick)
         <line x1="20" y1="5.5" x2="20" y2="{{ $tick % 3 === 0 ? 8.5 : 7.2 }}" stroke="currentColor" stroke-width="{{ $tick % 3 === 0 ? 1.8 : 1.1 }}" stroke-linecap="round" transform="rotate({{ $tick * 30 }} 20 20)"/>
     @endforeach
