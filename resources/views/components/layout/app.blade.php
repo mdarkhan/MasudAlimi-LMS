@@ -113,7 +113,7 @@
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button class="size-11 grid place-items-center rounded-lg text-muted hover:text-rose-600 hover:bg-rose-500/10 transition-colors" aria-label="{{ __('nav.logout') }}"><x-ui.icon name="logout" /></button>
+                        <button class="group size-11 grid place-items-center rounded-full transition-transform hover:scale-105 active:scale-95" aria-label="{{ __('nav.logout') }}" title="{{ __('nav.logout') }}"><x-ui.logout-icon class="group-hover:bg-rose-700 transition-colors" /></button>
                     </form>
                 </div>
             </header>
