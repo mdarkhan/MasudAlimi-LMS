@@ -3,7 +3,7 @@
 @php
     $user = auth()->user();
     $nav = [
-        ['label' => __('nav.dashboard'), 'group' => 'main', 'href' => route('admin.dashboard'), 'icon' => 'gauge', 'active' => request()->routeIs('admin.dashboard')],
+        ['label' => __('nav.dashboard'), 'group' => 'main', 'href' => route('admin.dashboard'), 'icon' => 'home', 'active' => request()->routeIs('admin.dashboard')],
         ['label' => __('nav.students'), 'group' => 'academic', 'href' => route('admin.students.index'), 'icon' => 'students', 'active' => request()->routeIs('admin.students.*')],
         ['label' => __('nav.points'), 'group' => 'academic', 'href' => route('admin.points.index'), 'icon' => 'points', 'active' => request()->routeIs('admin.points.*')],
         ['label' => __('nav.courses'), 'group' => 'academic', 'href' => route('admin.courses.index'), 'icon' => 'courses', 'active' => request()->routeIs('admin.courses.*')],
@@ -71,14 +71,11 @@
     usort($nav, fn ($a, $b) => ($groupOrder[$a['group'] ?? 'system'] ?? 3) <=> ($groupOrder[$b['group'] ?? 'system'] ?? 3));
 
     $isSuper = $user?->hasRole(\App\Models\Role::SUPER_ADMIN);
-    if ($isSuper) {
-        $nav[0]['icon'] = 'shield';   // the overview item: a super admin's own mark
-    }
 
     // Phones: the staff's everyday destinations in the bottom tab bar — only those this person may open
     // (same permission checks as the sidebar), at most five.
     $bottomNav = array_values(array_filter([
-        ['label' => __('nav.tab_home'), 'href' => route('admin.dashboard'), 'icon' => $isSuper ? 'shield' : 'gauge', 'anim' => 'pop', 'active' => request()->routeIs('admin.dashboard')],
+        ['label' => __('nav.tab_home'), 'href' => route('admin.dashboard'), 'icon' => 'home', 'fill_active' => true, 'anim' => 'pop', 'active' => request()->routeIs('admin.dashboard')],
         ['label' => __('nav.tab_students'), 'href' => route('admin.students.index'), 'icon' => 'students', 'anim' => 'bounce', 'active' => request()->routeIs('admin.students.*')],
         $user?->hasPermission('quizzes.view') ? ['label' => __('nav.tab_exams'), 'href' => route('admin.quizzes.index'), 'icon' => 'exam', 'anim' => 'wiggle', 'active' => request()->routeIs('admin.quizzes.*')] : null,
         $user?->hasPermission('results.view') ? ['label' => __('nav.tab_results'), 'href' => route('admin.results.index'), 'icon' => 'results', 'anim' => 'swing', 'active' => request()->routeIs('admin.results.*') || request()->routeIs('admin.leaderboards.*')] : null,
