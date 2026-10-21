@@ -88,4 +88,5 @@ return [
     'today_latest_result' => "Latest result",
     'today_no_result' => "No result yet",
     'today_full_marks' => "Full marks",
+    'super_admin_heading' => 'Super Admin Dashboard',
 ];

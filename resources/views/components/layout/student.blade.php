@@ -11,7 +11,7 @@
         : 0;
 
     $nav = [
-        ['label' => __('nav.dashboard'), 'href' => route('student.dashboard'), 'icon' => 'dashboard', 'active' => request()->routeIs('student.dashboard')],
+        ['label' => __('nav.dashboard'), 'href' => route('student.dashboard'), 'icon' => 'home', 'active' => request()->routeIs('student.dashboard')],
         ['label' => __('nav.courses'), 'href' => route('student.courses.index'), 'icon' => 'book', 'active' => request()->routeIs('student.courses.*')],
         ['label' => __('nav.exams'), 'href' => route('student.exams.index'), 'icon' => 'exam', 'active' => request()->routeIs('student.exams.*') || request()->routeIs('student.attempts.*')],
         ['label' => __('nav.results'), 'href' => route('student.results.index'), 'icon' => 'results', 'active' => request()->routeIs('student.results.*')],

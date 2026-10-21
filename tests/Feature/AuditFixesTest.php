@@ -72,6 +72,19 @@ class AuditFixesTest extends TestCase
         }
     }
 
+    public function test_staff_get_a_phone_tab_bar_and_super_admins_are_named_as_such(): void
+    {
+        $super = $this->actingAs($this->makeSuperAdmin())->get(route('admin.dashboard'))->assertOk()->getContent();
+        $this->assertStringContainsString('aria-label="'.__('nav.bottom_nav').'"', $super);
+        $this->assertStringContainsString(__('dashboard.super_admin_heading'), $super);
+        $this->assertStringContainsString(__('nav.context_super_admin'), $super);
+
+        // a plain admin keeps the plain wording
+        $admin = $this->actingAs($this->makeAdmin())->get(route('admin.dashboard'))->assertOk()->getContent();
+        $this->assertStringContainsString(__('dashboard.admin_heading'), $admin);
+        $this->assertStringNotContainsString(__('dashboard.super_admin_heading'), $admin);
+    }
+
     public function test_admin_dates_are_readable_with_month_names_and_a_12_hour_clock(): void
     {
         app()->setLocale('en');

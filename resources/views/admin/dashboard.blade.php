@@ -1,4 +1,4 @@
-<x-layout.admin :title="__('nav.dashboard')" :heading="__('dashboard.admin_heading')">
+<x-layout.admin :title="__('nav.dashboard')" :heading="auth()->user()->hasRole(\App\Models\Role::SUPER_ADMIN) ? __('dashboard.super_admin_heading') : __('dashboard.admin_heading')">
     @php $me = auth()->user(); @endphp
 
     {{-- Needs attention --}}

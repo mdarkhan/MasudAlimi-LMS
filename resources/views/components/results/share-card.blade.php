@@ -57,7 +57,7 @@
 
     <template x-if="url">
         {{-- one column on every screen: the picture, then the two actions side by side at its exact width --}}
-        <div class="mt-4 w-full max-w-xs mx-auto sm:mx-0">
+        <div class="mt-4 w-full max-w-xs mx-auto">
             <img :src="url" alt="{{ __('results.share_preview_alt') }}" class="w-full rounded-xl border border-line shadow-sm aspect-[4/5] object-cover">
             <div class="mt-3 grid grid-cols-2 gap-2">
                 <x-ui.button type="button" @click="share()" class="w-full"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_button') }}</x-ui.button>

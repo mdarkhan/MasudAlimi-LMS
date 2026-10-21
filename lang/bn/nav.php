@@ -55,4 +55,7 @@ return [
     'tab_leaderboard' => 'মেধাতালিকা',
     'tab_messages' => 'মেসেজ',
     'you_are_here' => 'আপনি এখানে আছেন',
+    'context_super_admin' => 'সুপার অ্যাডমিন',
+    'tab_students' => 'শিক্ষার্থী',
+    'tab_results' => 'ফলাফল',
 ];

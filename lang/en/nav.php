@@ -55,4 +55,7 @@ return [
     'tab_leaderboard' => 'Ranking',
     'tab_messages' => 'Messages',
     'you_are_here' => 'You are here',
+    'context_super_admin' => 'Super admin',
+    'tab_students' => 'Students',
+    'tab_results' => 'Results',
 ];

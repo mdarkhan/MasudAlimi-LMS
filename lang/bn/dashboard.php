@@ -88,4 +88,5 @@ return [
     'today_latest_result' => "সর্বশেষ ফলাফল",
     'today_no_result' => "এখনো ফলাফল নেই",
     'today_full_marks' => "পূর্ণ নম্বর",
+    'super_admin_heading' => 'সুপার অ্যাডমিন ড্যাশবোর্ড',
 ];

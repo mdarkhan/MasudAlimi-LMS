@@ -10,10 +10,11 @@
     @if ($students->isEmpty())
         <x-ui.card><x-ui.empty :title="__('amol.no_students')" /></x-ui.card>
     @else
-        <div class="space-y-2">
+        {{-- a grid of student cards rather than full-width rows: the name and the action stay together --}}
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             @foreach ($students as $student)
                 <a href="{{ route('admin.amol.show', $student) }}"
-                   class="group flex items-center gap-4 p-3.5 sm:p-4 rounded-2xl border border-line bg-surface hover:border-brand/40 hover:shadow-sm transition">
+                   class="group flex items-center gap-3.5 p-4 rounded-2xl border border-line bg-card hover:border-brand/40 hover:shadow-sm transition">
                     <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $student->roll) > 3 ? 'text-xs' : 'text-base' }}"
                           title="{{ __('dashboard.roll') }}">
                         {{ $student->roll ? bn($student->roll) : '—' }}
@@ -26,9 +27,8 @@
                             </p>
                         @endif
                     </div>
-                    <span class="shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
-                        {{ __('amol.view_amol') }} <x-ui.icon name="chevron" class="w-4 h-4" />
-                    </span>
+                    <x-ui.icon name="chevron" class="w-5 h-5 shrink-0 text-muted group-hover:text-brand transition-colors" />
+                    <span class="sr-only">{{ __('amol.view_amol') }}</span>
                 </a>
             @endforeach
         </div>
