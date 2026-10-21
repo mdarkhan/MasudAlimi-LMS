@@ -47,13 +47,13 @@
         {{-- Hijri: the day as the big number; a live clock beside it --}}
         <div data-enter style="--i: 1" class="mt-3 flex items-end justify-between gap-3">
             <div class="flex items-end gap-3 min-w-0">
-                <span class="text-7xl sm:text-8xl font-black leading-none tabular-nums">{{ bn($h['day']) }}</span>
+                <span class="text-6xl min-[400px]:text-7xl sm:text-8xl font-black leading-none tabular-nums">{{ bn($h['day']) }}</span>
                 <span class="pb-1.5 min-w-0">
-                    <span class="block text-2xl sm:text-3xl font-black leading-tight">{{ $h['month_name'] }}</span>
+                    <span class="block text-xl min-[400px]:text-2xl sm:text-3xl font-black leading-tight whitespace-nowrap">{{ $h['month_name'] }}</span>
                     <span class="block text-base font-semibold opacity-90">{{ bn($h['year']) }} {{ __('calendar.ah') }}</span>
                 </span>
             </div>
-            <x-ui.live-clock :now="$g['carbon'] ?? null" second="text-gold dark:text-brand-ink" class="shrink-0 size-20 sm:size-24" />
+            <x-ui.live-clock :now="$g['carbon'] ?? null" second="text-gold dark:text-brand-ink" class="shrink-0 size-16 min-[400px]:size-20 sm:size-24" />
         </div>
         <p data-enter style="--i: 2" class="mt-3 text-sm sm:text-base opacity-95">{{ $bangla }} <span class="opacity-60 mx-1">·</span> {{ $gregorian }}</p>
 

@@ -63,8 +63,9 @@
             <img :src="url" alt="{{ __('results.share_preview_alt') }}" class="w-full sm:w-64 rounded-xl border border-line shadow-sm aspect-[4/5] object-cover">
             <div class="flex flex-wrap gap-2">
                 <x-ui.button type="button" @click="share()"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_button') }}</x-ui.button>
-                <a x-ref="download" :href="url" download="{{ $file }}" class="inline-flex items-center gap-1.5 rounded-xl border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-ink/5">
-                    <x-ui.icon name="download" class="w-4 h-4" /> {{ __('results.share_download') }}
+                {{-- same look as the share button (x-ui.button primary); a plain <a> because it needs :href + download --}}
+                <a x-ref="download" :href="url" download="{{ $file }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand text-brand-ink hover:bg-brand-strong shadow-sm px-4 py-2.5 text-sm font-semibold transition-colors">
+                    <x-ui.icon name="image-down" class="w-4 h-4" /> {{ __('results.share_download') }}
                 </a>
                 <p x-show="hint" x-cloak class="basis-full text-xs text-muted">{{ __('results.share_saved_hint') }}</p>
             </div>
