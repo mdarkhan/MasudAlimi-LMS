@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // The main public address printed on shareable images (result card) — not the host the app runs on.
+    'public_site' => env('PUBLIC_SITE', 'www.masudalimi.com'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

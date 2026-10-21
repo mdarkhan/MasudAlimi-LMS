@@ -101,6 +101,7 @@ class ResultsAndAnswerSheetTest extends TestCase
         // Regression: the Alpine data once sat on a component tag, where Blade left @js() uncompiled and
         // the "create picture" button silently did nothing.
         $this->assertStringNotContainsString('@js(', $html);
+        $this->assertStringContainsString('www.masudalimi.com', $html);   // the main site's address, not the host
 
         // the card data carries the student's own name/roll, never contact details or the answer key
         $this->assertStringContainsString('শেয়ার শিক্ষার্থী', $html);

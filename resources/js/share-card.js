@@ -115,26 +115,40 @@ export default async function renderShareCard(d) {
     ctx.fillStyle = C.white;
     ctx.font = font(34, 'normal');
     ctx.globalAlpha = 0.85;
-    ctx.fillText(d.scoreLabel, W / 2, cy - 105);
+    ctx.fillText(d.scoreLabel, W / 2, cy - 95);
     ctx.globalAlpha = 1;
     ctx.font = font(170);
-    ctx.fillText(d.score, W / 2, cy + 45);
-    ctx.font = font(54, 'normal');
-    ctx.fillText('/ ' + d.total, W / 2, cy + 115);
-    ctx.fillStyle = C.goldLight;
-    ctx.font = font(44);
-    ctx.fillText(d.percent, W / 2, cy + 175);
+    ctx.fillText(d.score, W / 2, cy + 60);
+    ctx.font = font(56, 'normal');
+    ctx.fillText('/ ' + d.total, W / 2, cy + 132);
 
     // rank pill
     y = 1030;
     if (d.rank) {
         ctx.font = font(40);
-        const w = ctx.measureText(d.rank).width + 80;
-        ctx.fillStyle = C.gold;
+        const w = ctx.measureText(d.rank).width + 96;
+        const x0 = W / 2 - w / 2;
+        // polished gold: a bright band across the middle, deeper gold at the edges, a fine light rim
+        const goldFill = ctx.createLinearGradient(0, y - 52, 0, y + 24);
+        goldFill.addColorStop(0, '#fff3b0');
+        goldFill.addColorStop(0.45, '#f4c542');
+        goldFill.addColorStop(0.55, '#e0a81e');
+        goldFill.addColorStop(1, '#b07a12');
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.35)';
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 6;
+        ctx.fillStyle = goldFill;
         ctx.beginPath();
-        ctx.roundRect(W / 2 - w / 2, y - 52, w, 76, 38);
+        ctx.roundRect(x0, y - 52, w, 76, 38);
         ctx.fill();
-        ctx.fillStyle = '#2a1d05';
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(255,248,214,0.9)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x0 + 3, y - 49, w - 6, 70, 35);
+        ctx.stroke();
+        ctx.fillStyle = '#3d2a00';
         ctx.fillText(d.rank, W / 2, y);
         y += 40;
     }
@@ -149,8 +163,12 @@ export default async function renderShareCard(d) {
 
     // footer
     ctx.font = font(30, 'normal');
-    ctx.globalAlpha = 0.75;
-    ctx.fillText(d.footer, W / 2, H - 92);
+    ctx.globalAlpha = 0.8;
+    ctx.fillText(d.footer, W / 2, H - 112);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = C.goldLight;
+    ctx.font = font(34);
+    ctx.fillText(d.site, W / 2, H - 70);
     ctx.globalAlpha = 1;
 
     return await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));

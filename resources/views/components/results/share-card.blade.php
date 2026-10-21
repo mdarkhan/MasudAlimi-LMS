@@ -10,11 +10,12 @@
         'scoreLabel' => __('results.card_score_label'),
         'score' => bn($attempt->final_score),
         'total' => bn($attempt->total_marks_snapshot),
-        'percent' => bn(number_format($percentage, 1)).'%',
         'rank' => $rank ? __('results.card_rank', ['rank' => bn($rank)]) : null,
         'name' => $attempt->user->name,
         'roll' => __('results.card_roll', ['roll' => bn($attempt->user->roll)]),
-        'footer' => date_label($attempt->submitted_at).'  ·  '.parse_url(config('app.url'), PHP_URL_HOST),
+        'footer' => date_label($attempt->submitted_at),
+        // always the main site's address, whichever host the card was made on
+        'site' => config('app.public_site'),
     ];
     $file = 'result-'.\App\Support\Slug::make($quiz->title).'.jpg';
 @endphp
@@ -23,7 +24,7 @@
      tag's attributes, so the data arrived as literal text and the button silently did nothing. --}}
 <x-ui.card {{ $attributes->merge(['class' => 'print:hidden']) }}>
     <div x-data="{
-        card: @js($card), url: null, blob: null, busy: false, canShare: false,
+        card: @js($card), url: null, blob: null, busy: false, canShare: false, hint: false,
         async make() {
             this.busy = true;
             try {
@@ -34,9 +35,16 @@
                 this.canShare = !! (navigator.canShare && navigator.canShare({ files: [file] }));
             } finally { this.busy = false; }
         },
+        // Phones: the system share sheet (WhatsApp, Messenger, gallery, …). Where a browser cannot share
+        // a picture (most desktops) the picture is saved instead, with a hint to send it from there.
         async share() {
             const file = new File([this.blob], @js($file), { type: 'image/jpeg' });
-            try { await navigator.share({ files: [file], title: this.card.title }); } catch (e) {}
+            if (this.canShare) {
+                try { await navigator.share({ files: [file], title: this.card.title, text: this.card.site }); } catch (e) {}
+                return;
+            }
+            this.$refs.download.click();
+            this.hint = true;
         },
     }">
     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -54,10 +62,11 @@
         <div class="mt-4 flex flex-col sm:flex-row gap-4 sm:items-end">
             <img :src="url" alt="{{ __('results.share_preview_alt') }}" class="w-full sm:w-64 rounded-xl border border-line shadow-sm aspect-[4/5] object-cover">
             <div class="flex flex-wrap gap-2">
-                <x-ui.button type="button" x-show="canShare" @click="share()"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_button') }}</x-ui.button>
-                <a :href="url" download="{{ $file }}" class="inline-flex items-center gap-1.5 rounded-xl border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-ink/5">
+                <x-ui.button type="button" @click="share()"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_button') }}</x-ui.button>
+                <a x-ref="download" :href="url" download="{{ $file }}" class="inline-flex items-center gap-1.5 rounded-xl border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-ink/5">
                     <x-ui.icon name="download" class="w-4 h-4" /> {{ __('results.share_download') }}
                 </a>
+                <p x-show="hint" x-cloak class="basis-full text-xs text-muted">{{ __('results.share_saved_hint') }}</p>
             </div>
         </div>
     </template>
