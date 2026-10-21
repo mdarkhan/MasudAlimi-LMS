@@ -49,10 +49,10 @@
 
         @if ($focus)
             <a href="{{ $focus['href'] }}"
-               class="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-panel to-panel-2 text-white p-5 sm:p-6 mb-4 shadow-md ring-1 ring-white/10">
+               class="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-panel to-panel-2 text-white dark:from-brand dark:to-brand-strong dark:text-brand-ink p-5 sm:p-6 mb-4 shadow-md ring-1 ring-white/10 dark:ring-0">
                 <div class="absolute inset-0 geo-accent opacity-20" aria-hidden="true"></div>
                 <div class="relative flex flex-col sm:flex-row sm:items-center gap-4">
-                    <span class="shrink-0 grid place-items-center size-12 rounded-xl bg-white/15"><x-ui.icon :name="$focusIcon" class="w-6 h-6" /></span>
+                    <span class="shrink-0 grid place-items-center size-12 rounded-xl bg-white/15 dark:bg-brand-ink/10"><x-ui.icon :name="$focusIcon" class="w-6 h-6" /></span>
                     <div class="min-w-0 flex-1">
                         <p class="text-sm font-semibold opacity-90">{{ $focusLabel }}</p>
                         <p class="text-xl sm:text-2xl font-black leading-snug mt-0.5">{{ $focus['title'] }}</p>
@@ -91,9 +91,7 @@
 
             {{-- next prayer --}}
             <a href="{{ route('student.amol.index') }}" class="flex items-center gap-4 rounded-2xl border border-line bg-card p-4 hover:border-brand/40 transition-colors">
-                <span class="shrink-0 grid place-items-center size-14 rounded-full bg-brand-tint text-brand-strong">
-                    <x-ui.live-clock :now="$today['date']" />
-                </span>
+                <x-ui.live-clock :now="$today['date']" class="shrink-0 size-14 text-brand-strong" />
                 <div class="min-w-0">
                     <p class="text-sm text-muted">{{ __('amol.next_prayer') }}</p>
                     <p class="font-bold text-ink">{{ __('amol.group_'.$today['prayer']['next']) }}</p>

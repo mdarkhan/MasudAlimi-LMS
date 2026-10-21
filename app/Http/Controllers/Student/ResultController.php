@@ -102,7 +102,8 @@ class ResultController extends Controller
             'rows' => $legacy ? [] : AttemptReviewPresenter::questions($attempt),
             'regraded' => ! $legacy && $attempt->wasRegraded(),
             'percentage' => $this->leaderboards->percentage((int) $attempt->final_score, (int) $attempt->total_marks_snapshot),
-            'rank' => $legacy ? null : $this->leaderboards->studentQuizRank($attempt->quiz, $user),
+            // legacy attempts rank like any other official, finished attempt — only their answers are missing
+            'rank' => $this->leaderboards->studentQuizRank($attempt->quiz, $user),
         ]);
     }
 }

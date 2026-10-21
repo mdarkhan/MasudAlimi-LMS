@@ -19,8 +19,10 @@
     $file = 'result-'.\App\Support\Slug::make($quiz->title).'.jpg';
 @endphp
 
-<x-ui.card {{ $attributes->merge(['class' => 'print:hidden']) }}
-    x-data="{
+{{-- x-data lives on a plain <div>, NOT on <x-ui.card>: Blade does not compile @js() inside a component
+     tag's attributes, so the data arrived as literal text and the button silently did nothing. --}}
+<x-ui.card {{ $attributes->merge(['class' => 'print:hidden']) }}>
+    <div x-data="{
         card: @js($card), url: null, blob: null, busy: false, canShare: false,
         async make() {
             this.busy = true;
@@ -59,4 +61,5 @@
             </div>
         </div>
     </template>
+    </div>
 </x-ui.card>
