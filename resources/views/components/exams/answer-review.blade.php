@@ -51,7 +51,7 @@
                     <li class="flex items-start gap-3 rounded-xl border px-4 py-2.5 {{ $tint }}">
                         <span class="shrink-0 mt-0.5">
                             @if ($isCorrect)
-                                <x-ui.icon name="check" class="w-5 h-5 text-emerald-600" />
+                                <x-ui.icon name="check" class="w-5 h-5 text-brand" />
                             @elseif ($isChosen)
                                 <x-ui.icon name="close" class="w-5 h-5 text-rose-600" />
                             @else

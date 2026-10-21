@@ -101,7 +101,7 @@
 
                     <div class="mt-3 pt-3 border-t border-line text-sm">
                         <div class="flex justify-between"><dt class="text-muted" x-text="nisabLabel()">{{ __('zakat.nisab_value', ['basis' => $server ? __('zakat.basis_'.$server['basis']) : __('zakat.basis_silver')]) }}</dt><dd class="tabular-nums" x-text="nisab === null ? '—' : cur(nisab)">{{ $server && $server['nisab'] ? $server['currency'].' '.$server['nisab'] : '—' }}</dd></div>
-                        <p class="mt-2" x-show="ratesMissing()" x-cloak><span class="text-amber-600 text-xs" x-text="ratesMissingText()"></span></p>
+                        <p class="mt-2" x-show="ratesMissing()" x-cloak><span class="text-amber-600 dark:text-amber-400 text-xs" x-text="ratesMissingText()"></span></p>
                         <p class="mt-2 font-semibold" :class="reached() ? 'text-brand' : 'text-muted'" x-text="reached() ? @js(__('zakat.reached')) : @js(__('zakat.below'))">{{ $server ? ($server['nisab_reached'] ? __('zakat.reached') : __('zakat.below')) : __('zakat.below') }}</p>
                     </div>
 

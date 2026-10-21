@@ -36,7 +36,7 @@
                             @if ($student->status === 'active')
                                 <form method="POST" action="{{ route('admin.students.status', $student) }}">
                                     @csrf @method('PUT')<input type="hidden" name="status" value="suspended">
-                                    <x-ui.button type="submit" variant="secondary" class="w-full justify-center text-amber-600">{{ __('students.suspend') }}</x-ui.button>
+                                    <x-ui.button type="submit" variant="secondary" class="w-full justify-center text-amber-600 dark:text-amber-400">{{ __('students.suspend') }}</x-ui.button>
                                 </form>
                             @else
                                 <form method="POST" action="{{ route('admin.students.status', $student) }}">

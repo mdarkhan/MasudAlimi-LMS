@@ -38,7 +38,7 @@
             @endif
 
             @if ($attempt->status === \App\Models\QuizAttempt::STATUS_EXPIRED)
-                <p class="text-xs text-amber-600 mt-4">{{ __('exams.result_expired_note') }}</p>
+                <p class="text-xs text-amber-600 dark:text-amber-400 mt-4">{{ __('exams.result_expired_note') }}</p>
             @endif
 
             <dl class="mt-6 pt-4 border-t border-line grid grid-cols-2 gap-4 text-sm text-start">

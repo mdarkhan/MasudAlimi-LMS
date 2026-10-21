@@ -32,8 +32,12 @@
         <path d="M50 4l9.4 14.1 16.6-3.3-3.3 16.6L86.8 40.8 72.7 50.2 76 66.8l-16.6-3.3L50 77.6l-9.4-14.1L24 66.8l3.3-16.6L13.2 40.8l14.1-9.4L24 14.8l16.6 3.3Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
     </svg>
 
-    <div class="relative">
-        <div class="flex items-center justify-between gap-3">
+    {{-- The site's ONE entrance animation: the first time the homepage opens in a browsing session the
+         panel's rows rise in, one after another. Later visits (and reduced motion) show it at rest. --}}
+    <script>try { if (! sessionStorage.getItem('hero-seen')) { document.documentElement.classList.add('hero-anim'); sessionStorage.setItem('hero-seen', '1'); } } catch (e) {}</script>
+
+    <div class="relative hero-enter">
+        <div data-enter style="--i: 0" class="flex items-center justify-between gap-3">
             <span class="flex items-center gap-2 text-sm font-semibold opacity-90"><x-ui.icon name="calendar" class="w-4 h-4" /> {{ __('calendar.today') }}</span>
             @if (filled($calendar['location'] ?? null))
                 <span class="inline-flex items-center gap-1 rounded-full bg-white/15 dark:bg-brand-ink/10 pl-2 pr-2.5 py-0.5 text-xs font-semibold"><x-ui.icon name="location" class="w-3.5 h-3.5" />{{ $calendar['location'] }}</span>
@@ -41,7 +45,7 @@
         </div>
 
         {{-- Hijri: the day as the big number; a live clock beside it --}}
-        <div class="mt-3 flex items-end justify-between gap-3">
+        <div data-enter style="--i: 1" class="mt-3 flex items-end justify-between gap-3">
             <div class="flex items-end gap-3 min-w-0">
                 <span class="text-7xl sm:text-8xl font-black leading-none tabular-nums">{{ bn($h['day']) }}</span>
                 <span class="pb-1.5 min-w-0">
@@ -51,10 +55,10 @@
             </div>
             <x-ui.live-clock :now="$g['carbon'] ?? null" second="text-gold dark:text-brand-ink" class="shrink-0 size-20 sm:size-24" />
         </div>
-        <p class="mt-3 text-sm sm:text-base opacity-95">{{ $bangla }} <span class="opacity-60 mx-1">·</span> {{ $gregorian }}</p>
+        <p data-enter style="--i: 2" class="mt-3 text-sm sm:text-base opacity-95">{{ $bangla }} <span class="opacity-60 mx-1">·</span> {{ $gregorian }}</p>
 
         @if ($prayer)
-            <div class="mt-5 pt-4 border-t border-white/20 dark:border-brand-ink/20">
+            <div data-enter style="--i: 3" class="mt-5 pt-4 border-t border-white/20 dark:border-brand-ink/20">
                 <p class="text-sm opacity-90">
                     {{ __('amol.next_prayer') }}:
                     <strong class="font-bold">{{ __('amol.group_'.$prayer['next']) }} · {{ $clock($prayer['next_at']) }}</strong>
@@ -74,7 +78,7 @@
             </div>
         @endif
 
-        <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold">
+        <p data-enter style="--i: 4" class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold">
             <x-ui.icon name="sun" class="w-4 h-4" />
             <span>{{ __('calendar.sunset', ['time' => $clock($sunset)]) }}</span>
             <span>— {{ __('calendar.sunset_note') }}</span>

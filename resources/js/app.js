@@ -108,6 +108,72 @@ try {
     }
 } catch (e) {}
 
+// Every navigation is a full page load, so on a slow connection a tap can look ignored. A thin line
+// across the top shows the next page is on its way (only if it takes longer than a moment), and a
+// submit button goes busy so a second tap cannot send the form twice.
+(() => {
+    const bar = document.createElement('div');
+    bar.id = 'nav-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    let timer = null;
+    let safety = null;
+
+    const start = () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            if (! bar.isConnected) document.body.appendChild(bar);
+            bar.style.transition = 'none';
+            bar.style.width = '0';
+            bar.offsetWidth;   // restart from zero
+            bar.style.transition = '';
+            bar.classList.add('is-on');
+            bar.style.width = '85%';
+        }, 150);
+        // A response that never replaces the page (a file download, a 204) must not leave it spinning.
+        clearTimeout(safety);
+        safety = setTimeout(stop, 10000);
+    };
+    const stop = () => {
+        clearTimeout(timer);
+        clearTimeout(safety);
+        bar.classList.remove('is-on');
+        bar.style.width = '0';
+        document.querySelectorAll('[data-busy]').forEach((el) => {
+            el.disabled = false;
+            el.removeAttribute('data-busy');
+            el.removeAttribute('aria-busy');
+        });
+    };
+
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest?.('a[href]');
+        if (! a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (a.target && a.target !== '_self') return;
+        if (a.hasAttribute('download') || a.hasAttribute('data-no-progress')) return;
+        const url = new URL(a.href, location.href);
+        if (url.origin !== location.origin || ! /^https?:$/.test(url.protocol)) return;
+        if (url.pathname === location.pathname && url.search === location.search && url.hash) return;   // in-page jump
+        if (/\/export(\/|$)/.test(url.pathname)) return;   // CSV downloads stay on the page
+        start();
+    });
+
+    document.addEventListener('submit', (e) => {
+        const form = e.target;
+        // data-confirm forms are intercepted (prevented) by the confirm dialog; fetch()-driven forms
+        // prevent too — neither navigates, so neither gets the bar.
+        if (e.defaultPrevented || form.target === '_blank' || form.hasAttribute('data-no-progress')) return;
+        start();
+        const btn = e.submitter;
+        if (btn && btn.tagName === 'BUTTON') {
+            // after this tick, so the clicked button's name/value is still part of the submission
+            setTimeout(() => { btn.disabled = true; btn.setAttribute('data-busy', ''); btn.setAttribute('aria-busy', 'true'); }, 0);
+        }
+    });
+
+    // Back/forward restores a frozen page from the cache — clear anything left running.
+    window.addEventListener('pageshow', stop);
+})();
+
 window.Alpine = Alpine;
 Alpine.start();
 

@@ -41,7 +41,7 @@
                 </div>
             </div>
             @if ($attempt->status === \App\Models\QuizAttempt::STATUS_EXPIRED)
-                <p class="text-xs text-amber-600 mt-3">{{ __('results.expired_note') }}</p>
+                <p class="text-xs text-amber-600 dark:text-amber-400 mt-3">{{ __('results.expired_note') }}</p>
             @endif
         </x-ui.card>
 

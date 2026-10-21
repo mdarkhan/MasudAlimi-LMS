@@ -77,7 +77,7 @@
 @if (session('credentials_download'))
     <div class="mb-6 rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-500/10 dark:border-amber-500/30 p-4">
         <div class="flex items-start gap-3">
-            <x-ui.icon name="key" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <x-ui.icon name="key" class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <div class="min-w-0 flex-1">
                 <p class="font-semibold text-amber-900 dark:text-amber-200">অস্থায়ী পাসওয়ার্ড ফাইল (একবারই ডাউনলোড করা যাবে)</p>
                 <p class="text-xs text-amber-800/80 dark:text-amber-300/80 mt-0.5">

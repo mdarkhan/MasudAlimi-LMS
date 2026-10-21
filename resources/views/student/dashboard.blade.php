@@ -183,9 +183,9 @@
         <div class="bg-card border border-line rounded-[--radius-card] shadow-[--shadow-soft] p-5 text-center">
             <p class="text-base font-semibold tracking-wide text-muted">{{ __('dashboard.overall_rank') }}</p>
             <div class="mt-2 flex items-center justify-center gap-2">
-                <p class="text-3xl font-black text-amber-500 tabular-nums">{{ $overall ? bn($overall['rank']) : '—' }}</p>
+                <p class="text-3xl font-black text-gold-ink tabular-nums">{{ $overall ? bn($overall['rank']) : '—' }}</p>
                 @if ($rankMovement === 'up')
-                    <span class="flex items-center gap-0.5 text-xs font-semibold text-emerald-600" title="{{ __('dashboard.rank_up') }}"><x-ui.icon name="trend-up" class="w-4 h-4" /></span>
+                    <span class="flex items-center gap-0.5 text-xs font-semibold text-brand" title="{{ __('dashboard.rank_up') }}"><x-ui.icon name="trend-up" class="w-4 h-4" /></span>
                 @elseif ($rankMovement === 'down')
                     <span class="flex items-center gap-0.5 text-xs font-semibold text-rose-500" title="{{ __('dashboard.rank_down') }}"><x-ui.icon name="trend-down" class="w-4 h-4" /></span>
                 @endif

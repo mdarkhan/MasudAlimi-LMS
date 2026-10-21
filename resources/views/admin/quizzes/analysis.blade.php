@@ -7,7 +7,7 @@
 
     @php
         $questions = $report['questions'];
-        $tone = ['easy' => 'text-brand', 'medium' => 'text-amber-600', 'hard' => 'text-rose-600'];
+        $tone = ['easy' => 'text-brand', 'medium' => 'text-amber-600 dark:text-amber-400', 'hard' => 'text-rose-600'];
         $bar = ['easy' => 'bg-brand', 'medium' => 'bg-amber-500', 'hard' => 'bg-rose-500'];
     @endphp
 

@@ -146,7 +146,7 @@
             <div class="relative w-full max-w-md bg-card rounded-2xl border border-line shadow-xl p-6">
                 <h2 class="text-lg font-bold text-ink">{{ __('exams.live_submit_confirm_title') }}</h2>
                 <p class="text-sm text-muted mt-2">{{ __('exams.live_submit_confirm_body') }}</p>
-                <p class="text-sm text-amber-600 mt-2" x-show="unansweredCount() > 0" x-text="unansweredLabel()"></p>
+                <p class="text-sm text-amber-600 dark:text-amber-400 mt-2" x-show="unansweredCount() > 0" x-text="unansweredLabel()"></p>
                 <div class="mt-6 flex items-center justify-end gap-3">
                     <x-ui.button type="button" variant="secondary" @click="showConfirm = false">{{ __('exams.live_cancel') }}</x-ui.button>
                     <x-ui.button type="button" @click="confirmAndSubmit()" x-bind:disabled="submitting">{{ __('exams.live_confirm') }}</x-ui.button>
@@ -419,7 +419,7 @@
                 saveBadge() {
                     const s = this.saveState[this.q().id];
                     if (s === 'saving') return '<span class="text-muted">' + @js(__('exams.live_saving')) + '</span>';
-                    if (s === 'saved') return '<span class="text-emerald-600">' + @js(__('exams.live_saved')) + '</span>';
+                    if (s === 'saved') return '<span class="text-brand">' + @js(__('exams.live_saved')) + '</span>';
                     if (s === 'error') return '<span class="text-rose-600">' + @js(__('exams.live_save_failed')) + '</span>';
                     return '';
                 },
