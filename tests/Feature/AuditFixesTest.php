@@ -78,8 +78,8 @@ class AuditFixesTest extends TestCase
         $this->assertStringContainsString('aria-label="'.__('nav.bottom_nav').'"', $super);
         $this->assertStringContainsString(__('dashboard.super_admin_heading'), $super);
         $this->assertStringContainsString(__('nav.context_super_admin'), $super);
-        // the dashboard uses the same house icon as the student side (sidebar + phone tab bar), for every staff role
-        $this->assertSame(2, substr_count($super, 'M4 10.3 12 4l8 6.3V19'));
+        // the dashboard uses the same house icon as the student side — desktop sidebar, phone menu, phone tab bar
+        $this->assertSame(3, substr_count($super, 'M4 10.3 12 4l8 6.3V19'));
 
         // a plain admin keeps the plain wording
         $admin = $this->actingAs($this->makeAdmin())->get(route('admin.dashboard'))->assertOk()->getContent();
