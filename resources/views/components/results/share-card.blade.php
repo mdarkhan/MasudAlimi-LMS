@@ -48,10 +48,7 @@
         },
     }">
     <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="min-w-0">
-            <h3 class="font-bold text-ink flex items-center gap-2"><x-ui.icon name="share" class="w-4 h-4 text-brand" /> {{ __('results.share_heading') }}</h3>
-            <p class="text-sm text-muted mt-0.5">{{ __('results.share_hint') }}</p>
-        </div>
+        <h3 class="font-bold text-ink flex items-center gap-2"><x-ui.icon name="share" class="w-4 h-4 text-brand" /> {{ __('results.share_heading') }}</h3>
         <x-ui.button type="button" x-show="! url" @click="make()" ::disabled="busy">
             <span x-show="! busy">{{ __('results.share_make') }}</span>
             <span x-show="busy" x-cloak>{{ __('results.share_making') }}</span>
@@ -59,15 +56,16 @@
     </div>
 
     <template x-if="url">
-        <div class="mt-4 flex flex-col sm:flex-row gap-4 sm:items-end">
-            <img :src="url" alt="{{ __('results.share_preview_alt') }}" class="w-full sm:w-64 rounded-xl border border-line shadow-sm aspect-[4/5] object-cover">
-            <div class="flex flex-wrap gap-2">
-                <x-ui.button type="button" @click="share()"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_button') }}</x-ui.button>
+        {{-- one column on every screen: the picture, then the two actions side by side at its exact width --}}
+        <div class="mt-4 w-full max-w-xs mx-auto sm:mx-0">
+            <img :src="url" alt="{{ __('results.share_preview_alt') }}" class="w-full rounded-xl border border-line shadow-sm aspect-[4/5] object-cover">
+            <div class="mt-3 grid grid-cols-2 gap-2">
+                <x-ui.button type="button" @click="share()" class="w-full"><x-ui.icon name="share" class="w-4 h-4" /> {{ __('results.share_button') }}</x-ui.button>
                 {{-- same look as the share button (x-ui.button primary); a plain <a> because it needs :href + download --}}
-                <a x-ref="download" :href="url" download="{{ $file }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand text-brand-ink hover:bg-brand-strong shadow-sm px-4 py-2.5 text-sm font-semibold transition-colors">
+                <a x-ref="download" :href="url" download="{{ $file }}" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-brand text-brand-ink hover:bg-brand-strong shadow-sm px-4 py-2.5 text-sm font-semibold transition-colors">
                     <x-ui.icon name="image-down" class="w-4 h-4" /> {{ __('results.share_download') }}
                 </a>
-                <p x-show="hint" x-cloak class="basis-full text-xs text-muted">{{ __('results.share_saved_hint') }}</p>
+                <p x-show="hint" x-cloak class="col-span-2 text-xs text-muted">{{ __('results.share_saved_hint') }}</p>
             </div>
         </div>
     </template>
