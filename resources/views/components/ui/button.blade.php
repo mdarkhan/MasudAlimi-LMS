@@ -11,7 +11,7 @@
 
     $variants = [
         'primary'   => 'bg-brand text-brand-ink hover:bg-brand-strong shadow-sm',
-        'secondary' => 'bg-card text-ink border border-line hover:border-brand/50 hover:text-brand',
+        'secondary' => 'bg-card text-ink border border-line hover:bg-brand hover:border-brand hover:text-brand-ink',
         'ghost'     => 'text-muted hover:text-ink hover:bg-ink/5',
         'danger'    => 'bg-rose-600 text-white hover:bg-rose-700 shadow-sm',
         'subtle'    => 'bg-brand-tint text-brand-strong hover:bg-brand/15',

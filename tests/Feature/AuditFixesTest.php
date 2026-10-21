@@ -85,6 +85,23 @@ class AuditFixesTest extends TestCase
         $this->assertStringNotContainsString(__('dashboard.super_admin_heading'), $admin);
     }
 
+    public function test_the_staff_dashboard_leads_with_todays_work(): void
+    {
+        $admin = $this->makeSuperAdmin();
+
+        $this->actingAs($admin)->get(route('admin.dashboard'))->assertOk()->assertSee(__('dashboard.task_all_clear'));
+
+        \App\Models\Quiz::factory()->create([
+            'title' => 'চলমান সীরাত পরীক্ষা', 'status' => \App\Models\Quiz::STATUS_PUBLISHED,
+            'starts_at' => now()->subHour(), 'ends_at' => now()->addHour(),
+        ]);
+        \App\Models\Quiz::factory()->create(['title' => 'খসড়া', 'status' => \App\Models\Quiz::STATUS_DRAFT]);
+
+        $this->actingAs($admin)->get(route('admin.dashboard'))->assertOk()
+            ->assertSeeInOrder([__('dashboard.admin_today'), __('dashboard.task_exam_open_title'), 'চলমান সীরাত পরীক্ষা', __('dashboard.task_drafts_title')])
+            ->assertDontSee(__('dashboard.task_all_clear'));
+    }
+
     public function test_admin_dates_are_readable_with_month_names_and_a_12_hour_clock(): void
     {
         app()->setLocale('en');
