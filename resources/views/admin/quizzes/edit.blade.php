@@ -102,8 +102,8 @@
             </div>
         @endif
 
-        {{-- Super admin only: a quiz that was just a TEST but already has attempts cannot be deleted the normal
-             way (exam history is protected). This removes it with everything attached, after the title is typed. --}}
+        {{-- Super admin only: a quiz with attempts cannot be deleted the normal way (exam history is protected).
+             This removes it with every attempt and result, after the title is typed; boards re-rank by themselves. --}}
         @if (auth()->user()->hasRole(\App\Models\Role::SUPER_ADMIN) && $quiz->hasOfficialAttempts())
             <x-ui.card class="mt-8 border-rose-500/40">
                 <h3 class="font-bold text-rose-600 dark:text-rose-400 flex items-center gap-2"><x-ui.icon name="trash" class="w-4 h-4" /> {{ __('quizzes.purge_heading') }}</h3>

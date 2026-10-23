@@ -28,7 +28,10 @@ accident. Full reasoning lives in `PROJECT_PLAN.md`, `DATABASE_SCHEMA.md`,
    compromised legacy pair and are gitignored. `legacy/quiz-api.reference.php` is
    the redacted, committable version.
 6. **Never delete or fabricate legacy data.** Legacy attempts have no stored
-   answers; show "detailed answers unavailable", never invent them.
+   answers; show "detailed answers unavailable", never invent them. The ONE owner-requested
+   exception is a super admin's typed-title "delete exam completely" (`QuizPurgeService`): it
+   removes a quiz with all its attempts, refunds fees through `PointService`, and boards re-rank
+   live. Never call it from code paths, imports or migrations.
 7. **Per-question marks stay hidden during a live official exam.** Legacy behaviour,
    deliberate — students must not be steered toward mega questions.
 8. **Terminal attempt states are one-way.** `submitted` / `expired` / `voided` never

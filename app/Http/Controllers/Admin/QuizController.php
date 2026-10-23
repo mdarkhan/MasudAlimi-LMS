@@ -9,7 +9,7 @@ use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Services\Audit\AuditLogger;
 use App\Services\Quiz\QuizDuplicator;
-use App\Services\Quiz\TestQuizPurgeService;
+use App\Services\Quiz\QuizPurgeService;
 use App\Support\Slug;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -226,10 +226,10 @@ class QuizController extends Controller
     }
 
     /**
-     * Super admin only (route-gated): remove a TEST quiz together with its attempts — see TestQuizPurgeService.
+     * Super admin only (route-gated): remove a quiz together with all its attempts and results — see QuizPurgeService.
      * The exact title must be typed back, so a real exam cannot be wiped by a stray click.
      */
-    public function purge(Request $request, Quiz $quiz, TestQuizPurgeService $purger): RedirectResponse
+    public function purge(Request $request, Quiz $quiz, QuizPurgeService $purger): RedirectResponse
     {
         $request->validate(['confirm_title' => ['required', 'string']]);
         if (trim((string) $request->input('confirm_title')) !== trim($quiz->title)) {
