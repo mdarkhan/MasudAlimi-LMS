@@ -101,7 +101,13 @@
                     </div>
                     <div class="mt-3 h-1.5 rounded-full bg-line overflow-hidden" aria-hidden="true"><div class="h-full rounded-full bg-brand" style="width: {{ min(100, max(0, $row['percentage'])) }}%"></div></div>
                     <p class="text-xs text-muted mt-2 tabular-nums">
-                        @unless ($isQuiz){{ __('leaderboards.admin_col_exams') }}: {{ bn($row['exams_counted']) }} · @endunless{{ $fmtTime($row['time_taken_seconds']) }}
+                        {{-- exams counted (overall/course) · time taken (not on the overall board) --}}
+                        @php
+                            $meta = [];
+                            if (! $isQuiz) { $meta[] = __('leaderboards.admin_col_exams').': '.bn($row['exams_counted']); }
+                            if ($tab !== 'overall') { $meta[] = $fmtTime($row['time_taken_seconds']); }
+                        @endphp
+                        {{ implode(' · ', $meta) }}
                     </p>
                 </div>
             @endforeach
@@ -111,14 +117,14 @@
             <table class="w-full text-sm">
                 <thead class="bg-surface-raised text-muted">
                     <tr>
-                        <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="rank" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_rank')" /></th>
-                        <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold"><x-ui.sort-link sort="name" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_student')" /></th>
+                        <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_rank') }}</th>
+                        <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">{{ __('results_admin.col_student') }}</th>
                         @unless ($isQuiz)
-                            <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="exams" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.admin_col_exams')" first="desc" /></th>
+                            <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.admin_col_exams') }}</th>
                         @endunless
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="time" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_time')" /></th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="obtained" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_obtained')" first="desc" /></th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="percentage" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_percentage')" first="desc" /></th>
+                        @if ($tab !== 'overall')<th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_time') }}</th>@endif
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_obtained') }}</th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_percentage') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-line">
@@ -148,7 +154,7 @@
                             @unless ($isQuiz)
                                 <td class="px-3 py-3 text-center align-middle tabular-nums text-muted">{{ bn($row['exams_counted']) }}</td>
                             @endunless
-                            <td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['time_taken_seconds']) }}</td>
+                            @if ($tab !== 'overall')<td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['time_taken_seconds']) }}</td>@endif
                             <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap">
                                 <span class="font-bold text-ink">{{ bn($row['obtained']) }}</span><span class="text-muted"> / {{ bn($possible) }}</span>
                             </td>

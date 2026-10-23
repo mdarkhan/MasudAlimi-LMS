@@ -82,7 +82,7 @@
                         @endif
                         <th class="px-4 py-3"><x-ui.sort-link sort="name" :current="$sort" :dir="$dir" :label="__('students.name_col')" /></th>
                         <th class="px-4 py-3 text-center"><x-ui.sort-link sort="roll" :current="$sort" :dir="$dir" :label="__('students.roll_col')" class="justify-center" /></th>
-                        <th class="px-4 py-3 hidden sm:table-cell"><x-ui.sort-link sort="guardian" :current="$sort" :dir="$dir" :label="__('students.guardian_col')" /></th>
+                        <th class="px-4 py-3 hidden sm:table-cell">{{ __('students.guardian_col') }}</th>
                         <th class="px-4 py-3 text-center"><x-ui.sort-link sort="points" :current="$sort" :dir="$dir" :label="__('students.points_col')" class="justify-center" /></th>
                         <th class="px-4 py-3"><x-ui.sort-link sort="status" :current="$sort" :dir="$dir" :label="__('students.status_col')" /></th>
                         <th class="px-4 py-3"></th>

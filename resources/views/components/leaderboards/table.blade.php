@@ -1,7 +1,7 @@
 @props([
     'rows',
     'me' => null,
-    'sort' => null,   // App\Support\TableSort — makes the headers clickable
+    'showTime' => true,   // the overall board has no meaningful "time taken"
 ])
 
 @php
@@ -48,7 +48,7 @@
                 <div class="mt-3 h-1.5 rounded-full bg-line overflow-hidden" aria-hidden="true">
                     <div class="h-full rounded-full bg-brand" style="width: {{ min(100, max(0, $row['percentage'])) }}%"></div>
                 </div>
-                <p class="text-xs text-muted mt-2 tabular-nums">{{ __('leaderboards.col_time') }}: {{ $fmtTime($row['time_taken_seconds']) }}</p>
+                @if ($showTime)<p class="text-xs text-muted mt-2 tabular-nums">{{ __('leaderboards.col_time') }}: {{ $fmtTime($row['time_taken_seconds']) }}</p>@endif
             </div>
         @endforeach
     </div>
@@ -57,12 +57,12 @@
         <table class="w-full text-sm">
             <thead class="bg-surface-raised text-muted">
                 <tr>
-                    <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="rank" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_rank')" />@else{{ __('leaderboards.col_rank') }}@endif</th>
-                    <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="name" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_name')" />@else{{ __('leaderboards.col_name') }}@endif</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="time" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_time')" />@else{{ __('leaderboards.col_time') }}@endif</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="obtained" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_obtained')" first="desc" />@else{{ __('leaderboards.col_obtained') }}@endif</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="possible" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_possible')" first="desc" />@else{{ __('leaderboards.col_possible') }}@endif</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="percentage" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_percentage')" first="desc" />@else{{ __('leaderboards.col_percentage') }}@endif</th>
+                    <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_rank') }}</th>
+                    <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">{{ __('leaderboards.col_name') }}</th>
+                    @if ($showTime)<th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_time') }}</th>@endif
+                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_obtained') }}</th>
+                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_possible') }}</th>
+                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_percentage') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-line">
@@ -94,7 +94,7 @@
                                 </span>
                             </div>
                         </td>
-                        <td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['time_taken_seconds']) }}</td>
+                        @if ($showTime)<td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['time_taken_seconds']) }}</td>@endif
                         <td @class(['px-3 py-3 text-center align-middle font-bold tabular-nums', 'text-ink' => ! $mine, 'text-brand-strong text-base' => $mine])>{{ bn($row['obtained']) }}</td>
                         <td class="px-3 py-3 text-center align-middle text-muted tabular-nums">{{ bn($possible) }}</td>
                         <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap">

@@ -17,5 +17,5 @@
         </button>
     </div>
 
-    <x-leaderboards.table :rows="$rows" :me="$me" :sort="$sort" />
+    <x-leaderboards.table :rows="$rows" :me="$me" />
 </x-layout.student>

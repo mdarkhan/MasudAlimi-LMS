@@ -6,14 +6,14 @@
     @if ($courses->isEmpty())
         <x-ui.card><x-ui.empty :title="__('courses.no_courses_admin')">{{ __('courses.create_first_course') }}<x-slot:action><x-ui.button :href="route('admin.courses.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('courses.new_course') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
-        <x-ui.table :sortable="true">
+        <x-ui.table>
             <x-slot:head>
                 <th class="px-4 py-3">{{ __('admin.order') }}</th>
-                <th class="px-4 py-3" data-sort="text">{{ __('courses.title') }}</th>
-                <th class="px-4 py-3 hidden sm:table-cell" data-sort="text">{{ __('admin.slug') }}</th>
-                <th class="px-4 py-3 text-right" data-sort="num" data-sort-first="desc">{{ __('nav.lessons') }}</th>
-                <th class="px-4 py-3 text-right" data-sort="num" data-sort-first="desc">{{ __('courses.completions_col') }}</th>
-                <th class="px-4 py-3" data-sort="text">{{ __('ui.status') }}</th>
+                <th class="px-4 py-3">{{ __('courses.title') }}</th>
+                <th class="px-4 py-3 hidden sm:table-cell">{{ __('admin.slug') }}</th>
+                <th class="px-4 py-3 text-right">{{ __('nav.lessons') }}</th>
+                <th class="px-4 py-3 text-right">{{ __('courses.completions_col') }}</th>
+                <th class="px-4 py-3">{{ __('ui.status') }}</th>
                 <th class="px-4 py-3"></th>
             </x-slot:head>
             @foreach ($courses as $course)

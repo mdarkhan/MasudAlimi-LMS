@@ -86,10 +86,10 @@
                         <tr class="text-start">
                             <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="text">{{ __('results.col_quiz') }}</th>
                             <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_date') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="text">{{ __('results.col_status') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_status') }}</th>
                             <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_score') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_percentage') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num">{{ __('results.col_time') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_percentage') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_time') }}</th>
                             <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num">{{ __('results.col_rank') }}</th>
                             <th scope="col" class="px-4 py-2.5 print:hidden"><span class="sr-only">{{ __('results.view_answer_sheet') }}</span></th>
                         </tr>
@@ -188,8 +188,8 @@
                             <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="text">{{ __('results.col_quiz') }}</th>
                             <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_date') }}</th>
                             <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_score') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_percentage') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num">{{ __('results.col_time') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_percentage') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_time') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-line">

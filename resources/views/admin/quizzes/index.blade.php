@@ -46,8 +46,8 @@
                 <th class="px-4 py-3"><x-ui.sort-link sort="title" :current="$sort->key" :dir="$sort->dir" :label="__('quizzes.title_col')" /></th>
                 <th class="px-4 py-3 hidden md:table-cell"><x-ui.sort-link sort="course" :current="$sort->key" :dir="$sort->dir" :label="__('quizzes.course_lesson')" /></th>
                 <th class="px-4 py-3 text-center align-middle"><x-ui.sort-link sort="status" :current="$sort->key" :dir="$sort->dir" :label="__('ui.status')" /></th>
-                <th class="px-4 py-3 text-center hidden sm:table-cell"><x-ui.sort-link sort="questions" :current="$sort->key" :dir="$sort->dir" :label="__('quizzes.questions_col')" /></th>
-                <th class="px-4 py-3 text-center hidden sm:table-cell"><x-ui.sort-link sort="marks" :current="$sort->key" :dir="$sort->dir" :label="__('quizzes.marks_col')" /></th>
+                <th class="px-4 py-3 text-center hidden sm:table-cell">{{ __('quizzes.questions_col') }}</th>
+                <th class="px-4 py-3 text-center hidden sm:table-cell">{{ __('quizzes.marks_col') }}</th>
                 <th class="px-4 py-3 text-center hidden lg:table-cell"><x-ui.sort-link sort="attempts" :current="$sort->key" :dir="$sort->dir" :label="__('quizzes.attempts_col')" /></th>
                 <th class="px-4 py-3"></th>
             </x-slot:head>

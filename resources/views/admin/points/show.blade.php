@@ -45,11 +45,11 @@
                 <x-ui.table>
                     <x-slot:head>
                         <th class="px-4 py-3"><x-ui.sort-link sort="date" :current="$sort->key" :dir="$sort->dir" :label="__('points.date')" /></th>
-                        <th class="px-4 py-3"><x-ui.sort-link sort="type" :current="$sort->key" :dir="$sort->dir" :label="__('ui.type')" /></th>
-                        <th class="px-4 py-3"><x-ui.sort-link sort="reason" :current="$sort->key" :dir="$sort->dir" :label="__('ui.reason')" /></th>
-                        <th class="px-4 py-3 hidden sm:table-cell"><x-ui.sort-link sort="who" :current="$sort->key" :dir="$sort->dir" :label="__('points.who_col')" /></th>
+                        <th class="px-4 py-3">{{ __('ui.type') }}</th>
+                        <th class="px-4 py-3">{{ __('ui.reason') }}</th>
+                        <th class="px-4 py-3 hidden sm:table-cell">{{ __('points.who_col') }}</th>
                         <th class="px-4 py-3 text-right"><x-ui.sort-link sort="amount" :current="$sort->key" :dir="$sort->dir" :label="__('points.amount')" /></th>
-                        <th class="px-4 py-3 text-right"><x-ui.sort-link sort="balance" :current="$sort->key" :dir="$sort->dir" :label="__('points.balance')" /></th>
+                        <th class="px-4 py-3 text-right">{{ __('points.balance') }}</th>
                     </x-slot:head>
                     @foreach ($transactions as $tx)
                         <tr>

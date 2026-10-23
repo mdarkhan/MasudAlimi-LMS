@@ -78,17 +78,20 @@ class LeaderboardPageTest extends TestCase
         $response->assertOk()
             ->assertSee('Leaderboard')
             ->assertDontSee('Overall leaderboard')
-            ->assertSee('Time taken')
+            // the overall board has no "time taken" (owner's call) — only per-exam boards show it
+            ->assertDontSee('Time taken')
+            ->assertDontSee('8m 20s')
             ->assertDontSee('>Exams</th>', false)
             ->assertSee('Total marks')
             ->assertSee('Course')
             ->assertSee('Exam')
             ->assertSee('Seerat Course')
-            ->assertSee('8m 20s')
             ->assertSee('Overall Me')
-            ->assertSee(__('leaderboards.you'));
+            ->assertSee(__('leaderboards.you'))
+            // and the official order only: no click-to-sort headers on a leaderboard
+            ->assertDontSee('sort=', false);
 
-        $this->assertSame(10, substr_count($response->getContent(), 'text-center align-middle'));
+        $this->assertSame(8, substr_count($response->getContent(), 'text-center align-middle'));
     }
 
     public function test_a_quiz_leaderboard_keeps_the_generic_heading_and_uses_the_shared_table(): void

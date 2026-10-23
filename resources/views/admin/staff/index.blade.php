@@ -8,10 +8,10 @@
     @else
         <x-ui.table>
             <x-slot:head>
-                <th class="px-4 py-3"><x-ui.sort-link sort="name" :current="$sort->key" :dir="$sort->dir" :label="__('staff.name_col')" /></th>
-                <th class="px-4 py-3 hidden sm:table-cell"><x-ui.sort-link sort="email" :current="$sort->key" :dir="$sort->dir" :label="__('staff.email_col')" /></th>
-                <th class="px-4 py-3"><x-ui.sort-link sort="role" :current="$sort->key" :dir="$sort->dir" :label="__('staff.role_col')" /></th>
-                <th class="px-4 py-3"><x-ui.sort-link sort="status" :current="$sort->key" :dir="$sort->dir" :label="__('staff.status_col')" /></th>
+                <th class="px-4 py-3">{{ __('staff.name_col') }}</th>
+                <th class="px-4 py-3 hidden sm:table-cell">{{ __('staff.email_col') }}</th>
+                <th class="px-4 py-3">{{ __('staff.role_col') }}</th>
+                <th class="px-4 py-3">{{ __('staff.status_col') }}</th>
                 <th class="px-4 py-3"></th>
             </x-slot:head>
             @foreach ($staff as $member)
