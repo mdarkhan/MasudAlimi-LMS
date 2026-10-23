@@ -15,10 +15,12 @@ use Illuminate\View\View;
  */
 class ExamController extends Controller
 {
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
         $user = auth()->user();
         $now = CarbonImmutable::now();
+        $search = trim((string) $request->query('q', ''));
+        $courseId = $request->query('course');
 
         // Draft quizzes are never visible. Options (and their answer key) are never loaded.
         $quizzes = Quiz::query()
@@ -27,6 +29,22 @@ class ExamController extends Controller
             ->withCount(['questions as active_questions_count' => fn ($q) => $q->where('is_active', true)])
             ->orderBy('starts_at')
             ->get();
+
+        // Courses that actually have exams, for the course picker (before narrowing by it).
+        $courses = $quizzes->pluck('course')->filter()->unique('id')->sortBy('sort_order')->values();
+
+        if (filled($courseId)) {
+            $quizzes = $quizzes->filter(fn (Quiz $quiz) => (string) $quiz->course_id === (string) $courseId);
+        }
+        if ($search !== '') {
+            // Bengali or Latin digits, either spelling of য়/ড়/ঢ়, any case: "সীরাত ২৮" finds "সীরাত-২৮", so does "28".
+            $key = fn (string $text) => mb_strtolower(\App\Services\Import\BengaliText::toLatinDigits(strtr($text, [
+                "\u{09DF}" => "\u{09AF}\u{09BC}", "\u{09DC}" => "\u{09A1}\u{09BC}", "\u{09DD}" => "\u{09A2}\u{09BC}",
+            ])));
+            $needle = preg_replace('/[\s\-–—_]+/u', '', $key($search));
+            $quizzes = $quizzes->filter(fn (Quiz $quiz) => str_contains(
+                preg_replace('/[\s\-–—_]+/u', '', $key($quiz->title.' '.($quiz->course?->title ?? ''))), $needle));
+        }
 
         $attempts = QuizAttempt::query()
             ->where('user_id', $user->getKey())
@@ -45,6 +63,10 @@ class ExamController extends Controller
         return view('student.exams.index', [
             'user' => $user,
             'groups' => $groups,
+            'courses' => $courses,
+            'search' => $search,
+            'courseId' => $courseId,
+            'filtered' => $search !== '' || filled($courseId),
         ]);
     }
 

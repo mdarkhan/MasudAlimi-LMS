@@ -75,4 +75,13 @@ return [
     'result_expired_note' => 'Time ran out. Answers you saved before the deadline were still scored.',
     'result_back' => 'Back to exams',
     'result_detailed_unavailable' => 'A detailed answer sheet will be available in a later phase.',
+    'search_label' => "Search exams",
+    'search_placeholder' => "Type an exam name, e.g. Seerat-28",
+    'search_course' => "Choose a course",
+    'search_all_courses' => "All courses",
+    'search_button' => "Search",
+    'search_showing' => ":count exam(s) found",
+    'search_clear' => "Show all exams",
+    'search_none' => "No exam matches",
+    'search_none_hint' => "Try another name or pick a different course.",
 ];

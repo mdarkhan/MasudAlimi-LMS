@@ -7,15 +7,49 @@
     ];
 @endphp
 <x-layout.student :title="__('exams.heading')" :heading="__('exams.heading')">
-    <div class="inline-flex items-center gap-3 rounded-2xl border border-brand/30 bg-brand-tint/40 pl-3 pr-5 py-2.5 mb-6">
-        <span class="w-9 h-9 rounded-full bg-brand text-brand-ink grid place-items-center"><x-ui.icon name="points" class="w-5 h-5" /></span>
-        <span class="text-sm font-semibold text-muted">{{ __('exams.your_points') }}</span>
-        <span class="text-2xl font-black text-brand tabular-nums leading-none">{{ bn($user->points_balance) }}</span>
+    <div class="mb-6 flex flex-col lg:flex-row lg:items-center gap-3">
+        <div class="inline-flex items-center gap-3 self-start rounded-2xl border border-brand/30 bg-brand-tint/40 pl-3 pr-5 py-2.5">
+            <span class="w-9 h-9 rounded-full bg-brand text-brand-ink grid place-items-center"><x-ui.icon name="points" class="w-5 h-5" /></span>
+            <span class="text-sm font-semibold text-muted">{{ __('exams.your_points') }}</span>
+            <span class="text-2xl font-black text-brand tabular-nums leading-none">{{ bn($user->points_balance) }}</span>
+        </div>
+
+        {{-- Search by name (Bengali or Latin digits both work) and narrow to one course; the course picker
+             applies as soon as it changes. Plain GET, so a search is a shareable, back-button-friendly URL. --}}
+        <form method="GET" action="{{ route('student.exams.index') }}" role="search" class="flex flex-col sm:flex-row gap-2 lg:ml-auto lg:w-[34rem]">
+            <label class="relative flex-1">
+                <span class="sr-only">{{ __('exams.search_label') }}</span>
+                <x-ui.icon name="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
+                <input type="search" name="q" value="{{ $search }}" placeholder="{{ __('exams.search_placeholder') }}"
+                       class="w-full rounded-xl bg-card border border-line pl-10 pr-3 py-2.5 text-sm text-ink placeholder-muted outline-none focus:border-brand focus:ring-4 focus:ring-brand/10">
+            </label>
+            @if ($courses->isNotEmpty())
+                <select name="course" onchange="this.form.submit()" aria-label="{{ __('exams.search_course') }}"
+                        class="sm:w-48 rounded-xl bg-card border border-line px-3 py-2.5 text-sm text-ink outline-none focus:border-brand">
+                    <option value="">{{ __('exams.search_all_courses') }}</option>
+                    @foreach ($courses as $c)
+                        <option value="{{ $c->id }}" @selected((string) $courseId === (string) $c->id)>{{ $c->title }}</option>
+                    @endforeach
+                </select>
+            @endif
+            <x-ui.button type="submit" class="shrink-0"><x-ui.icon name="search" class="w-4 h-4" /> {{ __('exams.search_button') }}</x-ui.button>
+        </form>
     </div>
+
+    @if ($filtered)
+        <div class="mb-5 flex flex-wrap items-center gap-2 text-sm text-muted">
+            <span>{{ __('exams.search_showing', ['count' => bn(collect($groups)->flatten(1)->count())]) }}</span>
+            <a href="{{ route('student.exams.index') }}" class="font-semibold text-brand hover:underline">{{ __('exams.search_clear') }}</a>
+        </div>
+    @endif
 
     @php $anything = collect($groups)->flatten(1)->isNotEmpty(); @endphp
     @unless ($anything)
-        <x-ui.card><x-ui.empty :title="__('exams.none_yet')">{{ __('exams.none_yet_hint') }}</x-ui.empty></x-ui.card>
+        @if ($filtered)
+            <x-ui.card><x-ui.empty :title="__('exams.search_none')">{{ __('exams.search_none_hint') }}</x-ui.empty></x-ui.card>
+        @else
+            <x-ui.card><x-ui.empty :title="__('exams.none_yet')">{{ __('exams.none_yet_hint') }}</x-ui.empty></x-ui.card>
+        @endif
     @endunless
 
     @foreach ($sections as $key => [$title, $tone])
