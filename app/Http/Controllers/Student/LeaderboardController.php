@@ -71,9 +71,14 @@ class LeaderboardController extends Controller
             ->with('course:id,title')
             ->where('status', '!=', Quiz::STATUS_DRAFT)
             ->where('leaderboard_visible', true)
-            ->orderByDesc('ends_at')
             ->get()
             ->filter(fn (Quiz $quiz) => $quiz->leaderboardVisibleAt($now))
+            ->sort(fn (Quiz $a, Quiz $b) => match (true) {
+                $a->ends_at === null && $b->ends_at === null => \App\Support\TableSort::compare($b->title, $a->title),
+                $a->ends_at === null => 1,
+                $b->ends_at === null => -1,
+                default => ($b->ends_at->getTimestamp() <=> $a->ends_at->getTimestamp()) ?: \App\Support\TableSort::compare($b->title, $a->title),
+            })
             ->values();
     }
 

@@ -27,8 +27,15 @@ class ExamController extends Controller
             ->where('status', '!=', Quiz::STATUS_DRAFT)
             ->with('course')
             ->withCount(['questions as active_questions_count' => fn ($q) => $q->where('is_active', true)])
-            ->orderBy('starts_at')
-            ->get();
+            ->get()
+            // by start time; exams imported without a date come first (they are the oldest), in exam-number order
+            ->sort(fn (Quiz $a, Quiz $b) => match (true) {
+                $a->starts_at === null && $b->starts_at === null => \App\Support\TableSort::compare($a->title, $b->title),
+                $a->starts_at === null => -1,
+                $b->starts_at === null => 1,
+                default => ($a->starts_at->getTimestamp() <=> $b->starts_at->getTimestamp()) ?: \App\Support\TableSort::compare($a->title, $b->title),
+            })
+            ->values();
 
         // Courses that actually have exams, for the course picker (before narrowing by it).
         $courses = $quizzes->pluck('course')->filter()->unique('id')->sortBy('sort_order')->values();

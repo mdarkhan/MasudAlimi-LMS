@@ -113,6 +113,29 @@ final class TableSort
         );
     }
 
+    /**
+     * Natural order by a text key — for exam pickers and lists, where plain SQL/PHP string order would put
+     * "সীরাত-১০" before "সীরাত-৯". Stable.
+     *
+     * @template T
+     *
+     * @param  Collection<int, T>  $items
+     * @param  \Closure(T): string  $title
+     * @return Collection<int, T>
+     */
+    public static function natural(Collection $items, \Closure $title, bool $desc = false): Collection
+    {
+        $all = $items->values()->all();
+        $keys = array_keys($all);
+        usort($keys, function ($i, $j) use ($all, $title, $desc) {
+            $cmp = self::compare($title($all[$i]), $title($all[$j]));
+
+            return ($desc ? -$cmp : $cmp) ?: $i <=> $j;
+        });
+
+        return collect(array_map(fn ($k) => $all[$k], $keys));
+    }
+
     public static function compare(mixed $a, mixed $b): int
     {
         if ($a instanceof \DateTimeInterface && $b instanceof \DateTimeInterface) {

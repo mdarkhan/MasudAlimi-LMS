@@ -72,7 +72,7 @@ class StudentController extends Controller
         return User::query()->students()
             ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w
                 ->where('name', 'like', "%{$search}%")
-                ->orWhere('roll', 'like', "%{$search}%")))
+                ->orWhere('roll', 'like', '%'.\App\Services\Import\BengaliText::toLatinDigits($search).'%')))
             ->when(in_array($status, ['active', 'suspended', 'archived'], true), fn ($q) => $q->where('status', $status));
     }
 

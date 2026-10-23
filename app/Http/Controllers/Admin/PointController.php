@@ -32,7 +32,7 @@ class PointController extends Controller
         $query = User::query()->students()
             ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w
                 ->where('name', 'like', "%{$search}%")
-                ->orWhere('roll', 'like', "%{$search}%")));
+                ->orWhere('roll', 'like', '%'.\App\Services\Import\BengaliText::toLatinDigits($search).'%')));
 
         StudentSort::apply($query, $sort, $dir);
 
@@ -49,7 +49,7 @@ class PointController extends Controller
         $query = User::query()->students()
             ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w
                 ->where('name', 'like', "%{$search}%")
-                ->orWhere('roll', 'like', "%{$search}%")))
+                ->orWhere('roll', 'like', '%'.\App\Services\Import\BengaliText::toLatinDigits($search).'%')))
             ->orderBy('name');
 
         return response()->streamDownload(function () use ($query) {
@@ -117,7 +117,7 @@ class PointController extends Controller
         $students = User::query()->students()->where('status', User::STATUS_ACTIVE)
             ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w
                 ->where('name', 'like', "%{$search}%")
-                ->orWhere('roll', 'like', "%{$search}%")))
+                ->orWhere('roll', 'like', '%'.\App\Services\Import\BengaliText::toLatinDigits($search).'%')))
             ->orderBy('name')
             ->get();
 

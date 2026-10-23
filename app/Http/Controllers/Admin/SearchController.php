@@ -30,7 +30,8 @@ class SearchController extends Controller
         if ($q !== '') {
             if ($user->hasPermission('students.view')) {
                 $results['students'] = User::query()->students()
-                    ->where(fn ($w) => $w->where('name', 'like', "%{$q}%")->orWhere('roll', 'like', "%{$q}%"))
+                    ->where(fn ($w) => $w->where('name', 'like', "%{$q}%")
+                        ->orWhere('roll', 'like', '%'.\App\Services\Import\BengaliText::toLatinDigits($q).'%'))
                     ->orderBy('name')->limit(self::LIMIT)->get();
             }
             if ($user->hasPermission('quizzes.view')) {

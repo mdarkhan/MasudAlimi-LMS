@@ -33,7 +33,7 @@ class LeaderboardController extends Controller
         $now = CarbonImmutable::now();
         [$tab, $quiz, $course, $rows] = $this->resolve($request, $now);
 
-        $quizzes = Quiz::query()->where('status', '!=', Quiz::STATUS_DRAFT)->orderBy('title')->get();
+        $quizzes = \App\Support\TableSort::natural(Quiz::query()->where('status', '!=', Quiz::STATUS_DRAFT)->get(), fn (Quiz $q) => $q->title);
 
         // "By exam" is a two-step pick: the course first, then only that course's exams. A deep link that
         // names just a quiz still works — its course is used.

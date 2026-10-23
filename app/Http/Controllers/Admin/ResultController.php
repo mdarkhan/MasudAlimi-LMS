@@ -94,7 +94,7 @@ class ResultController extends Controller
             'sort' => $sort,
             'stats' => $stats,
             'filters' => $filters,
-            'quizzes' => Quiz::query()->orderBy('title')->get(['id', 'title']),
+            'quizzes' => \App\Support\TableSort::natural(Quiz::query()->get(['id', 'title']), fn (Quiz $q) => $q->title),
             'pendingRelease' => $pendingRelease,
         ]);
     }

@@ -28,7 +28,7 @@ class AmolController extends Controller
 
         $students = User::query()->students()
             ->when($search !== '', fn ($q) => $q->where(
-                fn ($w) => $w->where('name', 'like', "%{$search}%")->orWhere('roll', 'like', "%{$search}%")
+                fn ($w) => $w->where('name', 'like', "%{$search}%")->orWhere('roll', 'like', '%'.\App\Services\Import\BengaliText::toLatinDigits($search).'%')
             ))
             ->orderByRoll()
             ->paginate(20)

@@ -81,6 +81,30 @@ class TableSortTest extends TestCase
             ->assertSeeInOrder(['সীরাত-১০', 'সীরাত-০৭', 'সীরাত-০৪']);
     }
 
+    public function test_exam_pickers_and_lists_follow_the_exam_number(): void
+    {
+        $past = ['status' => Quiz::STATUS_PUBLISHED, 'results_released_at' => now()->subHour(), 'practice_enabled' => true, 'leaderboard_visible' => true];
+        Quiz::factory()->create($past + ['title' => 'সীরাত-১০', 'starts_at' => now()->subDays(3), 'ends_at' => now()->subDays(2)]);
+        Quiz::factory()->create($past + ['title' => 'সীরাত-০৯', 'starts_at' => null, 'ends_at' => null]);
+        Quiz::factory()->create($past + ['title' => 'সীরাত-০৪', 'starts_at' => null, 'ends_at' => null]);
+
+        // admin result filter dropdown
+        $this->actingAs($this->makeSuperAdmin())->get(route('admin.results.index'))->assertOk()
+            ->assertSeeInOrder(['>সীরাত-০৪<', '>সীরাত-০৯<', '>সীরাত-১০<'], false);
+
+        // student exam list: undated (imported) exams first, in number order, then by date
+        $this->actingAs($this->makeStudent())->get(route('student.exams.index'))->assertOk()
+            ->assertSeeInOrder(['সীরাত-০৪', 'সীরাত-০৯', 'সীরাত-১০']);
+    }
+
+    public function test_admin_search_finds_a_roll_typed_in_bengali_digits(): void
+    {
+        $this->makeStudent(['roll' => '57', 'name' => 'সাতান্ন']);
+
+        $this->actingAs($this->makeSuperAdmin())->get(route('admin.students.index', ['q' => '৫৭']))->assertOk()->assertSee('সাতান্ন');
+        $this->actingAs($this->makeSuperAdmin())->get(route('admin.search.index', ['q' => '৫৭']))->assertOk()->assertSee('সাতান্ন');
+    }
+
     public function test_a_student_sorts_their_point_history_by_amount(): void
     {
         $student = $this->makeStudent();

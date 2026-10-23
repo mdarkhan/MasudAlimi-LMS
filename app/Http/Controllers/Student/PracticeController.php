@@ -47,9 +47,9 @@ class PracticeController extends Controller
             ->where('status', '!=', Quiz::STATUS_DRAFT)
             ->with('course')
             ->withCount(['questions as active_questions_count' => fn ($q) => $q->where('is_active', true)])
-            ->orderBy('title')
             ->get()
             ->filter(fn (Quiz $quiz) => $quiz->practiceAvailableAt($now));
+        $quizzes = \App\Support\TableSort::natural($quizzes, fn (Quiz $quiz) => $quiz->title);
 
         return view('student.practice.index', [
             'byCourse' => $quizzes->groupBy(fn (Quiz $quiz) => $quiz->course?->title ?? '—'),
