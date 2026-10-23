@@ -267,10 +267,15 @@ html[lang='en'] {
         transform: translateY(-6px) rotateY(-4deg) rotateZ(0.5deg);
     }
 
-    /* Restrained Islamic geometric accent for hero/section corners. */
+    /* Islamic geometric accent (hero, welcome and focus cards): an interlaced lattice of eight-pointed
+       stars — two squares, one turned 45°, joined corner to corner — instead of the old dot grid. Drawn as a
+       MASK over the brand colour, so the lines follow the theme without a separate dark-mode copy. */
     .geo-accent {
-        background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--color-brand) 22%, transparent) 1px, transparent 0);
-        background-size: 18px 18px;
+        background-color: color-mix(in srgb, var(--color-brand) 32%, transparent);
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'%3E%3Cpath d='M18 18h20v20H18z'/%3E%3Cpath d='M28 13.9 42.1 28 28 42.1 13.9 28z'/%3E%3Cpath d='M0 0l18 18M56 0 38 18M0 56l18-18M56 56 38 38M28 0v13.9M28 56V42.1M0 28h13.9M56 28H42.1'/%3E%3C/g%3E%3C/svg%3E");
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'%3E%3Cpath d='M18 18h20v20H18z'/%3E%3Cpath d='M28 13.9 42.1 28 28 42.1 13.9 28z'/%3E%3Cpath d='M0 0l18 18M56 0 38 18M0 56l18-18M56 56 38 38M28 0v13.9M28 56V42.1M0 28h13.9M56 28H42.1'/%3E%3C/g%3E%3C/svg%3E");
+        -webkit-mask-size: 56px 56px;
+        mask-size: 56px 56px;
     }
 
     .hide-scrollbar {
