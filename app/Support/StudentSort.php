@@ -17,6 +17,9 @@ class StudentSort
         'roll' => 'CAST(roll AS UNSIGNED)',
         'name' => 'name',
         'points' => 'points_balance',
+        // blanks last in either direction: the IS-NULL flag is ordered ascending, the value by the chosen dir
+        'guardian' => "(guardian_name IS NULL OR guardian_name = ''), guardian_name",
+        'status' => 'status',
     ];
 
     public const DEFAULT = 'roll';

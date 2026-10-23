@@ -1,6 +1,7 @@
 @props([
     'rows',
     'me' => null,
+    'sort' => null,   // App\Support\TableSort — makes the headers clickable
 ])
 
 @php
@@ -56,12 +57,12 @@
         <table class="w-full text-sm">
             <thead class="bg-surface-raised text-muted">
                 <tr>
-                    <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_rank') }}</th>
-                    <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">{{ __('leaderboards.col_name') }}</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_time') }}</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_obtained') }}</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_possible') }}</th>
-                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_percentage') }}</th>
+                    <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="rank" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_rank')" />@else{{ __('leaderboards.col_rank') }}@endif</th>
+                    <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="name" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_name')" />@else{{ __('leaderboards.col_name') }}@endif</th>
+                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="time" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_time')" />@else{{ __('leaderboards.col_time') }}@endif</th>
+                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="obtained" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_obtained')" first="desc" />@else{{ __('leaderboards.col_obtained') }}@endif</th>
+                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="possible" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_possible')" first="desc" />@else{{ __('leaderboards.col_possible') }}@endif</th>
+                    <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">@if ($sort)<x-ui.sort-link sort="percentage" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_percentage')" first="desc" />@else{{ __('leaderboards.col_percentage') }}@endif</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-line">

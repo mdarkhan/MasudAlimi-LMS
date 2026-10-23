@@ -376,3 +376,5 @@ html.hero-anim .hero-enter > [data-enter] {
 }
 #nav-progress.is-on { opacity: 1; }
 
+/* Manual up/down ordering means nothing while a table is shown in another sort order (app.js adds .is-sorted). */
+table.is-sorted [data-reorder] { visibility: hidden; }

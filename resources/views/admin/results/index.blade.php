@@ -41,7 +41,7 @@
             @endforeach
         </x-ui.select>
         <x-ui.select name="sort">
-            @foreach (['latest', 'order', 'score', 'fastest', 'roll'] as $opt)
+            @foreach (['latest', 'order', 'score', 'fastest', 'roll', 'quiz'] as $opt)
                 <option value="{{ $opt }}" @selected($filters['sort'] === $opt)>{{ __('results_admin.sort') }}: {{ __('results_admin.sort_'.$opt) }}</option>
             @endforeach
         </x-ui.select>
@@ -98,12 +98,12 @@
             <table class="w-full text-sm">
                 <thead class="bg-surface-raised text-muted">
                     <tr>
-                        <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">{{ __('results_admin.col_student') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_quiz') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_order') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_submitted') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_duration') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('results_admin.col_score') }}</th>
+                        <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold"><x-ui.sort-link sort="roll" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_student')" /></th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="quiz" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_quiz')" /></th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="order" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_order')" /></th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="latest" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_submitted')" first="desc" /></th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="fastest" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_duration')" /></th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="score" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_score')" first="desc" /></th>
                         <th scope="col" class="px-3 py-2.5 text-center align-middle"><span class="sr-only">{{ __('results_admin.view') }}</span></th>
                     </tr>
                 </thead>

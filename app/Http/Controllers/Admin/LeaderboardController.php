@@ -54,7 +54,8 @@ class LeaderboardController extends Controller
             'course' => $course,
             'quizzes' => $quizzes,
             'courses' => Course::query()->orderBy('title')->get(['id', 'title']),
-            'rows' => $this->paginate($this->withGuardians($rows), $request),
+            'sort' => $sort = $this->sorter($request),
+            'rows' => $this->paginate($this->sortRows($this->withGuardians($rows), $sort), $request),
             'studentCount' => $rows->count(),
             'pendingRelease' => $quizzes->filter(fn (Quiz $q) => $q->counts_toward_overall && ! $q->resultsReleasedAt($now))->values(),
             'quizReleased' => $quiz?->resultsReleasedAt($now),
@@ -107,6 +108,29 @@ class LeaderboardController extends Controller
         $guardians = User::query()->whereIn('id', $rows->pluck('user_id'))->pluck('guardian_name', 'id');
 
         return $rows->map(fn (array $r) => $r + ['guardian' => $guardians[$r['user_id']] ?? null]);
+    }
+
+    /**
+     * Column sort for a board. The ranks themselves are never recomputed — a sort only changes the
+     * order rows are listed in; "rank" (the default) is the official order.
+     */
+    private function sorter(Request $request): \App\Support\TableSort
+    {
+        return \App\Support\TableSort::from($request, ['rank', 'name', 'exams', 'time', 'obtained', 'possible', 'percentage'], 'rank', 'asc',
+            ['obtained' => 'desc', 'possible' => 'desc', 'percentage' => 'desc', 'exams' => 'desc']);
+    }
+
+    /** @param Collection<int, array<string, mixed>> $rows */
+    private function sortRows(Collection $rows, \App\Support\TableSort $sort): Collection
+    {
+        return $sort->collection($rows, [
+            'name' => fn (array $r) => $r['name'],
+            'exams' => fn (array $r) => $r['exams_counted'] ?? null,
+            'time' => fn (array $r) => $r['time_taken_seconds'] ?? null,
+            'obtained' => fn (array $r) => $r['obtained'],
+            'possible' => fn (array $r) => $r['possible'] ?? $r['total'] ?? null,
+            'percentage' => fn (array $r) => $r['percentage'],
+        ]);
     }
 
     /**

@@ -27,14 +27,17 @@ class StaffController extends Controller
 {
     public function __construct(private readonly AuditLogger $audit) {}
 
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
-        $staff = User::query()->staff()
-            ->with('roles')
-            ->orderBy('name')
-            ->paginate(20);
+        $sort = \App\Support\TableSort::from($request, ['name', 'email', 'role', 'status'], 'name');
+        $staff = $sort->paginate(User::query()->staff()->with('roles')->orderBy('name')->get(), [
+            'name' => fn ($u) => $u->name,
+            'email' => fn ($u) => $u->email,
+            'role' => fn ($u) => $u->roles->pluck('label')->implode(', '),
+            'status' => fn ($u) => $u->status,
+        ], $request, 20);
 
-        return view('admin.staff.index', compact('staff'));
+        return view('admin.staff.index', compact('staff', 'sort'));
     }
 
     public function create(): View

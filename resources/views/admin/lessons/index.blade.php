@@ -16,11 +16,11 @@
     @else
         <x-ui.table>
             <x-slot:head>
-                <th class="px-4 py-3">{{ __('courses.title') }}</th>
-                <th class="px-4 py-3 hidden md:table-cell">{{ __('admin.course') }}</th>
-                <th class="px-4 py-3 hidden sm:table-cell">{{ __('lessons.date') }}</th>
-                <th class="px-4 py-3 text-right hidden lg:table-cell">{{ __('lessons.viewed_by_col') }}</th>
-                <th class="px-4 py-3">{{ __('ui.status') }}</th>
+                <th class="px-4 py-3"><x-ui.sort-link sort="title" :current="$sort->key" :dir="$sort->dir" :label="__('courses.title')" /></th>
+                <th class="px-4 py-3 hidden md:table-cell"><x-ui.sort-link sort="course" :current="$sort->key" :dir="$sort->dir" :label="__('admin.course')" /></th>
+                <th class="px-4 py-3 hidden sm:table-cell"><x-ui.sort-link sort="date" :current="$sort->key" :dir="$sort->dir" :label="__('lessons.date')" /></th>
+                <th class="px-4 py-3 text-right hidden lg:table-cell"><x-ui.sort-link sort="views" :current="$sort->key" :dir="$sort->dir" :label="__('lessons.viewed_by_col')" /></th>
+                <th class="px-4 py-3"><x-ui.sort-link sort="status" :current="$sort->key" :dir="$sort->dir" :label="__('ui.status')" /></th>
                 <th class="px-4 py-3"></th>
             </x-slot:head>
             @foreach ($lessons as $lesson)

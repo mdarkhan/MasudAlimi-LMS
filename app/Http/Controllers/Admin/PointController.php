@@ -67,13 +67,25 @@ class PointController extends Controller
         }, 'points-'.now()->format('Ymd-His').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
-    public function show(User $student): View
+    public function show(Request $request, User $student): View
     {
         abort_unless($student->isStudent(), 404);
+        $sort = \App\Support\TableSort::from($request, ['date', 'type', 'reason', 'who', 'amount', 'balance'], 'date', 'desc');
 
         return view('admin.points.show', [
             'student' => $student,
-            'transactions' => $student->pointTransactions()->with('performedBy')->latest('id')->paginate(20),
+            'sort' => $sort,
+            'transactions' => $sort->query($student->pointTransactions()->with('performedBy')->getQuery(), [
+            // same timestamp → the later row (higher id) counts as later
+            'date' => fn ($q, $d) => $q->orderBy('created_at', $d)->orderBy('id', $d),
+            'type' => 'type',
+            'reason' => 'reason',
+            'who' => fn ($q, $d) => $q->orderByRaw('(SELECT name FROM users WHERE users.id = point_transactions.performed_by) IS NULL')
+                ->orderByRaw('(SELECT name FROM users WHERE users.id = point_transactions.performed_by) '.$d),
+            'amount' => fn ($q, $d) => $q->orderBy('amount', $d)->orderBy('id', 'desc'),
+            'balance' => fn ($q, $d) => $q->orderBy('balance_after', $d)->orderBy('id', 'desc'),
+        ])
+                ->paginate(20)->withQueryString(),
         ]);
     }
 

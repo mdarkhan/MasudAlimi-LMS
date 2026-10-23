@@ -6,12 +6,12 @@
     @if ($roles->isEmpty())
         <x-ui.card><x-ui.empty :title="__('roles.no_roles')"><x-slot:action><x-ui.button :href="route('admin.roles.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('roles.new_role') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
-        <x-ui.table>
+        <x-ui.table :sortable="true">
             <x-slot:head>
-                <th class="px-4 py-3">{{ __('roles.label_col') }}</th>
-                <th class="px-4 py-3 hidden sm:table-cell">{{ __('roles.name_col') }}</th>
-                <th class="px-4 py-3 text-center">{{ __('roles.permissions_col') }}</th>
-                <th class="px-4 py-3 text-center">{{ __('roles.users_col') }}</th>
+                <th class="px-4 py-3" data-sort="text">{{ __('roles.label_col') }}</th>
+                <th class="px-4 py-3 hidden sm:table-cell" data-sort="text">{{ __('roles.name_col') }}</th>
+                <th class="px-4 py-3 text-center" data-sort="num" data-sort-first="desc">{{ __('roles.permissions_col') }}</th>
+                <th class="px-4 py-3 text-center" data-sort="num" data-sort-first="desc">{{ __('roles.users_col') }}</th>
                 <th class="px-4 py-3"></th>
             </x-slot:head>
             @foreach ($roles as $role)

@@ -32,9 +32,9 @@
             <table class="w-full text-sm">
                 <thead class="bg-surface-raised text-muted">
                     <tr>
-                        <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('posts.title') }}</th>
-                        <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('posts.category') }}</th>
-                        <th scope="col" class="px-4 py-2.5 text-start font-semibold">{{ __('posts.status') }}</th>
+                        <th scope="col" class="px-4 py-2.5 text-start font-semibold"><x-ui.sort-link sort="title" :current="$sort->key" :dir="$sort->dir" :label="__('posts.title')" /></th>
+                        <th scope="col" class="px-4 py-2.5 text-start font-semibold"><x-ui.sort-link sort="category" :current="$sort->key" :dir="$sort->dir" :label="__('posts.category')" /></th>
+                        <th scope="col" class="px-4 py-2.5 text-start font-semibold"><x-ui.sort-link sort="status" :current="$sort->key" :dir="$sort->dir" :label="__('posts.status')" /></th>
                         <th scope="col" class="px-4 py-2.5"><span class="sr-only">actions</span></th>
                     </tr>
                 </thead>

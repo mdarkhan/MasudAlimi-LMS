@@ -26,6 +26,7 @@ class QuizController extends Controller
         $status = $request->query('status');
         $courseFilter = $request->query('course');
 
+        $sort = \App\Support\TableSort::from($request, ['default', 'title', 'course', 'status', 'questions', 'marks', 'attempts'], 'default');
         $quizzes = Quiz::query()
             ->with('course', 'lesson')
             ->withCount([
@@ -37,11 +38,19 @@ class QuizController extends Controller
                 fn ($q) => $q->where('status', $status))
             ->when($courseFilter, fn ($q) => $q->whereHas('course', fn ($c) => $c->where('slug', $courseFilter)))
             ->latest('id')
-            ->paginate(20)
-            ->withQueryString();
+            ->get();
+        $quizzes = $sort->paginate($quizzes, [
+            'title' => fn ($q) => $q->title,
+            'course' => fn ($q) => $q->course?->title,
+            'status' => fn ($q) => $q->status,
+            'questions' => fn ($q) => $q->questions_count,
+            'marks' => fn ($q) => $q->total_marks,
+            'attempts' => fn ($q) => $q->official_attempts_count,
+        ], $request, 20);
 
         return view('admin.quizzes.index', [
             'quizzes' => $quizzes,
+            'sort' => $sort,
             'courses' => Course::query()->orderBy('sort_order')->get(),
             'search' => $search,
             'status' => $status,

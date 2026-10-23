@@ -174,6 +174,76 @@ try {
     window.addEventListener('pageshow', stop);
 })();
 
+// Click-to-sort for SHORT tables that already hold every row (no pagination) — add data-sortable to the
+// <table> and data-sort="text" or data-sort="num" to each sortable <th>. A cell may carry
+// data-sort-value (a timestamp, a raw score, seconds…) when its visible text is not what should be compared.
+// Paginated lists sort on the server instead (App\Support\TableSort), so a sort always covers every page.
+(() => {
+    const digits = { '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4', '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9' };
+    const latin = (t) => String(t).replace(/[০-৯]/g, (d) => digits[d]);
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    const cellValue = (row, i) => {
+        const cell = row.cells[i];
+        if (! cell) return '';
+        return (cell.dataset.sortValue ?? cell.innerText).trim();
+    };
+
+    function sortBy(table, th, dir) {
+        const index = [...th.parentElement.children].indexOf(th);
+        const numeric = th.dataset.sort === 'num';
+        const body = table.tBodies[0];
+        if (! body) return;
+        const rows = [...body.rows].map((row, order) => ({ row, order, value: cellValue(row, index) }));
+        const blank = (v) => v === '' || v === '—' || v === '-';
+        rows.sort((a, b) => {
+            const ab = blank(a.value), bb = blank(b.value);
+            if (ab || bb) return ab === bb ? a.order - b.order : (ab ? 1 : -1);   // blanks always last
+            let cmp;
+            if (numeric) {
+                // the first number in the cell ("২৩ / ৩৯" → 23); use data-sort-value when that is not enough
+                const num = (v) => parseFloat((latin(v).match(/-?\d+(\.\d+)?/) || ['0'])[0]);
+                cmp = num(a.value) - num(b.value);
+            } else {
+                cmp = collator.compare(latin(a.value), latin(b.value));
+            }
+            return (dir === 'desc' ? -cmp : cmp) || a.order - b.order;   // stable
+        });
+        rows.forEach(({ row }) => body.appendChild(row));
+
+        table.querySelectorAll('th[data-sort]').forEach((other) => {
+            const active = other === th;
+            other.setAttribute('aria-sort', active ? (dir === 'asc' ? 'ascending' : 'descending') : 'none');
+            const mark = other.querySelector('[data-sort-mark]');
+            if (mark) {
+                mark.textContent = active ? (dir === 'asc' ? '▲' : '▼') : '↕';
+                mark.className = active ? 'text-brand text-xs leading-none' : 'text-muted/30 text-xs leading-none';
+            }
+        });
+        table.classList.add('is-sorted');
+    }
+
+    function enhance(root = document) {
+        root.querySelectorAll('table[data-sortable]:not([data-sort-ready])').forEach((table) => {
+            table.setAttribute('data-sort-ready', '');
+            table.querySelectorAll('th[data-sort]').forEach((th) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'inline-flex items-center gap-1 hover:text-ink transition-colors font-inherit';
+                button.title = th.closest('[data-sort-hint]')?.dataset.sortHint ?? '';
+                button.innerHTML = th.innerHTML + ' <span data-sort-mark class="text-muted/30 text-xs leading-none">↕</span>';
+                th.innerHTML = '';
+                th.appendChild(button);
+                th.setAttribute('aria-sort', 'none');
+                button.addEventListener('click', () => {
+                    const next = th.getAttribute('aria-sort') === 'ascending' ? 'desc' : (th.getAttribute('aria-sort') === 'descending' ? 'asc' : (th.dataset.sortFirst || 'asc'));
+                    sortBy(table, th, next);
+                });
+            });
+        });
+    }
+    document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', () => enhance()) : enhance();
+})();
+
 window.Alpine = Alpine;
 Alpine.start();
 

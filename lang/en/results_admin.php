@@ -118,4 +118,5 @@ return [
     'min' => 'min',
     'sec' => 'sec',
     'answers_unavailable' => 'Legacy exam — answer details were not kept',
+    'sort_quiz' => 'By exam',
 ];

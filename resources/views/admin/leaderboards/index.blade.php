@@ -111,14 +111,14 @@
             <table class="w-full text-sm">
                 <thead class="bg-surface-raised text-muted">
                     <tr>
-                        <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_rank') }}</th>
-                        <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold">{{ __('results_admin.col_student') }}</th>
+                        <th scope="col" class="px-4 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="rank" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_rank')" /></th>
+                        <th scope="col" class="px-4 py-2.5 text-start align-middle font-semibold"><x-ui.sort-link sort="name" :current="$sort->key" :dir="$sort->dir" :label="__('results_admin.col_student')" /></th>
                         @unless ($isQuiz)
-                            <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.admin_col_exams') }}</th>
+                            <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="exams" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.admin_col_exams')" first="desc" /></th>
                         @endunless
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_time') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_obtained') }}</th>
-                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_percentage') }}</th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="time" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_time')" /></th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="obtained" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_obtained')" first="desc" /></th>
+                        <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold"><x-ui.sort-link sort="percentage" :current="$sort->key" :dir="$sort->dir" :label="__('leaderboards.col_percentage')" first="desc" /></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-line">

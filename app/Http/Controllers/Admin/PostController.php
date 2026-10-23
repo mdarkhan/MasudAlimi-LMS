@@ -32,17 +32,23 @@ class PostController extends Controller
             'q' => trim($request->string('q')->toString()),
         ];
 
+        $sort = \App\Support\TableSort::from($request, ['default', 'title', 'category', 'status'], 'default');
         $posts = Post::query()
             ->with(['category:id,name', 'author:id,name'])
             ->when($filters['status'], fn ($query, $s) => $query->where('status', $s))
             ->when($filters['category'], fn ($query, $c) => $query->where('post_category_id', $c))
             ->when($filters['q'] !== '', fn ($query) => $query->where('title', 'like', "%{$filters['q']}%"))
             ->latest('id')
-            ->paginate(20)
-            ->withQueryString();
+            ->get();
+        $posts = $sort->paginate($posts, [
+            'title' => fn ($p) => $p->title,
+            'category' => fn ($p) => $p->category?->name,
+            'status' => fn ($p) => $p->status,
+        ], $request, 20);
 
         return view('admin.posts.index', [
             'posts' => $posts,
+            'sort' => $sort,
             'filters' => $filters,
             'categories' => PostCategory::query()->orderBy('sort_order')->get(['id', 'name']),
         ]);

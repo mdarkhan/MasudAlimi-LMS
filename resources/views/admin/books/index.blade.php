@@ -6,19 +6,19 @@
     @if ($books->isEmpty())
         <x-ui.card><x-ui.empty :title="__('books.no_books')"><x-slot:action><x-ui.button :href="route('admin.books.create')"><x-ui.icon name="plus" class="w-4 h-4" /> {{ __('books.new_book') }}</x-ui.button></x-slot:action></x-ui.empty></x-ui.card>
     @else
-        <x-ui.table>
+        <x-ui.table :sortable="true">
             <x-slot:head>
                 <th class="px-4 py-3">{{ __('admin.order') }}</th>
                 <th class="px-4 py-3"></th>
-                <th class="px-4 py-3">{{ __('books.title') }}</th>
-                <th class="px-4 py-3 hidden sm:table-cell">{{ __('books.author') }}</th>
-                <th class="px-4 py-3 text-right hidden md:table-cell">{{ __('books.purchase_links_heading') }}</th>
-                <th class="px-4 py-3">{{ __('ui.status') }}</th>
+                <th class="px-4 py-3" data-sort="text">{{ __('books.title') }}</th>
+                <th class="px-4 py-3 hidden sm:table-cell" data-sort="text">{{ __('books.author') }}</th>
+                <th class="px-4 py-3 text-right hidden md:table-cell" data-sort="num" data-sort-first="desc">{{ __('books.purchase_links_heading') }}</th>
+                <th class="px-4 py-3" data-sort="text">{{ __('ui.status') }}</th>
                 <th class="px-4 py-3"></th>
             </x-slot:head>
             @foreach ($books as $book)
                 <tr>
-                    <td class="px-4 py-3">
+                    <td class="px-4 py-3" data-reorder>
                         <div class="flex items-center gap-2">
                             <span class="text-muted tabular-nums w-4 text-center">{{ bn($book->sort_order) }}</span>
                             <div class="inline-flex items-center gap-0.5">

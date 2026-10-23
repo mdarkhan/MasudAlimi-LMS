@@ -33,9 +33,9 @@ class ResultController extends Controller
             'q' => trim($request->string('q')->toString()),
         ];
 
-        $sort = $request->string('sort')->toString();
-        $sort = in_array($sort, ['latest', 'order', 'score', 'fastest', 'roll'], true) ? $sort : 'latest';
-        $filters['sort'] = $sort;
+        // One sort for both the dropdown and the clickable column headers (which can also flip direction).
+        $sort = \App\Support\TableSort::from($request, ['latest', 'roll', 'quiz', 'order', 'fastest', 'score'], 'latest', 'desc', ['score' => 'desc']);
+        $filters['sort'] = $sort->key;
 
         $query = $this->filteredQuery($filters)
             ->with(['quiz:id,title', 'user:id,roll,name,guardian_name'])
@@ -48,13 +48,19 @@ class ResultController extends Controller
                   AND (earlier.submitted_at < quiz_attempts.submitted_at
                        OR (earlier.submitted_at = quiz_attempts.submitted_at AND earlier.id < quiz_attempts.id))) + 1 AS submit_order");
 
-        match ($sort) {
-            'order' => $query->orderByRaw('submitted_at IS NULL')->orderBy('submitted_at'),
-            'score' => $query->orderByDesc('final_score')->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds'),
-            'fastest' => $query->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds')->orderByDesc('final_score'),
-            'roll' => $query->orderByRaw('(SELECT CAST(users.roll AS UNSIGNED) FROM users WHERE users.id = quiz_attempts.user_id)'),
+        $d = $sort->dir;
+        match ($sort->key) {
+            // within one exam this is the hand-in order; still-running attempts (no number yet) go last
+            'order' => $query->orderByRaw('submitted_at IS NULL')->orderBy('submit_order', $d),
+            'score' => $query->orderBy('final_score', $d)->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds'),
+            'fastest' => $query->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds', $d)->orderByDesc('final_score'),
+            'roll' => $query->orderByRaw('(SELECT CAST(users.roll AS UNSIGNED) FROM users WHERE users.id = quiz_attempts.user_id) '.$d),
+            // exams in the order they were held (so সীরাত-৯ comes before সীরাত-১০), then hand-in time
+            'quiz' => $query->orderByRaw('(SELECT starts_at FROM quizzes WHERE quizzes.id = quiz_attempts.quiz_id) IS NULL')
+                ->orderByRaw('(SELECT starts_at FROM quizzes WHERE quizzes.id = quiz_attempts.quiz_id) '.$d)
+                ->orderBy('quiz_attempts.quiz_id', $d)->orderBy('submit_order'),
             // Newest activity first; a student still sitting the exam (no submit time yet) uses their start time.
-            default => $query->orderByRaw('COALESCE(submitted_at, started_at) DESC'),
+            default => $query->orderByRaw('COALESCE(submitted_at, started_at) '.$d),
         };
 
         $attempts = $query->orderByDesc('id')->paginate(30)->withQueryString();
@@ -67,6 +73,7 @@ class ResultController extends Controller
 
         return view('admin.results.index', [
             'attempts' => $attempts,
+            'sort' => $sort,
             'stats' => $stats,
             'filters' => $filters,
             'quizzes' => Quiz::query()->orderBy('title')->get(['id', 'title']),

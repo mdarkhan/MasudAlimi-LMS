@@ -23,17 +23,25 @@ class LessonController extends Controller
     {
         $courseFilter = $request->query('course');
 
-        $lessons = Lesson::query()
+        $sort = \App\Support\TableSort::from($request, ['default', 'title', 'course', 'date', 'views', 'status'], 'default');
+        $all = Lesson::query()
             ->with('course')
             ->withCount(['resources', 'views'])
             ->when($courseFilter, fn ($q) => $q->whereHas('course', fn ($c) => $c->where('slug', $courseFilter)))
             ->orderBy('course_id')
             ->orderBy('sort_order')
-            ->paginate(25)
-            ->withQueryString();
+            ->get();
+        $lessons = $sort->paginate($all, [
+            'title' => fn ($l) => $l->title,
+            'course' => fn ($l) => $l->course?->title,
+            'date' => fn ($l) => $l->held_on,
+            'views' => fn ($l) => $l->views_count,
+            'status' => fn ($l) => $l->is_published ? 1 : 0,
+        ], $request, 25);
 
         return view('admin.lessons.index', [
             'lessons' => $lessons,
+            'sort' => $sort,
             'courses' => Course::query()->orderBy('sort_order')->get(),
             'courseFilter' => $courseFilter,
             // The denominator for each lesson's "viewed by" figure — how many active

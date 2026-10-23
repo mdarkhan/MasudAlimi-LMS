@@ -51,12 +51,12 @@
 
     @if ($recent->isNotEmpty())
         <h2 class="font-bold text-ink mt-8 mb-3">{{ __('profile_requests.recent') }}</h2>
-        <x-ui.table>
+        <x-ui.table :sortable="true">
             <x-slot:head>
-                <th class="px-4 py-3">{{ __('students.name_col') ?? '' }}</th>
-                <th class="px-4 py-3">{{ __('profile_requests.name') }}</th>
-                <th class="px-4 py-3 text-center">{{ __('ui.status') }}</th>
-                <th class="px-4 py-3">{{ __('profile_requests.decided_by') }}</th>
+                <th class="px-4 py-3" data-sort="text">{{ __('students.name_col') ?? '' }}</th>
+                <th class="px-4 py-3" data-sort="text">{{ __('profile_requests.name') }}</th>
+                <th class="px-4 py-3 text-center" data-sort="text">{{ __('ui.status') }}</th>
+                <th class="px-4 py-3" data-sort="text">{{ __('profile_requests.decided_by') }}</th>
             </x-slot:head>
             @foreach ($recent as $r)
                 <tr>

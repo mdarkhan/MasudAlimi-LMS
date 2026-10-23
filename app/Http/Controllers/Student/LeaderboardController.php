@@ -27,9 +27,11 @@ class LeaderboardController extends Controller
     public function overall(Request $request): View
     {
         $now = CarbonImmutable::now();
-        $rows = $this->leaderboards->overallLeaderboard($now);
+        $sort = $this->sorter($request);
+        $rows = $this->sortRows($this->leaderboards->overallLeaderboard($now), $sort);
 
         return view('student.leaderboards.overall', [
+            'sort' => $sort,
             'rows' => $this->paginate($rows, $request),
             'me' => $rows->firstWhere('user_id', $request->user()->getKey()),
             'myPage' => $this->pageOf($rows, $request),
@@ -45,14 +47,39 @@ class LeaderboardController extends Controller
         // admin has left it visible. abort(404) so an early URL leaks nothing.
         abort_unless($quiz->leaderboardVisibleAt($now), 404);
 
-        $rows = $this->leaderboards->quizLeaderboard($quiz);
+        $sort = $this->sorter($request);
+        $rows = $this->sortRows($this->leaderboards->quizLeaderboard($quiz), $sort);
 
         return view('student.leaderboards.quiz', [
             'quiz' => $quiz,
+            'sort' => $sort,
             'rows' => $this->paginate($rows, $request),
             'me' => $rows->firstWhere('user_id', $request->user()->getKey()),
             'myPage' => $this->pageOf($rows, $request),
             'quizzes' => $this->visibleQuizzes($now),
+        ]);
+    }
+
+    /**
+     * Column sort for a board. The ranks themselves are never recomputed — a sort only changes the
+     * order rows are listed in; "rank" (the default) is the official order.
+     */
+    private function sorter(Request $request): \App\Support\TableSort
+    {
+        return \App\Support\TableSort::from($request, ['rank', 'name', 'exams', 'time', 'obtained', 'possible', 'percentage'], 'rank', 'asc',
+            ['obtained' => 'desc', 'possible' => 'desc', 'percentage' => 'desc', 'exams' => 'desc']);
+    }
+
+    /** @param Collection<int, array<string, mixed>> $rows */
+    private function sortRows(Collection $rows, \App\Support\TableSort $sort): Collection
+    {
+        return $sort->collection($rows, [
+            'name' => fn (array $r) => $r['name'],
+            'exams' => fn (array $r) => $r['exams_counted'] ?? null,
+            'time' => fn (array $r) => $r['time_taken_seconds'] ?? null,
+            'obtained' => fn (array $r) => $r['obtained'],
+            'possible' => fn (array $r) => $r['possible'] ?? $r['total'] ?? null,
+            'percentage' => fn (array $r) => $r['percentage'],
         ]);
     }
 

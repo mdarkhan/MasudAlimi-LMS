@@ -81,16 +81,16 @@
             </div>
 
             <div class="hidden sm:block overflow-x-auto rounded-2xl border border-line">
-                <table class="w-full text-sm">
+                <table class="w-full text-sm" data-sortable data-sort-hint="{{ __('ui.sort_hint') }}">
                     <thead class="bg-surface-raised text-muted">
                         <tr class="text-start">
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_quiz') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_date') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_status') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_score') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_percentage') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_time') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_rank') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="text">{{ __('results.col_quiz') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_date') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="text">{{ __('results.col_status') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_score') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_percentage') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num">{{ __('results.col_time') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num">{{ __('results.col_rank') }}</th>
                             <th scope="col" class="px-4 py-2.5 print:hidden"><span class="sr-only">{{ __('results.view_answer_sheet') }}</span></th>
                         </tr>
                     </thead>
@@ -101,11 +101,11 @@
                                     <div class="font-semibold text-ink">{{ $row['quiz']->title }}</div>
                                     @if ($row['quiz']->course)<div class="text-xs text-muted">{{ $row['quiz']->course->title }}</div>@endif
                                 </td>
-                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ dt_label($row['attempt']->submitted_at) }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap" data-sort-value="{{ $row['attempt']->submitted_at?->getTimestamp() }}">{{ dt_label($row['attempt']->submitted_at) }}</td>
                                 <td class="px-4 py-3 text-center"><x-ui.badge :color="$statusTone($row['attempt']->status)">{{ $statusLabel($row['attempt']->status) }}</x-ui.badge></td>
-                                <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums whitespace-nowrap">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
+                                <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums whitespace-nowrap" data-sort-value="{{ $row['attempt']->final_score }}">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ bn(number_format($row['percentage'], 2)) }}%</td>
-                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap" data-sort-value="{{ $row['attempt']->time_taken_seconds }}">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ $row['rank'] ? bn($row['rank']) : '—' }}</td>
                                 <td class="px-4 py-3 text-center print:hidden">
                                     @if ($row['reviewable'])
@@ -182,14 +182,14 @@
             </div>
 
             <div class="hidden sm:block overflow-x-auto rounded-2xl border border-line">
-                <table class="w-full text-sm">
+                <table class="w-full text-sm" data-sortable data-sort-hint="{{ __('ui.sort_hint') }}">
                     <thead class="bg-surface-raised text-muted">
                         <tr>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_quiz') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_date') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_score') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_percentage') }}</th>
-                            <th scope="col" class="px-4 py-2.5 text-center font-semibold">{{ __('results.col_time') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="text">{{ __('results.col_quiz') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_date') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_score') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num" data-sort-first="desc">{{ __('results.col_percentage') }}</th>
+                            <th scope="col" class="px-4 py-2.5 text-center font-semibold" data-sort="num">{{ __('results.col_time') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-line">
@@ -201,10 +201,10 @@
                                         <a href="{{ route('student.results.show', $row['attempt']) }}" class="mt-0.5 flex items-center justify-center gap-1 text-xs font-semibold text-brand hover:underline"><x-ui.icon name="share" class="w-3.5 h-3.5" /> {{ __('results.share_card_link') }}</a>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap">{{ date_label($row['attempt']->submitted_at) }}</td>
-                                <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums whitespace-nowrap" data-sort-value="{{ $row['attempt']->submitted_at?->getTimestamp() }}">{{ date_label($row['attempt']->submitted_at) }}</td>
+                                <td class="px-4 py-3 text-center font-semibold text-ink tabular-nums" data-sort-value="{{ $row['attempt']->final_score }}">{{ bn($row['attempt']->final_score) }} / {{ bn($row['attempt']->total_marks_snapshot) }}</td>
                                 <td class="px-4 py-3 text-center tabular-nums">{{ $row['percentage'] !== null ? bn(number_format($row['percentage'], 2)).'%' : '—' }}</td>
-                                <td class="px-4 py-3 text-center text-muted tabular-nums">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
+                                <td class="px-4 py-3 text-center text-muted tabular-nums" data-sort-value="{{ $row['attempt']->time_taken_seconds }}">{{ $fmtTime($row['attempt']->time_taken_seconds) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
