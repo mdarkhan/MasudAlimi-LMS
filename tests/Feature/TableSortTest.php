@@ -65,6 +65,22 @@ class TableSortTest extends TestCase
             ->assertSee('সীরাত-১<', false);
     }
 
+    public function test_admin_results_by_exam_follow_the_exam_number_even_without_dates(): void
+    {
+        // imported exams can have no start date — they must not sink to the end
+        $q7 = Quiz::factory()->create(['title' => 'সীরাত-০৭', 'starts_at' => now()->subDays(5), 'ends_at' => now()->subDays(4)]);
+        $q4 = Quiz::factory()->create(['title' => 'সীরাত-০৪', 'starts_at' => null, 'ends_at' => null]);
+        $q10 = Quiz::factory()->create(['title' => 'সীরাত-১০', 'starts_at' => now()->subDays(2), 'ends_at' => now()->subDay()]);
+        foreach ([$q10, $q7, $q4] as $quiz) {
+            \App\Models\QuizAttempt::factory()->create(['quiz_id' => $quiz->id, 'user_id' => $this->makeStudent()->id]);
+        }
+
+        $this->actingAs($this->makeSuperAdmin())->get(route('admin.results.index', ['sort' => 'quiz', 'dir' => 'asc']))->assertOk()
+            ->assertSeeInOrder(['সীরাত-০৪', 'সীরাত-০৭', 'সীরাত-১০']);
+        $this->actingAs($this->makeSuperAdmin())->get(route('admin.results.index', ['sort' => 'quiz', 'dir' => 'desc']))->assertOk()
+            ->assertSeeInOrder(['সীরাত-১০', 'সীরাত-০৭', 'সীরাত-০৪']);
+    }
+
     public function test_a_student_sorts_their_point_history_by_amount(): void
     {
         $student = $this->makeStudent();

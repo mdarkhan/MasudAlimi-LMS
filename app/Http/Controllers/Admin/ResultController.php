@@ -25,6 +25,25 @@ class ResultController extends Controller
 {
     public function __construct(private readonly ScoreAdjustmentService $adjustments) {}
 
+    /**
+     * SQL cannot order Bengali-numbered titles naturally ("সীরাত-১০" sorts before "সীরাত-৯"), so the exams
+     * are ranked in PHP (TableSort::compare) and the query orders by that fixed list of ids.
+     */
+    private function orderByQuizName($query, string $dir)
+    {
+        $ids = Quiz::query()->get(['id', 'title'])
+            ->sort(fn (Quiz $a, Quiz $b) => \App\Support\TableSort::compare($a->title, $b->title) ?: $a->id <=> $b->id)
+            ->pluck('id');
+        if ($dir === 'desc') {
+            $ids = $ids->reverse();
+        }
+        if ($ids->isEmpty()) {
+            return $query;
+        }
+
+        return $query->orderByRaw('FIELD(quiz_attempts.quiz_id, '.$ids->map(fn ($id) => (int) $id)->implode(',').')');
+    }
+
     public function index(Request $request): View
     {
         $filters = [
@@ -55,10 +74,9 @@ class ResultController extends Controller
             'score' => $query->orderBy('final_score', $d)->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds'),
             'fastest' => $query->orderByRaw('time_taken_seconds IS NULL')->orderBy('time_taken_seconds', $d)->orderByDesc('final_score'),
             'roll' => $query->orderByRaw('(SELECT CAST(users.roll AS UNSIGNED) FROM users WHERE users.id = quiz_attempts.user_id) '.$d),
-            // exams in the order they were held (so সীরাত-৯ comes before সীরাত-১০), then hand-in time
-            'quiz' => $query->orderByRaw('(SELECT starts_at FROM quizzes WHERE quizzes.id = quiz_attempts.quiz_id) IS NULL')
-                ->orderByRaw('(SELECT starts_at FROM quizzes WHERE quizzes.id = quiz_attempts.quiz_id) '.$d)
-                ->orderBy('quiz_attempts.quiz_id', $d)->orderBy('submit_order'),
+            // by exam NAME in natural order (সীরাত-০৪, ০৫ … ০৯, ১০ …), then hand-in order within each exam.
+            // Not by date: several imported exams have no recorded date and would sink to the end.
+            'quiz' => $this->orderByQuizName($query, $d)->orderBy('submit_order'),
             // Newest activity first; a student still sitting the exam (no submit time yet) uses their start time.
             default => $query->orderByRaw('COALESCE(submitted_at, started_at) '.$d),
         };
