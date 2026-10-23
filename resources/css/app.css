@@ -267,15 +267,20 @@ html[lang='en'] {
         transform: translateY(-6px) rotateY(-4deg) rotateZ(0.5deg);
     }
 
-    /* Islamic geometric accent (hero, welcome and focus cards): an interlaced lattice of eight-pointed
-       stars — two squares, one turned 45°, joined corner to corner — instead of the old dot grid. Drawn as a
-       MASK over the brand colour, so the lines follow the theme without a separate dark-mode copy. */
+    /* Islamic geometric accent (hero, welcome and focus cards). Premium and quiet: sparse eight-pointed
+       stars (two squares, one turned 45°) on a large grid, faint, and FADING OUT away from the top-right
+       corner, so the pattern frames the panel and never sits behind the text. A mask over the brand colour,
+       so the lines follow both themes without a dark-mode copy. */
     .geo-accent {
-        background-color: color-mix(in srgb, var(--color-brand) 32%, transparent);
-        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'%3E%3Cpath d='M18 18h20v20H18z'/%3E%3Cpath d='M28 13.9 42.1 28 28 42.1 13.9 28z'/%3E%3Cpath d='M0 0l18 18M56 0 38 18M0 56l18-18M56 56 38 38M28 0v13.9M28 56V42.1M0 28h13.9M56 28H42.1'/%3E%3C/g%3E%3C/svg%3E");
-        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'%3E%3Cpath d='M18 18h20v20H18z'/%3E%3Cpath d='M28 13.9 42.1 28 28 42.1 13.9 28z'/%3E%3Cpath d='M0 0l18 18M56 0 38 18M0 56l18-18M56 56 38 38M28 0v13.9M28 56V42.1M0 28h13.9M56 28H42.1'/%3E%3C/g%3E%3C/svg%3E");
-        -webkit-mask-size: 56px 56px;
-        mask-size: 56px 56px;
+        background-color: color-mix(in srgb, var(--color-brand) 22%, transparent);
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'%3E%3Cpath d='M44 44h32v32H44z'/%3E%3Cpath d='M60 37.4 82.6 60 60 82.6 37.4 60z'/%3E%3Ccircle cx='60' cy='60' r='7'/%3E%3C/g%3E%3C/svg%3E"), radial-gradient(ellipse 75% 90% at 100% 0%, #000 0%, transparent 72%);
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'%3E%3Cpath d='M44 44h32v32H44z'/%3E%3Cpath d='M60 37.4 82.6 60 60 82.6 37.4 60z'/%3E%3Ccircle cx='60' cy='60' r='7'/%3E%3C/g%3E%3C/svg%3E"), radial-gradient(ellipse 75% 90% at 100% 0%, #000 0%, transparent 72%);
+        -webkit-mask-size: 120px 120px, 100% 100%;
+        mask-size: 120px 120px, 100% 100%;
+        -webkit-mask-repeat: repeat, no-repeat;
+        mask-repeat: repeat, no-repeat;
+        -webkit-mask-composite: source-in;
+        mask-composite: intersect;
     }
 
     .hide-scrollbar {
