@@ -320,6 +320,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.active', 'p
     // than perm:. Creating another admin, or editing what a role may do, is a
     // super-user capability that must never be delegable by handing out a permission.
     Route::middleware('role:super_admin')->group(function () {
+        // removing a test quiz WITH its attempts — never delegable, like staff management
+        Route::delete('quizzes/{quiz}/purge', [Admin\QuizController::class, 'purge'])->name('quizzes.purge');
+
         Route::get('staff', [Admin\StaffController::class, 'index'])->name('staff.index');
         Route::get('staff/create', [Admin\StaffController::class, 'create'])->name('staff.create');
         Route::post('staff', [Admin\StaffController::class, 'store'])->name('staff.store');

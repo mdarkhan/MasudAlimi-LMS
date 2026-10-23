@@ -9,6 +9,7 @@ use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Services\Audit\AuditLogger;
 use App\Services\Quiz\QuizDuplicator;
+use App\Services\Quiz\TestQuizPurgeService;
 use App\Support\Slug;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -222,6 +223,26 @@ class QuizController extends Controller
         $quiz->delete();   // questions/options cascade
 
         return redirect()->route('admin.quizzes.index')->with('success', 'কুইজ মুছে ফেলা হয়েছে।');
+    }
+
+    /**
+     * Super admin only (route-gated): remove a TEST quiz together with its attempts — see TestQuizPurgeService.
+     * The exact title must be typed back, so a real exam cannot be wiped by a stray click.
+     */
+    public function purge(Request $request, Quiz $quiz, TestQuizPurgeService $purger): RedirectResponse
+    {
+        $request->validate(['confirm_title' => ['required', 'string']]);
+        if (trim((string) $request->input('confirm_title')) !== trim($quiz->title)) {
+            return back()->withErrors(['confirm_title' => __('quizzes.purge_mismatch')]);
+        }
+
+        $stats = $purger->purge($quiz, $request->user());
+
+        return redirect()->route('admin.quizzes.index')->with('success', __('quizzes.purge_done', [
+            'title' => $quiz->title,
+            'attempts' => bn($stats['attempts']),
+            'points' => bn($stats['refunded']),
+        ]));
     }
 
     private function slug(?string $provided, string $title): string

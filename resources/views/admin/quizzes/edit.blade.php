@@ -101,5 +101,22 @@
                 @endforeach
             </div>
         @endif
+
+        {{-- Super admin only: a quiz that was just a TEST but already has attempts cannot be deleted the normal
+             way (exam history is protected). This removes it with everything attached, after the title is typed. --}}
+        @if (auth()->user()->hasRole(\App\Models\Role::SUPER_ADMIN) && $quiz->hasOfficialAttempts())
+            <x-ui.card class="mt-8 border-rose-500/40">
+                <h3 class="font-bold text-rose-600 dark:text-rose-400 flex items-center gap-2"><x-ui.icon name="trash" class="w-4 h-4" /> {{ __('quizzes.purge_heading') }}</h3>
+                <p class="mt-1 text-sm text-muted">{{ __('quizzes.purge_hint', ['count' => bn($quiz->attempts()->count())]) }}</p>
+                <form method="POST" action="{{ route('admin.quizzes.purge', $quiz) }}" class="mt-4 flex flex-col sm:flex-row gap-3 sm:items-end"
+                      data-confirm="{{ __('quizzes.purge_confirm') }}">
+                    @csrf @method('DELETE')
+                    <x-ui.field class="flex-1" :label="__('quizzes.purge_type_title', ['title' => $quiz->title])" name="confirm_title">
+                        <x-ui.input name="confirm_title" autocomplete="off" />
+                    </x-ui.field>
+                    <x-ui.button type="submit" variant="danger">{{ __('quizzes.purge_button') }}</x-ui.button>
+                </form>
+            </x-ui.card>
+        @endif
     </div>
 </x-layout.admin>

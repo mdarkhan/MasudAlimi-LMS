@@ -147,4 +147,11 @@ return [
     'shuffle_hint' => 'When on, each examinee sees questions and options in a different order. Results and answer sheets always show the original order for everyone.',
     'shuffle_locked' => 'Locked because official attempts already exist.',
     'end_in_past_warning' => 'This end time has already passed, so the quiz will not open. Set a future time to keep it open.',
+    'purge_heading' => "Remove test quiz completely",
+    'purge_hint' => "This quiz has :count submitted attempt(s), so it cannot be deleted the normal way. If it was only a test, this removes the quiz, its questions, every attempt, and its results and leaderboard entries together. Entry points are refunded to the students. This cannot be undone.",
+    'purge_type_title' => "To confirm, type the quiz title exactly: :title",
+    'purge_button' => "Remove completely",
+    'purge_confirm' => "This quiz and all its attempts will be removed for good. Continue?",
+    'purge_mismatch' => "The title did not match — nothing was removed.",
+    'purge_done' => "\":title\" removed — :attempts attempt(s) deleted, :points point(s) refunded.",
 ];
