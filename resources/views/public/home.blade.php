@@ -2,9 +2,24 @@
 
     {{-- Hero: full-bleed, so it reads as the page's visual anchor rather than another
          bordered card in a column of identical bordered cards. --}}
-    <section class="relative overflow-hidden border-b border-line">
-        <div class="absolute inset-0 bg-gradient-to-br from-brand-tint via-surface to-surface" aria-hidden="true"></div>
-        <div class="absolute inset-0 geo-accent opacity-60" aria-hidden="true"></div>
+    <section class="relative isolate overflow-hidden border-b border-line">
+        {{-- Soft "aurora" ground: a vertical wash, three large blurred light pools (mint top-left, green right,
+             a warm gold glow low in the middle) and a faint circle-and-lattice pattern that only shows near the
+             top-left and fades out — calm behind the text, never busy. All colours are theme tokens. --}}
+        <div class="absolute inset-0 -z-10 bg-gradient-to-b from-surface via-brand-tint/60 to-surface" aria-hidden="true"></div>
+        <div class="absolute -z-10 -top-40 -left-32 size-[480px] rounded-full bg-brand/15 blur-3xl" aria-hidden="true"></div>
+        <div class="absolute -z-10 top-1/4 -right-40 size-[520px] rounded-full bg-brand-tint blur-3xl dark:bg-brand/10" aria-hidden="true"></div>
+        <div class="absolute -z-10 -bottom-32 left-1/3 size-[420px] rounded-full bg-gold/15 blur-3xl dark:bg-gold/10" aria-hidden="true"></div>
+        <svg class="absolute inset-0 -z-10 w-full h-full text-brand opacity-[0.07] dark:opacity-[0.09] [mask-image:radial-gradient(80%_70%_at_30%_20%,#000,transparent)]" aria-hidden="true">
+            <defs>
+                <pattern id="hero-lattice" width="44" height="44" patternUnits="userSpaceOnUse">
+                    <path d="M0 22 22 0l22 22-22 22Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                    <circle cx="22" cy="22" r="7" fill="none" stroke="currentColor" stroke-width="1"/>
+                    <circle cx="22" cy="22" r="2" fill="currentColor"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#hero-lattice)"/>
+        </svg>
 
         <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-16 sm:pb-20">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
