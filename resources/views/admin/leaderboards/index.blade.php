@@ -100,7 +100,7 @@
                         @php
                             $meta = [];
                             if (! $isQuiz) { $meta[] = __('leaderboards.admin_col_exams').': '.bn($row['exams_counted']); }
-                            if ($tab !== 'overall') { $meta[] = $fmtTime($row['time_taken_seconds']); }
+                            if ($isQuiz) { $meta[] = $fmtTime($row['time_taken_seconds']); }
                         @endphp
                         {{ implode(' · ', $meta) }}
                     </p>
@@ -117,7 +117,7 @@
                         @unless ($isQuiz)
                             <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.admin_col_exams') }}</th>
                         @endunless
-                        @if ($tab !== 'overall')<th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_time') }}</th>@endif
+                        @if ($isQuiz)<th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_time') }}</th>@endif
                         <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_obtained') }}</th>
                         <th scope="col" class="px-3 py-2.5 text-center align-middle font-semibold">{{ __('leaderboards.col_percentage') }}</th>
                     </tr>
@@ -145,7 +145,7 @@
                             @unless ($isQuiz)
                                 <td class="px-3 py-3 text-center align-middle tabular-nums text-muted">{{ bn($row['exams_counted']) }}</td>
                             @endunless
-                            @if ($tab !== 'overall')<td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['time_taken_seconds']) }}</td>@endif
+                            @if ($isQuiz)<td class="px-3 py-3 text-center align-middle text-muted tabular-nums whitespace-nowrap">{{ $fmtTime($row['time_taken_seconds']) }}</td>@endif
                             <td class="px-3 py-3 text-center align-middle tabular-nums whitespace-nowrap">
                                 <span class="font-bold text-ink">{{ bn($row['obtained']) }}</span><span class="text-muted"> / {{ bn($possible) }}</span>
                             </td>

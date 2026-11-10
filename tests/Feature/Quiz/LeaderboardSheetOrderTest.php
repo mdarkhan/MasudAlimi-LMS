@@ -80,6 +80,21 @@ class LeaderboardSheetOrderTest extends TestCase
         $this->assertSame(19, $row['obtained']);
     }
 
+    public function test_admin_course_board_has_no_time_taken_column_but_the_exam_board_does(): void
+    {
+        $quiz = $this->quiz();
+        $quiz->forceFill(['leaderboard_visible' => true])->save();
+        $this->attempt($quiz, $this->makeStudent(), 10);
+        $admin = $this->makeAdmin();
+
+        $this->actingAs($admin)->get(route('admin.leaderboards.index', ['tab' => 'course', 'course_id' => $quiz->course_id]))
+            ->assertOk()
+            ->assertDontSee(__('leaderboards.col_time'));
+        $this->actingAs($admin)->get(route('admin.leaderboards.index', ['tab' => 'quiz', 'quiz_id' => $quiz->id]))
+            ->assertOk()
+            ->assertSee(__('leaderboards.col_time'));
+    }
+
     public function test_board_pages_show_the_special_label_instead_of_a_rank(): void
     {
         $quiz = $this->quiz();
