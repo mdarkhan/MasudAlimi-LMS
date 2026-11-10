@@ -1,4 +1,10 @@
 <x-layout.public :description="__('public.hero_subtitle')" :canonical="route('home')">
+    @php
+        // Signed in → the homepage's login buttons become "Dashboard", same target as the header's button.
+        $dashboardUrl = auth()->check()
+            ? (auth()->user()->isAdmin() ? route('admin.dashboard') : route('student.dashboard'))
+            : null;
+    @endphp
 
     {{-- Hero: full-bleed, so it reads as the page's visual anchor rather than another
          bordered card in a column of identical bordered cards. --}}
@@ -50,7 +56,7 @@
 
                     <div class="mt-6 flex flex-wrap gap-3">
                         <x-ui.button :href="route('blog.index')" size="lg"><x-ui.icon name="results" class="w-4 h-4" /> {{ __('public.hero_browse') }}</x-ui.button>
-                        <x-ui.button :href="route('login')" variant="secondary" size="lg"><x-ui.icon name="profile" class="w-4 h-4" /> {{ __('public.hero_login') }}</x-ui.button>
+                        <x-ui.button :href="$dashboardUrl ?? route('login')" variant="secondary" size="lg"><x-ui.icon name="profile" class="w-4 h-4" /> {{ $dashboardUrl ? __('nav.dashboard') : __('public.hero_login') }}</x-ui.button>
                     </div>
                 </div>
 
@@ -136,7 +142,7 @@
                         @endif
                     </div>
                 </div>
-                <x-ui.button :href="route('login')" size="sm">{{ __('public.exam_banner_cta') }}</x-ui.button>
+                <x-ui.button :href="$dashboardUrl ?? route('login')" size="sm">{{ $dashboardUrl ? __('nav.dashboard') : __('public.exam_banner_cta') }}</x-ui.button>
             </section>
         @endif
 
@@ -328,7 +334,7 @@
             <div class="relative">
                 <h2 class="text-2xl font-black text-ink">{{ __('public.student_cta_title') }}</h2>
                 <p class="text-muted mt-2">{{ __('public.student_cta_sub') }}</p>
-                <div class="mt-5"><x-ui.button :href="route('login')" size="lg">{{ __('public.student_cta_button') }}</x-ui.button></div>
+                <div class="mt-5"><x-ui.button :href="$dashboardUrl ?? route('login')" size="lg">{{ $dashboardUrl ? __('nav.dashboard') : __('public.student_cta_button') }}</x-ui.button></div>
             </div>
         </section>
     </div>

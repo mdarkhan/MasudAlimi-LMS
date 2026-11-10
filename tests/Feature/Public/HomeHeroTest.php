@@ -25,4 +25,20 @@ class HomeHeroTest extends TestCase
 
         Carbon::setTestNow();
     }
+
+    public function test_the_login_buttons_become_dashboard_when_signed_in(): void
+    {
+        $this->get(route('home'))->assertOk()
+            ->assertSee(__('public.hero_login'))
+            ->assertSee(__('public.student_cta_button'));
+
+        $this->actingAs($this->makeStudent())->get(route('home'))->assertOk()
+            ->assertDontSee(__('public.hero_login'))
+            ->assertDontSee(__('public.student_cta_button'))
+            ->assertSee('href="'.route('student.dashboard').'"', false);
+
+        $this->actingAs($this->makeAdmin())->get(route('home'))->assertOk()
+            ->assertDontSee(__('public.hero_login'))
+            ->assertSee('href="'.route('admin.dashboard').'"', false);
+    }
 }
