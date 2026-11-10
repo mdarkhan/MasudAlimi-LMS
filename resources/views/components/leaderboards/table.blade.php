@@ -6,8 +6,6 @@
 
 @php
     $fmtTime = fn ($seconds) => duration_label($seconds === null ? null : (int) $seconds);
-    // Podium colours for ranks 1-3 (competition ranking: a tie shares the medal).
-    $medal = [1 => 'from-amber-300 to-amber-500 text-amber-950', 2 => 'from-slate-200 to-slate-400 text-slate-900', 3 => 'from-orange-300 to-orange-600 text-orange-950'];
     $isMe = fn (array $row): bool => $me !== null && $row['user_id'] === $me['user_id'];
     $rollBadge = fn (array $row): string => mb_strlen((string) $row['roll']) > 3 ? 'text-[10px]' : 'text-sm';
 @endphp
@@ -27,11 +25,7 @@
             ])>
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3 min-w-0">
-                        @if (isset($medal[$row['rank']]))
-                            <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br {{ $medal[$row['rank']] }} font-black tabular-nums shadow-sm">{{ bn($row['rank']) }}</span>
-                        @else
-                            <span class="shrink-0 grid place-items-center size-10 rounded-full bg-surface-raised text-brand font-black tabular-nums">{{ bn($row['rank']) }}</span>
-                        @endif
+                        <x-leaderboards.rank :rank="$row['rank']" variant="card" />
                         <div class="min-w-0">
                             <p class="font-semibold text-ink truncate pl-1.5 -ml-1.5">
                                 {{ $row['name'] }}
@@ -77,11 +71,7 @@
                             'px-4 py-3 text-center align-middle',
                             'border-s-4 border-brand' => $mine,
                         ])>
-                            @if (isset($medal[$row['rank']]))
-                                <span class="inline-grid place-items-center size-9 rounded-full bg-gradient-to-br {{ $medal[$row['rank']] }} font-black tabular-nums shadow-sm">{{ bn($row['rank']) }}</span>
-                            @else
-                                <span class="font-bold text-brand tabular-nums">{{ bn($row['rank']) }}</span>
-                            @endif
+                            <x-leaderboards.rank :rank="$row['rank']" />
                         </td>
                         <td class="px-4 py-3 align-middle">
                             <div class="flex items-center gap-3 min-w-[12rem]">

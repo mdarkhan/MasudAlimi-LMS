@@ -71,7 +71,7 @@ class LeaderboardController extends Controller
             fputcsv($out, ['rank', 'roll', 'name', $tab === 'quiz' ? 'time_seconds' : 'exams', 'obtained', 'possible', 'percentage']);
             foreach ($rows as $r) {
                 fputcsv($out, [
-                    $r['rank'], $r['roll'], csv_safe($r['name']),
+                    $r['rank'] ?? 'special', $r['roll'], csv_safe($r['name']),
                     $tab === 'quiz' ? $r['time_taken_seconds'] : $r['exams_counted'],
                     $r['obtained'], $r['possible'] ?? $r['total'], number_format($r['percentage'], 2, '.', ''),
                 ]);

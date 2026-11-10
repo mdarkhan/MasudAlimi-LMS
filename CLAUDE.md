@@ -355,7 +355,12 @@ all recorded here so they are not "fixed" by accident: **`সীরাত-০১
 `সীরাত_পরীক্ষা_একত্রিত.xlsx` (10/25/25 questions, answer keys verified field-by-field) with their 113 real-roll legacy results
 (39/41/33; same settings as ০৪–৩৬); in `সীরাত-০৩` six students had several rows — **the owner chose the FIRST entry** (8 later
 rows dropped, listed in `results-import-report-01-03.md`). Production gets them from `seerat-01-03-production.sql` (guarded,
-all-or-nothing, students matched by roll); `tafseer-1`, `halakah-1`, `jummah-1` are
+all-or-nothing, students matched by roll). **`সীরাত-০১/০২` follow the examiner's signed result sheets**
+(`ফলাফল-০১.pdf`, `ফলাফল-০২.pdf`, 17-01-26 — owner: "the PDF order is final", only students with a roll shown):
+every one of the 80 results was matched name-by-name and score-by-score; in ০২ খাদিজার আম্মু (roll 43) is
+special consideration (last, unranked) and জিয়া (roll 23, 17) stays at the bottom where the sheet lists him; in ০১
+roll 48 was 8 on the old site but 5 on the sheet → owner chose the sheet (a −3 audited adjustment, never an edit
+of the legacy score). Production: `seerat-01-02-sheet-order-production.sql`, run AFTER deploying the migration. `tafseer-1`, `halakah-1`, `jummah-1` are
 not imported; the 225 blank-roll submissions are NOT attributed to anyone (the original `.sql` is the archive);
 students keep their sheet password as the **initial** password via the opt-in
 `legacy:students:import --use-sheet-passwords` (hashed, still `force_password_change`) — default stays fresh
@@ -387,6 +392,13 @@ results/adjustment/regrade surface. Key rules, all centralised:
   share a rank only when equal on every dimension *before* the deterministic tiebreak.
   Ranking is computed live from stored `final_score`, so an adjustment or regrade reorders
   boards immediately — there is nothing cached to invalidate.
+- **Signed result sheets override the per-quiz order.** A hand-marked legacy exam whose attempts carry
+  `quiz_attempts.sheet_position` (its position on the examiner's signed result PDF) is ordered by that
+  position, ranked 1,2,3… with no shared ranks — the sheet already broke equal scores by submission serial,
+  which the imported rows (all the same time) cannot. `special_consideration` = taken under the examiner's
+  special consideration: real score shown and counted in totals, but **no rank and always listed last**
+  (rank = null → "বিশেষ বিবেচনা" via `x-leaderboards.rank`). Set only by the result-sheet data patches; quizzes
+  without positions keep competition ranking.
 - **Eligibility everywhere:** official + terminal (`submitted`/`expired`) only; practice and
   `voided` never rank. **Best attempt per student** (`max_official_attempts > 1`).
 - **Release/visibility gates are server-side and central.** A score, percentage, rank or

@@ -21,6 +21,7 @@ return [
     'col_possible' => 'মোট নম্বর',
     'time_format' => ':minutes মিনিট :seconds সেকেন্ড',
 
+    'special' => 'বিশেষ বিবেচনা',
     'you' => 'আপনি',
     'your_rank' => 'আপনার অবস্থান: :rank',
     'filter_course' => 'কোর্স',

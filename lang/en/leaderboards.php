@@ -21,6 +21,7 @@ return [
     'col_possible' => 'Total marks',
     'time_format' => ':minutes min :seconds sec',
 
+    'special' => 'Special consideration',
     'you' => 'You',
     'your_rank' => 'Your rank: :rank',
     'filter_course' => 'Course',

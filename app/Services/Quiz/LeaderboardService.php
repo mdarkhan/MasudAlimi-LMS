@@ -30,6 +30,11 @@ use Illuminate\Support\Collection;
  *                   they are equal on every dimension BEFORE the deterministic
  *                   tiebreaker — i.e. equal (score,time) per quiz, or equal
  *                   (obtained,percentage) overall.
+ * Result sheet:     a legacy quiz whose attempts carry `sheet_position` (its signed,
+ *                   hand-marked result PDF) is ordered by that position instead, ranked
+ *                   1,2,3… with no shared ranks. `special_consideration` attempts take no
+ *                   rank (rank = null, special = true) and are always listed last. Both only
+ *                   affect a per-quiz board — scores and the overall totals are unchanged.
  */
 class LeaderboardService
 {
@@ -37,7 +42,7 @@ class LeaderboardService
      * Ranked rows for one quiz's official leaderboard, one entry per student.
      *
      * @return Collection<int, array{
-     *     rank:int, user_id:int, roll:?string, name:string,
+     *     rank:?int, special:bool, user_id:int, roll:?string, name:string,
      *     obtained:int, total:int, percentage:float,
      *     time_taken_seconds:?int, submission_seq:?int
      * }>
@@ -53,6 +58,7 @@ class LeaderboardService
                 'quiz_attempts.id', 'quiz_attempts.user_id', 'quiz_attempts.final_score',
                 'quiz_attempts.total_marks_snapshot', 'quiz_attempts.time_taken_seconds',
                 'quiz_attempts.submitted_at', 'quiz_attempts.submission_seq',
+                'quiz_attempts.sheet_position', 'quiz_attempts.special_consideration',
                 'users.roll', 'users.name',
             ]);
 
@@ -61,24 +67,40 @@ class LeaderboardService
             ->groupBy('user_id')
             ->map(fn (Collection $group) => $group->sort($this->perQuizComparator(...))->first());
 
-        $ordered = $best->sort($this->perQuizComparator(...))->values();
+        $row = fn ($a, ?int $rank): array => [
+            'rank' => $rank,
+            'special' => (bool) $a->special_consideration,
+            'user_id' => (int) $a->user_id,
+            'roll' => $a->roll,
+            'name' => $a->name,
+            'obtained' => (int) $a->final_score,
+            'total' => (int) $a->total_marks_snapshot,
+            'percentage' => $this->percentage((int) $a->final_score, (int) $a->total_marks_snapshot),
+            'time_taken_seconds' => $a->time_taken_seconds === null ? null : (int) $a->time_taken_seconds,
+            'submission_seq' => $a->submission_seq === null ? null : (int) $a->submission_seq,
+        ];
+
+        // Special-consideration attempts are shown with their real score but take no rank and
+        // always come last, whatever they scored.
+        [$special, $ranked] = $best->partition(fn ($a) => (bool) $a->special_consideration);
+        $special = $special->sort($this->perQuizComparator(...))->values()->map(fn ($a) => $row($a, null));
+
+        // A hand-marked legacy exam published as a signed result sheet: that sheet's order IS the
+        // final order (it breaks equal scores by submission serial, which the imported rows cannot
+        // reproduce), and its positions are 1st, 2nd, 3rd … with no shared ranks.
+        if ($ranked->contains(fn ($a) => $a->sheet_position !== null)) {
+            $ordered = $ranked->sort(fn ($a, $b): int => ($a->sheet_position ?? PHP_INT_MAX) <=> ($b->sheet_position ?? PHP_INT_MAX)
+                ?: $this->perQuizComparator($a, $b))->values();
+
+            return $ordered->map(fn ($a, int $i) => $row($a, $i + 1))->concat($special)->values();
+        }
 
         return $this->assignCompetitionRanks(
-            $ordered,
+            $ranked->sort($this->perQuizComparator(...))->values(),
             tie: fn ($a, $b): bool => (int) $a->final_score === (int) $b->final_score
                 && (int) $a->time_taken_seconds === (int) $b->time_taken_seconds,
-            row: fn ($a, int $rank): array => [
-                'rank' => $rank,
-                'user_id' => (int) $a->user_id,
-                'roll' => $a->roll,
-                'name' => $a->name,
-                'obtained' => (int) $a->final_score,
-                'total' => (int) $a->total_marks_snapshot,
-                'percentage' => $this->percentage((int) $a->final_score, (int) $a->total_marks_snapshot),
-                'time_taken_seconds' => $a->time_taken_seconds === null ? null : (int) $a->time_taken_seconds,
-                'submission_seq' => $a->submission_seq === null ? null : (int) $a->submission_seq,
-            ],
-        );
+            row: $row,
+        )->concat($special)->values();
     }
 
     /** A single student's rank on one quiz, or null if they have no ranked attempt. */

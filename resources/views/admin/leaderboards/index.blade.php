@@ -2,7 +2,6 @@
     $isQuiz = $tab === 'quiz';
     $tabs = ['overall' => __('leaderboards.tab_overall'), 'quiz' => __('leaderboards.tab_quiz'), 'course' => __('leaderboards.tab_course')];
     $fmtTime = fn ($seconds) => duration_label($seconds === null ? null : (int) $seconds);
-    $medal = [1 => 'from-amber-300 to-amber-500 text-amber-950', 2 => 'from-slate-200 to-slate-400 text-slate-900', 3 => 'from-orange-300 to-orange-600 text-orange-950'];
     $ready = match ($tab) { 'quiz' => $quiz !== null, 'course' => $course !== null, default => true };
 @endphp
 
@@ -84,11 +83,7 @@
                 @php $mPossible = $row['possible'] ?? $row['total']; @endphp
                 <div class="rounded-2xl border border-line bg-card p-4">
                     <div class="flex items-center gap-3">
-                        @if (isset($medal[$row['rank']]))
-                            <span class="shrink-0 grid place-items-center size-10 rounded-full bg-gradient-to-br {{ $medal[$row['rank']] }} font-black tabular-nums shadow-sm">{{ bn($row['rank']) }}</span>
-                        @else
-                            <span class="shrink-0 grid place-items-center size-10 rounded-full bg-surface-raised text-brand font-black tabular-nums">{{ bn($row['rank']) }}</span>
-                        @endif
+                        <x-leaderboards.rank :rank="$row['rank']" variant="card" />
                         <span class="shrink-0 grid place-items-center size-9 rounded-full bg-gradient-to-br from-brand to-brand-strong text-brand-ink font-bold tabular-nums shadow-sm ring-[3px] ring-brand-tint {{ mb_strlen((string) $row['roll']) > 3 ? 'text-[10px]' : 'text-sm' }}">{{ $row['roll'] ? bn($row['roll']) : '—' }}</span>
                         <div class="min-w-0 flex-1">
                             <p class="font-semibold text-ink leading-snug pl-1.5 -ml-1.5">{{ $row['name'] }}</p>
@@ -132,11 +127,7 @@
                         @php $possible = $row['possible'] ?? $row['total']; @endphp
                         <tr class="hover:bg-surface-raised/50">
                             <td class="px-4 py-3 text-center align-middle">
-                                @if (isset($medal[$row['rank']]))
-                                    <span class="inline-grid place-items-center size-9 rounded-full bg-gradient-to-br {{ $medal[$row['rank']] }} font-black tabular-nums shadow-sm">{{ bn($row['rank']) }}</span>
-                                @else
-                                    <span class="font-bold text-brand tabular-nums">{{ bn($row['rank']) }}</span>
-                                @endif
+                                <x-leaderboards.rank :rank="$row['rank']" />
                             </td>
                             <td class="px-4 py-3 align-middle">
                                 <div class="flex items-center gap-3 min-w-[13rem]">

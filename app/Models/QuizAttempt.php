@@ -53,6 +53,8 @@ class QuizAttempt extends Model
             'total_marks_snapshot' => 'integer',
             'time_taken_seconds' => 'integer',
             'submission_seq' => 'integer',
+            'sheet_position' => 'integer',
+            'special_consideration' => 'boolean',
             'counts_toward_cumulative' => 'boolean',
             'is_legacy_import' => 'boolean',
             'answer_details_available' => 'boolean',
