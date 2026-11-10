@@ -351,8 +351,11 @@ never turn staging evidence into a deployment claim.
 **Legacy data loaded into the LOCAL dev database (2026-10-19, not production).** From the owner's
 exports: 58 students (`Student Database.xlsx`), 33 archived quizzes `সীরাত-০৪`…`সীরাত-৩৬` (954 questions,
 from `সীরাত পরীক্ষা.xlsx`) and 886 historical results (`masudalimi.sql`, real-roll rows only). Owner decisions,
-all recorded here so they are not "fixed" by accident: **`সীরাত-০১/০২/০৩` are deliberately NOT imported** (placeholder
-questions / sheet missing — add later when the owner confirms them); `tafseer-1`, `halakah-1`, `jummah-1` are
+all recorded here so they are not "fixed" by accident: **`সীরাত-০১/০২/০৩` were added on 2026-11-11** from the owner's
+`সীরাত_পরীক্ষা_একত্রিত.xlsx` (10/25/25 questions, answer keys verified field-by-field) with their 113 real-roll legacy results
+(39/41/33; same settings as ০৪–৩৬); in `সীরাত-০৩` six students had several rows — **the owner chose the FIRST entry** (8 later
+rows dropped, listed in `results-import-report-01-03.md`). Production gets them from `seerat-01-03-production.sql` (guarded,
+all-or-nothing, students matched by roll); `tafseer-1`, `halakah-1`, `jummah-1` are
 not imported; the 225 blank-roll submissions are NOT attributed to anyone (the original `.sql` is the archive);
 students keep their sheet password as the **initial** password via the opt-in
 `legacy:students:import --use-sheet-passwords` (hashed, still `force_password_change`) — default stays fresh
