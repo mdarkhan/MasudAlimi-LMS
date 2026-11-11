@@ -1,15 +1,16 @@
 @props(['name' => null, 'error' => null])
 @php
     $hasError = $name ? $errors->has($name) : (bool) $error;
-    $ring = $hasError ? 'border-rose-400 focus:border-rose-500' : 'border-line focus:border-brand';
+    $ring = $hasError ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/15' : 'border-line focus:border-brand focus:ring-4 focus:ring-brand/15';
     $isPassword = $attributes->get('type') === 'password';
-    $base = "w-full rounded-xl bg-surface-raised text-ink placeholder-muted/70 border $ring px-4 py-2.5 text-sm outline-none transition-colors".($isPassword ? ' pr-11' : '');
+    $base = "w-full rounded-xl bg-surface-raised text-ink placeholder-muted/70 border $ring px-4 py-2.5 text-base sm:text-sm outline-none transition-colors".($isPassword ? ' pr-11' : '');
 @endphp
 @if ($isPassword)
     {{-- Every password field in the app: masked by default, with an eye button on the right to show it. --}}
     <div class="relative" x-data="{ show: false }">
         <input
             @if ($name) name="{{ $name }}" id="{{ $attributes->get('id', $name) }}" @endif
+        @if ($hasError && $name) aria-invalid="true" aria-describedby="{{ field_error_id($name) }}" @endif
             x-bind:type="show ? 'text' : 'password'"
             {{ $attributes->merge(['class' => $base]) }}
         />
@@ -23,6 +24,7 @@
 @else
     <input
         @if ($name) name="{{ $name }}" id="{{ $attributes->get('id', $name) }}" @endif
+        @if ($hasError && $name) aria-invalid="true" aria-describedby="{{ field_error_id($name) }}" @endif
         {{ $attributes->merge(['class' => $base]) }}
     />
 @endif

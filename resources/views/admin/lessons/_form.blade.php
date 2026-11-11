@@ -41,11 +41,11 @@
                 <template x-for="(row, i) in rows" :key="i">
                     <div class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2 items-start">
                         <input x-model="row.label" :name="`resources[${i}][label]`" placeholder="{{ __('lessons.label_placeholder') }}"
-                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-sm outline-none focus:border-brand">
+                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-base sm:text-sm outline-none focus:border-brand">
                         <input x-model="row.url" :name="`resources[${i}][url]`" placeholder="{{ __('lessons.link_optional') }}"
-                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-sm outline-none focus:border-brand">
+                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-base sm:text-sm outline-none focus:border-brand">
                         <div class="flex items-center gap-1">
-                            <select x-model="row.kind" :name="`resources[${i}][kind]`" class="rounded-xl bg-surface-raised border border-line px-2 py-2 text-sm outline-none focus:border-brand">
+                            <select x-model="row.kind" :name="`resources[${i}][kind]`" class="rounded-xl bg-surface-raised border border-line px-2 py-2 text-base sm:text-sm outline-none focus:border-brand">
                                 <option value="link">{{ __('lessons.kind_link') }}</option>
                                 <option value="book">{{ __('lessons.kind_book') }}</option>
                                 <option value="file">{{ __('lessons.kind_file') }}</option>

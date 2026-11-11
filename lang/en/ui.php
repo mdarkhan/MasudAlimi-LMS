@@ -59,4 +59,6 @@ return [
     'rt_apply' => 'Apply',
     'rt_unlink' => 'Remove link',
     'rt_clear' => 'Clear formatting',
+    'skip_to_content' => 'Skip to main content',
+    'display_settings' => 'Language & theme',
 ];

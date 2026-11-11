@@ -21,11 +21,11 @@
                 <span class="sr-only">{{ __('exams.search_label') }}</span>
                 <x-ui.icon name="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
                 <input type="search" name="q" value="{{ $search }}" placeholder="{{ __('exams.search_placeholder') }}"
-                       class="w-full rounded-xl bg-card border border-line pl-10 pr-3 py-2.5 text-sm text-ink placeholder-muted outline-none focus:border-brand focus:ring-4 focus:ring-brand/10">
+                       class="w-full rounded-xl bg-card border border-line pl-10 pr-3 py-2.5 text-base sm:text-sm text-ink placeholder-muted outline-none focus:border-brand focus:ring-4 focus:ring-brand/10">
             </label>
             @if ($courses->isNotEmpty())
                 <select name="course" onchange="this.form.submit()" aria-label="{{ __('exams.search_course') }}"
-                        class="sm:w-48 rounded-xl bg-card border border-line px-3 py-2.5 text-sm text-ink outline-none focus:border-brand">
+                        class="sm:w-48 rounded-xl bg-card border border-line px-3 py-2.5 text-base sm:text-sm text-ink outline-none focus:border-brand">
                     <option value="">{{ __('exams.search_all_courses') }}</option>
                     @foreach ($courses as $c)
                         <option value="{{ $c->id }}" @selected((string) $courseId === (string) $c->id)>{{ $c->title }}</option>

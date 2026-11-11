@@ -26,7 +26,7 @@
         <input type="date" value="{{ $date->toDateString() }}" max="{{ $today->toDateString() }}"
                onchange="if(this.value) { window.keepScroll(); window.location.href = @js($template).replace('__DATE__', this.value) }"
                aria-label="{{ __('amol.jump_to_date') }}"
-               class="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-brand">
+               class="rounded-lg border border-line bg-surface px-3 py-2 text-base sm:text-sm text-ink outline-none focus:border-brand">
 
         @if ($nextUrl)
             <a data-keep-scroll href="{{ $nextUrl }}" class="p-2 rounded-lg border border-line text-muted hover:text-ink hover:border-brand/40 transition-colors" aria-label="{{ __('amol.next_day') }}">

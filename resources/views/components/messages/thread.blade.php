@@ -111,7 +111,7 @@
             <div class="px-3 pt-2.5 pb-1">
                 <label class="emoji-search flex items-center gap-2 rounded-full px-3 py-1.5">
                     <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-                    <input x-ref="search" x-model="query" type="text" placeholder="{{ __('messages.emoji_search') }}" class="flex-1 min-w-0 bg-transparent border-0 p-0 text-sm outline-none focus:ring-0" autocomplete="off">
+                    <input x-ref="search" x-model="query" type="text" placeholder="{{ __('messages.emoji_search') }}" class="flex-1 min-w-0 bg-transparent border-0 p-0 text-base sm:text-sm outline-none focus:ring-0" autocomplete="off">
                 </label>
             </div>
             <div x-ref="list" class="emoji-list flex-1 overflow-y-auto px-3 pb-3" @scroll.passive="onScroll()">

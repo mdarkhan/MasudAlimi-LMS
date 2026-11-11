@@ -41,7 +41,7 @@
                         <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center gap-2">
                                 <span class="text-xs text-muted">{{ __('admin.order') }}</span>
-                                <input type="number" name="sort_order" value="{{ $faq->sort_order }}" class="w-20 rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-sm text-ink outline-none focus:border-brand">
+                                <input type="number" name="sort_order" value="{{ $faq->sort_order }}" class="w-20 rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-base sm:text-sm text-ink outline-none focus:border-brand">
                             </div>
                             <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="is_published" value="1" @checked($faq->is_published) class="rounded border-line text-brand"> {{ __('admin.published') }}</label>
                             <x-ui.button type="submit" variant="secondary" size="sm">{{ __('admin.save_changes') }}</x-ui.button>

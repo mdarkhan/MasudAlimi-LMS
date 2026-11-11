@@ -1,6 +1,6 @@
 @props(['label', 'value', 'sub' => null, 'tone' => 'brand'])
 @php
-    $tones = ['brand' => 'text-brand', 'ink' => 'text-ink', 'amber' => 'text-amber-500', 'rose' => 'text-rose-500'];
+    $tones = ['brand' => 'text-brand', 'ink' => 'text-ink', 'amber' => 'text-amber-700 dark:text-amber-400', 'rose' => 'text-rose-600 dark:text-rose-400'];
 @endphp
 <div class="bg-card border border-line rounded-[--radius-card] shadow-[--shadow-soft] p-5 text-center">
     <p class="text-base font-semibold tracking-wide text-muted">{{ $label }}</p>

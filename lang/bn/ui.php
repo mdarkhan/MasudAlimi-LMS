@@ -62,4 +62,6 @@ return [
     'rt_apply' => 'যোগ করুন',
     'rt_unlink' => 'লিংক সরান',
     'rt_clear' => 'ফরম্যাট মুছুন',
+    'skip_to_content' => 'মূল অংশে যান',
+    'display_settings' => 'ভাষা ও থিম',
 ];

@@ -42,6 +42,15 @@
             var t = localStorage.getItem('theme')
                 || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             if (t === 'dark') document.documentElement.classList.add('dark');
+
+            // Scroll-reveal sections ([data-reveal]) are only hidden while this class is on. If app.js never
+            // marks itself ready (failed/blocked/very slow), the class is dropped and everything shows — a
+            // decorative effect must never be able to leave real content invisible.
+            var root = document.documentElement;
+            root.classList.add('js-reveal');
+            window.addEventListener('load', function () {
+                setTimeout(function () { if (! root.classList.contains('reveal-ready')) root.classList.remove('js-reveal'); }, 1500);
+            });
         })();
     </script>
 
@@ -56,6 +65,8 @@
     <noscript><style>[data-reveal] { opacity: 1 !important; transform: none !important; }</style></noscript>
 </head>
 <body class="min-h-screen antialiased">
+    {{-- Keyboard users can jump past the header and sidebar straight to the page (first Tab stop). --}}
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:start-3 focus:z-[200] focus:rounded-xl focus:bg-brand focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-brand-ink focus:shadow-lg">{{ __('ui.skip_to_content') }}</a>
     {{ $slot }}
 </body>
 </html>

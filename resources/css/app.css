@@ -206,6 +206,8 @@ html[lang='en'] {
         outline-offset: 2px;
         border-radius: 4px;
     }
+    /* #main is only focused by the skip link — no outline around the whole page. */
+    main#main:focus { outline: none; }
 
     /* Respect the user's motion preference everywhere. */
     @media (prefers-reduced-motion: reduce) {
@@ -244,16 +246,17 @@ html[lang='en'] {
        here: the homepage is a single long page a visitor scrolls once, not a shell that
        re-renders on every click. Reduced-motion still collapses the transition via the
        global rule above, so it just appears instead of animating. If JS never runs
-       (disabled, or an error), the element simply stays at its default state below —
-       visible, never permanently hidden. */
-    [data-reveal] {
+       (disabled, or an error), base.blade.php drops .js-reveal after load and every section shows —
+       visible, never permanently hidden. Print always shows everything. */
+    .js-reveal [data-reveal]:not(.is-revealed) {
         opacity: 0;
         transform: translateY(20px);
+    }
+    [data-reveal] {
         transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    [data-reveal].is-revealed {
-        opacity: 1;
-        transform: translateY(0);
+    @media print {
+        [data-reveal] { opacity: 1 !important; transform: none !important; }
     }
 
     /* Subtle 3D "book spine" tilt for the homepage library grid — a book cover lifts

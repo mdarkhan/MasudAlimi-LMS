@@ -47,9 +47,10 @@
 
     <div class="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
         <x-ui.stat :label="__('dashboard.active_students')" :value="bn($activeStudents)" tone="brand" />
-        <x-ui.stat :label="__('dashboard.suspended_students')" :value="bn($suspendedStudents)" tone="rose" />
+        {{-- red only when there is something to look at; zero suspended is not an alarm --}}
+        <x-ui.stat :label="__('dashboard.suspended_students')" :value="bn($suspendedStudents)" :tone="$suspendedStudents > 0 ? 'rose' : 'ink'" />
         <x-ui.stat :label="__('nav.courses')" :value="bn($courseCount)" :sub="__('dashboard.lessons_count', ['count' => bn($lessonCount)])" tone="ink" />
-        <x-ui.stat :label="__('dashboard.total_points_held')" :value="bn($pointsHeld)" tone="amber" />
+        <x-ui.stat :label="__('dashboard.total_points_held')" :value="bn($pointsHeld)" tone="ink" />
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
@@ -74,7 +75,7 @@
         <x-ui.card :padded="false">
             <div class="p-5 pb-3 flex items-center justify-between">
                 <h3 class="font-bold text-ink">{{ __('dashboard.recent_point_transactions') }}</h3>
-                <a href="{{ route('admin.points.index') }}" class="text-sm text-brand font-semibold hover:underline">{{ __('ui.all') }}</a>
+                <a href="{{ route('admin.points.index') }}" class="inline-flex items-center py-3 -my-3 text-sm text-brand font-semibold hover:underline">{{ __('dashboard.see_all') }}</a>
             </div>
             <div class="divide-y divide-line">
                 @forelse ($recentPoints as $tx)

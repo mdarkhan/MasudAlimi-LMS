@@ -21,7 +21,7 @@
             </x-ui.field>
 
             <label class="flex items-center gap-2 text-sm text-muted select-none">
-                <input type="checkbox" name="remember" class="rounded border-line text-brand focus:ring-brand">
+                <input type="checkbox" name="remember" class="size-5 rounded border-line text-brand focus:ring-brand">
                 {{ __('auth.remember') }}
             </label>
 

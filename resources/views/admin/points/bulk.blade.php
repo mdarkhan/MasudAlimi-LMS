@@ -38,7 +38,7 @@
                         {{ __('points.select_all') }}
                     </label>
                     <form method="GET" class="relative w-48">
-                        <input name="q" value="{{ $search }}" placeholder="{{ __('ui.search_placeholder') }}" class="w-full rounded-lg bg-surface-raised border border-line px-3 py-2 text-sm outline-none focus:border-brand">
+                        <input name="q" value="{{ $search }}" placeholder="{{ __('ui.search_placeholder') }}" class="w-full rounded-lg bg-surface-raised border border-line px-3 py-2 text-base sm:text-sm outline-none focus:border-brand">
                     </form>
                 </div>
                 <div class="max-h-[28rem] overflow-y-auto divide-y divide-line">

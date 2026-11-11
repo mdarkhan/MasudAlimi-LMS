@@ -93,7 +93,7 @@
             </div>
         </header>
 
-        <main class="flex-1">
+        <main id="main" tabindex="-1" class="flex-1">
             {{ $slot }}
         </main>
 
@@ -107,9 +107,10 @@
 
                     <div>
                         <p class="text-xs font-bold text-ink uppercase tracking-wider mb-3">{{ __('public.quick_links_heading') }}</p>
-                        <nav class="flex flex-col gap-2 text-sm text-muted">
+                        {{-- py-1.5 on each link (instead of a gap) gives every row a finger-sized tap area. --}}
+                        <nav class="flex flex-col text-sm text-muted -my-1.5">
                             @foreach ($nav as $item)
-                                <a href="{{ $item['href'] }}" class="hover:text-brand transition-colors w-fit">{{ $item['label'] }}</a>
+                                <a href="{{ $item['href'] }}" class="py-1.5 hover:text-brand transition-colors w-fit">{{ $item['label'] }}</a>
                             @endforeach
                         </nav>
                     </div>

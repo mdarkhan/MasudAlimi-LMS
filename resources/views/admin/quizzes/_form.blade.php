@@ -19,7 +19,7 @@
                 <div class="grid sm:grid-cols-2 gap-4">
                     <x-ui.field :label="__('admin.course')" name="course_id">
                         <select name="course_id" x-model="course"
-                                class="w-full rounded-xl bg-surface-raised text-ink border border-line focus:border-brand px-4 py-2.5 text-sm outline-none">
+                                class="w-full rounded-xl bg-surface-raised text-ink border border-line focus:border-brand px-4 py-2.5 text-base sm:text-sm outline-none">
                             <option value="">{{ __('admin.none_option') }}</option>
                             @foreach ($courses as $course)
                                 <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -28,7 +28,7 @@
                     </x-ui.field>
                     <x-ui.field :label="__('admin.lesson').' ('.__('admin.optional').')'" name="lesson_id">
                         <select name="lesson_id"
-                                class="w-full rounded-xl bg-surface-raised text-ink border border-line focus:border-brand px-4 py-2.5 text-sm outline-none">
+                                class="w-full rounded-xl bg-surface-raised text-ink border border-line focus:border-brand px-4 py-2.5 text-base sm:text-sm outline-none">
                             <option value="">{{ __('admin.none_option') }}</option>
                             <template x-for="lesson in (lessonsByCourse[course] || [])" :key="lesson.id">
                                 <option :value="lesson.id" x-text="lesson.title"

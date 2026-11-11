@@ -50,8 +50,8 @@
                                 <div class="space-y-2">
                                     <p class="text-xs font-semibold text-muted uppercase">{{ __('zakat.'.$target) }}</p>
                                     <div class="flex gap-2">
-                                        <input type="number" step="0.001" min="0" x-model.number="w.{{ $metal }}_g" placeholder="{{ __('zakat.weight_grams') }}" class="w-full rounded-lg border border-line bg-surface-raised px-3 py-2 text-sm" />
-                                        <input type="number" step="0.001" min="0" x-model.number="w.{{ $metal }}_v" placeholder="{{ __('zakat.weight_vori') }}" class="w-full rounded-lg border border-line bg-surface-raised px-3 py-2 text-sm" />
+                                        <input type="number" step="0.001" min="0" x-model.number="w.{{ $metal }}_g" placeholder="{{ __('zakat.weight_grams') }}" class="w-full rounded-lg border border-line bg-surface-raised px-3 py-2 text-base sm:text-sm" />
+                                        <input type="number" step="0.001" min="0" x-model.number="w.{{ $metal }}_v" placeholder="{{ __('zakat.weight_vori') }}" class="w-full rounded-lg border border-line bg-surface-raised px-3 py-2 text-base sm:text-sm" />
                                     </div>
                                     <div class="flex items-center justify-between text-xs">
                                         <span class="text-muted tabular-nums" x-text="cur(metalValue('{{ $metal }}'))"></span>

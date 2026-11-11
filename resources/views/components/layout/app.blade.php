@@ -22,7 +22,9 @@
     if ($activeItem && ! in_array($activeItem['group'] ?? 'main', ['main', null], true)) {
         $trail[] = ['label' => __('nav.group_'.$activeItem['group']), 'href' => null];
     }
-    if ($activeItem && $activeItem['label'] !== ($heading ?: $title)) {
+    // A crumb that would only link back to this very page (e.g. "ড্যাশবোর্ড" on the dashboard) is noise.
+    if ($activeItem && $activeItem['label'] !== ($heading ?: $title)
+        && rtrim((string) $activeItem['href'], '/') !== rtrim(url()->current(), '/')) {
         $trail[] = ['label' => $activeItem['label'], 'href' => $activeItem['href']];
     }
 @endphp
@@ -52,14 +54,14 @@
         </aside>
 
         {{-- Mobile drawer --}}
-        <div x-show="mobileNav" x-cloak class="lg:hidden fixed inset-0 z-40" style="display:none">
+        <div x-show="mobileNav" x-cloak class="lg:hidden fixed inset-0 z-50" style="display:none">
             <div x-show="mobileNav" x-transition.opacity class="absolute inset-0 bg-black/50" @click="mobileNav = false"></div>
             <aside x-show="mobileNav" x-transition:enter="transition ease-out duration-200"
                    x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
                    class="absolute inset-y-0 left-0 w-72 bg-surface-raised border-r border-line flex flex-col">
                 <div class="h-16 flex items-center justify-between px-5 border-b border-line">
                     <x-ui.brand :sub="false" />
-                    <button @click="mobileNav = false" class="p-2 text-muted" aria-label="{{ __('nav.close_menu') }}"><x-ui.icon name="close" /></button>
+                    <button @click="mobileNav = false" class="size-11 -mr-2.5 grid place-items-center rounded-lg text-muted hover:text-ink" aria-label="{{ __('nav.close_menu') }}"><x-ui.icon name="close" /></button>
                 </div>
                 <nav class="flex-1 p-3 space-y-1 overflow-y-auto pb-10 [mask-image:linear-gradient(to_bottom,black_calc(100%-2.5rem),transparent)]">
                     @php $prevGroup = null; @endphp
@@ -71,6 +73,14 @@
                         <x-layout.nav-item :item="$item" />
                     @endforeach
                 </nav>
+                {{-- Language + theme live here on phones (the header hides them below sm). --}}
+                <div class="sm:hidden border-t border-line px-4 py-3 flex items-center justify-between gap-3">
+                    <span class="text-sm font-semibold text-muted">{{ __('ui.display_settings') }}</span>
+                    <div class="flex items-center gap-1">
+                        <x-ui.locale-toggle />
+                        <x-ui.theme-toggle class="size-11 grid place-items-center" />
+                    </div>
+                </div>
             </aside>
         </div>
 
@@ -100,8 +110,12 @@
                             <x-ui.icon name="search" class="w-5 h-5" />
                         </a>
                     @endif
-                    <x-ui.locale-toggle />
-                    <x-ui.theme-toggle class="size-11 grid place-items-center" />
+                    {{-- On narrow phones the header keeps only what is used every visit (menu, search, bell, logout);
+                         language and theme move into the menu drawer, where they get a labelled row. --}}
+                    <span class="hidden sm:flex items-center gap-1 sm:gap-2">
+                        <x-ui.locale-toggle />
+                        <x-ui.theme-toggle class="size-11 grid place-items-center" />
+                    </span>
                     @auth
                         <x-layout.notification-bell />
                     @endauth
@@ -122,7 +136,7 @@
                  shell re-renders fresh on EVERY sidebar click (no client-side routing), so a
                  0.4s opacity/translate entrance would replay on every navigation — reads as a
                  momentary "wrong, then corrected" flash rather than a nice touch. --}}
-            <main @class(['flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto', 'pb-28 lg:pb-6' => ! empty($bottomNav)])>
+            <main id="main" tabindex="-1" @class(['flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto', 'pb-28 lg:pb-6' => ! empty($bottomNav)])>
                 <x-flash />
                 @if ($pageHeading)
                     <div class="mb-5">

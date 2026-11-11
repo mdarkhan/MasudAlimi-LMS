@@ -41,7 +41,7 @@
                  class="absolute z-30 mt-1 w-72 max-w-[80vw] rounded-xl border border-line bg-card p-3 shadow-lg space-y-2">
                 <input type="text" inputmode="url" x-model="linkUrl" x-ref="linkInput" @keydown.enter.prevent="applyLink()"
                        dir="ltr" placeholder="https://…" aria-label="{{ __('ui.rt_link') }}"
-                       class="w-full rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-sm text-ink outline-none focus:border-brand">
+                       class="w-full rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-base sm:text-sm text-ink outline-none focus:border-brand">
                 <div class="flex items-center gap-2">
                     <button type="button" @mousedown.prevent="applyLink()" class="flex-1 rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-brand-ink hover:bg-brand-strong">{{ __('ui.rt_apply') }}</button>
                     <button type="button" @mousedown.prevent="removeLink()" class="rounded-lg border border-line px-3 py-1.5 text-sm text-muted hover:text-ink">{{ __('ui.rt_unlink') }}</button>

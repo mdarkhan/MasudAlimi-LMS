@@ -43,7 +43,7 @@
                     </td>
                     <td class="px-4 py-3">
                         @if ($book->coverUrl())
-                            <img src="{{ $book->coverUrl() }}" alt="" class="w-8 h-11 object-cover rounded border border-line">
+                            <img src="{{ $book->coverUrl() }}" alt="" class="w-8 h-11 object-cover rounded border border-line" loading="lazy" decoding="async">
                         @else
                             <div class="w-8 h-11 rounded border border-line bg-brand-tint text-brand grid place-items-center"><x-ui.icon name="book" class="w-4 h-4" /></div>
                         @endif

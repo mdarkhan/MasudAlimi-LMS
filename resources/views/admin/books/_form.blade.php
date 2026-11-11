@@ -45,9 +45,9 @@
                 <template x-for="(row, i) in rows" :key="i">
                     <div class="grid grid-cols-1 sm:grid-cols-[1fr_1.4fr_auto] gap-2 items-start">
                         <input x-model="row.website_name" :name="`purchase_links[${i}][website_name]`" placeholder="{{ __('books.website_name_placeholder') }}"
-                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-sm outline-none focus:border-brand">
+                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-base sm:text-sm outline-none focus:border-brand">
                         <input x-model="row.url" :name="`purchase_links[${i}][url]`" placeholder="https://" dir="ltr"
-                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-sm outline-none focus:border-brand">
+                               class="rounded-xl bg-surface-raised border border-line px-3 py-2 text-base sm:text-sm outline-none focus:border-brand">
                         <button type="button" @click="rows.splice(i, 1)" class="p-2 text-muted hover:text-rose-600" aria-label="{{ __('books.remove') }}"><x-ui.icon name="close" class="w-4 h-4" /></button>
                     </div>
                 </template>

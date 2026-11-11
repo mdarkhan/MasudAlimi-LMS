@@ -3,7 +3,7 @@
         <form method="GET" class="relative flex-1">
             <x-ui.icon name="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
             <input name="q" value="{{ $search }}" placeholder="{{ __('students.search_placeholder') }}"
-                   class="w-full rounded-xl bg-surface-raised border border-line pl-9 pr-4 py-2.5 text-sm outline-none focus:border-brand">
+                   class="w-full rounded-xl bg-surface-raised border border-line pl-9 pr-4 py-2.5 text-base sm:text-sm outline-none focus:border-brand">
         </form>
         <div class="flex gap-2">
             <x-ui.button :href="route('admin.points.export', request()->query())" variant="ghost">

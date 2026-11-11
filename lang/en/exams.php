@@ -84,4 +84,5 @@ return [
     'search_clear' => "Show all exams",
     'search_none' => "No exam matches",
     'search_none_hint' => "Try another name or pick a different course.",
+    'live_time_notice' => ':minutes minute(s) left in this exam.',
 ];

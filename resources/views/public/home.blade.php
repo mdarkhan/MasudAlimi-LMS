@@ -112,7 +112,7 @@
             <section data-reveal class="rounded-3xl border border-line bg-card p-6 sm:p-8">
                 <div class="grid gap-6 sm:grid-cols-[auto_1fr] items-start">
                     @if ($about['about_photo'])
-                        <img src="{{ \Illuminate\Support\Facades\Storage::disk(config('filesystems.uploads_disk'))->url($about['about_photo']) }}" alt=""
+                        <img src="{{ \Illuminate\Support\Facades\Storage::disk(config('filesystems.uploads_disk'))->url($about['about_photo']) }}" alt="" loading="lazy" decoding="async"
                              class="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl object-cover border border-line shrink-0">
                     @endif
                     <div>
@@ -211,7 +211,7 @@
                         <a href="{{ route('books.show', $book) }}" target="_blank" rel="noopener" class="group flex flex-col items-center w-full">
                             <div class="book-spine-effect w-full aspect-[3/4.2] rounded-2xl border border-brand/25 shadow-[--shadow-soft] overflow-hidden relative bg-brand-tint">
                                 @if ($book->coverUrl())
-                                    <img src="{{ $book->coverUrl() }}" alt="{{ $book->title }}" class="absolute inset-0 w-full h-full object-cover">
+                                    <img src="{{ $book->coverUrl() }}" alt="{{ $book->title }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
                                 @else
                                     <div class="absolute inset-0 geo-accent opacity-60" aria-hidden="true"></div>
                                     <div class="absolute inset-0 grid place-items-center text-brand/60">
@@ -222,7 +222,7 @@
                             {{-- One line + ellipsis (like the author below), not line-clamp-2: a long
                                  title wrapping to two lines pushed that card's store links lower
                                  than its neighbours'. Full title stays available on hover. --}}
-                            <h4 title="{{ $book->title }}" class="mt-3 w-full truncate text-xs sm:text-sm font-bold text-ink group-hover:text-brand-strong transition-colors leading-snug">{{ $book->title }}</h4>
+                            <h3 title="{{ $book->title }}" class="mt-3 w-full truncate text-xs sm:text-sm font-bold text-ink group-hover:text-brand-strong transition-colors leading-snug">{{ $book->title }}</h3>
                             <p class="text-xs text-muted mt-0.5 truncate max-w-full">{{ $book->author }}</p>
                         </a>
                         <x-ui.buy-links :links="$book->purchaseLinks" size="sm" class="mt-2.5 justify-center" />

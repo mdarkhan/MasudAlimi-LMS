@@ -251,6 +251,7 @@ Alpine.start();
 // first time it enters the viewport, then stays revealed (no re-triggering on
 // scroll-back). If IntersectionObserver is unavailable, everything is revealed
 // immediately — content is never left permanently hidden waiting on JS.
+document.documentElement.classList.add('reveal-ready');   // tells base.blade.php's failsafe that reveal is handled
 const revealTargets = document.querySelectorAll('[data-reveal]');
 if (revealTargets.length) {
     if ('IntersectionObserver' in window) {
@@ -320,3 +321,13 @@ if (countTargets.length) {
     // No IntersectionObserver fallback needed: the server-rendered value is already
     // correct and visible, so skipping the animation there is a silent, safe no-op.
 }
+
+// After a failed form submit the page comes back with errors: put the cursor in the first invalid field
+// (x-ui.input/select/textarea mark it aria-invalid and point aria-describedby at its message), so nobody
+// has to hunt for what went wrong. Waits a tick so Alpine has shown the right tab/section first.
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const bad = [...document.querySelectorAll('[aria-invalid="true"]')].find((el) => el.offsetParent !== null);
+        if (bad) { bad.focus(); bad.scrollIntoView({ block: 'center' }); }
+    }, 60);
+});

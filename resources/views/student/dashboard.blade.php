@@ -208,7 +208,7 @@
 
             <div class="flex items-center justify-between">
                 <h3 class="font-bold text-ink">{{ __('dashboard.courses') }}</h3>
-                <a href="{{ route('student.courses.index') }}" class="text-sm text-brand font-semibold hover:underline">{{ __('dashboard.see_all') }}</a>
+                <a href="{{ route('student.courses.index') }}" class="inline-flex items-center py-3 -my-3 text-sm text-brand font-semibold hover:underline">{{ __('dashboard.see_all') }}</a>
             </div>
             @forelse ($courses as $course)
                 @php $progress = $courseProgress[$course->id]; @endphp
@@ -247,7 +247,7 @@
         <div class="space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="font-bold text-ink">{{ __('dashboard.recent_results') }}</h3>
-                <a href="{{ route('student.results.index') }}" class="text-sm text-brand font-semibold hover:underline">{{ __('ui.all') }}</a>
+                <a href="{{ route('student.results.index') }}" class="inline-flex items-center py-3 -my-3 text-sm text-brand font-semibold hover:underline">{{ __('dashboard.see_all') }}</a>
             </div>
             <x-ui.card :padded="false" class="divide-y divide-line">
                 @forelse ($recent as $attempt)
@@ -271,7 +271,7 @@
 
             <div class="flex items-center justify-between">
                 <h3 class="font-bold text-ink">{{ __('dashboard.recent_points') }}</h3>
-                <a href="{{ route('student.points') }}" class="text-sm text-brand font-semibold hover:underline">{{ __('ui.all') }}</a>
+                <a href="{{ route('student.points') }}" class="inline-flex items-center py-3 -my-3 text-sm text-brand font-semibold hover:underline">{{ __('dashboard.see_all') }}</a>
             </div>
             <x-ui.card :padded="false" class="divide-y divide-line">
                 @forelse ($recentPoints as $tx)

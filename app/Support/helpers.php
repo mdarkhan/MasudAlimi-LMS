@@ -119,3 +119,15 @@ if (! function_exists('date_label')) {
         return dt_label($date, false);
     }
 }
+
+if (! function_exists('field_error_id')) {
+    /**
+     * The id of a form field's validation message (x-ui.field), referenced by the control's
+     * aria-describedby so a screen reader reads the error with the field. Array names
+     * ("resources[0][kind]") become a valid, stable id.
+     */
+    function field_error_id(string $name): string
+    {
+        return trim(preg_replace('/[^A-Za-z0-9_-]+/', '-', $name), '-').'-error';
+    }
+}

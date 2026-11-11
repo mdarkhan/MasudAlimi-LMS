@@ -7,7 +7,7 @@
 
 @php
     $base = 'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-colors '
-        . 'focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap select-none';
+        . 'disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap select-none';
 
     $variants = [
         'primary'   => 'bg-brand text-brand-ink hover:bg-brand-strong shadow-sm',

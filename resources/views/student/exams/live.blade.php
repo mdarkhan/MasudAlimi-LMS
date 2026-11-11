@@ -48,6 +48,7 @@
                     <template x-if="remaining === null">
                         <span class="text-xs text-muted">{{ __('exams.live_no_time_limit') }}</span>
                     </template>
+                    <p class="sr-only" aria-live="polite" x-text="timeNotice"></p>
 
                     {{-- Always visible, never buried at the bottom of a long question
                          list — that's the whole point of putting it in the sticky header. --}}
@@ -60,7 +61,7 @@
             </div>
         </header>
 
-        <main class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        <main id="main" tabindex="-1" class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-6">
             {{-- Any answer that has not reached the server: say so plainly, on every question. --}}
             <div x-show="hasFailed()" x-cloak style="display:none" role="alert"
                  class="mb-4 rounded-xl border border-rose-300 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
@@ -189,6 +190,7 @@
                 answers: {},            // qid -> [optionIds]
                 current: 0,
                 remaining: null,
+                timeNotice: '',         // polite screen-reader announcement (5 min / 1 min left)
                 endpoints: {},
                 csrf: '',
                 bnDigits: false,
@@ -332,6 +334,9 @@
                 tick() {
                     if (this.remaining === null) return;
                     this.remaining = Math.max(0, this.remaining - 1);
+                    // Screen readers cannot watch a ticking clock: say it once at 5 minutes and once at 1 minute.
+                    if (this.remaining === 300) this.timeNotice = @js(__('exams.live_time_notice', ['minutes' => bn(5)]));
+                    if (this.remaining === 60) this.timeNotice = @js(__('exams.live_time_notice', ['minutes' => bn(1)]));
                     if (this.remaining === 0) this.autoSubmit();
                 },
 

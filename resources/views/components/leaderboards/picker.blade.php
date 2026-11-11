@@ -53,7 +53,7 @@
         <label class="block min-w-0">
             <span class="mb-1 block text-xs font-semibold text-muted">{{ __('leaderboards.filter_course') }}</span>
             <select x-model="courseId" @change="changeCourse()"
-                    class="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-brand">
+                    class="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-base sm:text-sm text-ink outline-none transition-colors focus:border-brand">
                 <option value="">{{ __('leaderboards.pick_course') }}</option>
                 @foreach ($courses as $course)
                     <option value="{{ $course['id'] }}">{{ $course['title'] }}</option>
@@ -67,7 +67,7 @@
         <label class="block min-w-0">
             <span class="mb-1 block text-xs font-semibold text-muted">{{ __('leaderboards.filter_quiz') }}</span>
             <select x-model="quizUrl" @change="openQuiz()" :disabled="!courseId"
-                    class="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-brand disabled:cursor-not-allowed disabled:opacity-50">
+                    class="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-base sm:text-sm text-ink outline-none transition-colors focus:border-brand disabled:cursor-not-allowed disabled:opacity-50">
                 <option value="">{{ __('leaderboards.pick_quiz') }}</option>
                 <template x-for="quiz in filteredQuizzes" :key="quiz.url">
                     <option :value="quiz.url" x-text="quiz.title"></option>

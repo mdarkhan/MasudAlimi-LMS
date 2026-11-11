@@ -10,7 +10,7 @@
             </div>
         </header>
 
-        <main class="flex-1 grid place-items-center px-4 py-8">
+        <main id="main" tabindex="-1" class="flex-1 grid place-items-center px-4 py-8">
             <div class="w-full max-w-md animate-rise">
                 {{ $slot }}
             </div>

@@ -21,7 +21,7 @@
 
     @if ($name)
         @error($name)
-            <p class="text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
+            <p id="{{ field_error_id($name) }}" class="text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
         @enderror
     @endif
 </div>

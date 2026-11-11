@@ -37,7 +37,7 @@
                 <div class="grid sm:grid-cols-2 gap-4">
                     <x-ui.field :label="__('quizzes.question_type')" name="type">
                         <select name="type" x-model="type" @change="onTypeChange()"
-                                class="w-full rounded-xl bg-surface-raised text-ink border border-line focus:border-brand px-4 py-2.5 text-sm outline-none">
+                                class="w-full rounded-xl bg-surface-raised text-ink border border-line focus:border-brand px-4 py-2.5 text-base sm:text-sm outline-none">
                             <option value="single">{{ __('quizzes.type_single_choice') }}</option>
                             <option value="multiple">{{ __('quizzes.type_multiple_choice') }}</option>
                         </select>
@@ -65,7 +65,7 @@
                             <span x-text="indices[i]"></span>
                         </button>
                         <input x-model="row.body" :name="`options[${i}][body]`" placeholder="{{ __('quizzes.option_placeholder') }}"
-                               class="flex-1 rounded-xl bg-surface-raised border border-line px-3 py-2 text-sm outline-none focus:border-brand">
+                               class="flex-1 rounded-xl bg-surface-raised border border-line px-3 py-2 text-base sm:text-sm outline-none focus:border-brand">
                         <template x-if="row.correct"><input type="hidden" :name="`options[${i}][correct]`" value="1"></template>
                         <button type="button" @click="remove(i)" x-show="options.length > 2" class="p-2 text-muted hover:text-rose-600" aria-label="{{ __('quizzes.delete') }}"><x-ui.icon name="close" class="w-4 h-4" /></button>
                     </div>

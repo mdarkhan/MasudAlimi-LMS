@@ -26,11 +26,11 @@
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-muted w-14">{{ __('courses.position') }}</span>
                         <input type="number" min="1" :name="'topper_rewards['+i+'][position]'" x-model="row.position"
-                               class="w-20 rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-sm text-ink outline-none focus:border-brand">
+                               class="w-20 rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-base sm:text-sm text-ink outline-none focus:border-brand">
                         <span class="text-muted">→</span>
                         <input type="number" min="1" :name="'topper_rewards['+i+'][points]'" x-model="row.points"
                                placeholder="{{ __('courses.points') }}"
-                               class="w-24 rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-sm text-ink outline-none focus:border-brand">
+                               class="w-24 rounded-lg border border-line bg-surface-raised px-2 py-1.5 text-base sm:text-sm text-ink outline-none focus:border-brand">
                         <span class="text-xs text-muted">{{ __('courses.points') }}</span>
                         <button type="button" @click="rows.splice(i, 1)" class="ms-1 text-muted hover:text-rose-600" aria-label="{{ __('ui.delete') }}">&times;</button>
                     </div>
