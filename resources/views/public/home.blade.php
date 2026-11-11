@@ -107,7 +107,8 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-12 sm:pb-16 space-y-16 sm:space-y-20">
 
         {{-- About the Ustaz --}}
-        @if (filled($about['about_bio']))
+        @php $aboutBio = \App\Support\RichText::toHtml($about['about_bio']); @endphp
+        @if ($aboutBio !== '')
             <section data-reveal class="rounded-3xl border border-line bg-card p-6 sm:p-8">
                 <div class="grid gap-6 sm:grid-cols-[auto_1fr] items-start">
                     @if ($about['about_photo'])
@@ -116,7 +117,8 @@
                     @endif
                     <div>
                         <h2 class="text-xl font-black text-ink mb-2">{{ __('public.about_heading') }}</h2>
-                        <p class="text-muted leading-relaxed whitespace-pre-line">{{ $about['about_bio'] }}</p>
+                        {{-- Sanitised HTML from the admin's rich editor (old plain-text bios become paragraphs). --}}
+                        <div class="rich-text text-muted">{!! $aboutBio !!}</div>
                     </div>
                 </div>
             </section>

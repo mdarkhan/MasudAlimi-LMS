@@ -74,7 +74,8 @@ class ZakatAndSettingsTest extends TestCase
         ])->assertRedirect()->assertSessionHas('success');
 
         $settings = app(SettingService::class);
-        $this->assertSame('একজন শিক্ষক ও দাঈ।', $settings->get('about_bio'));
+        // plain text typed without the editor's markup is stored as a safe paragraph
+        $this->assertSame('<p>একজন শিক্ষক ও দাঈ।</p>', $settings->get('about_bio'));
         Storage::disk('public')->assertExists($settings->get('about_photo'));
         $this->assertDatabaseHas('audit_logs', ['action' => 'settings.about_updated']);
 

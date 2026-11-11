@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\Audit\AuditLogger;
 use App\Services\Settings\SettingService;
+use App\Support\RichText;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -44,7 +45,8 @@ class SettingController extends Controller
     public function updateGeneral(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'site_title' => ['required', 'string', 'max:150'],
+            // Each settings card posts only its own fields; a card without the site title must not wipe it.
+            'site_title' => ['sometimes', 'required', 'string', 'max:150'],
             'site_tagline' => ['nullable', 'string', 'max:250'],
             'telegram_url' => ['nullable', 'url', 'max:250'],
             'whatsapp_url' => ['nullable', 'url', 'max:250'],
@@ -67,12 +69,13 @@ class SettingController extends Controller
     public function updateAbout(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'about_bio' => ['nullable', 'string', 'max:5000'],
+            'about_bio' => ['nullable', 'string', 'max:20000'],   // HTML from the rich editor
             'about_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
         $oldPhoto = $this->settings->get('about_photo');
-        $values = ['about_bio' => $data['about_bio'] ?? ''];
+        // Reduced to the safe allow-list on save (and again on display), so the stored value is always clean.
+        $values = ['about_bio' => RichText::toHtml($data['about_bio'] ?? '')];
 
         if ($request->hasFile('about_photo')) {
             $values['about_photo'] = $request->file('about_photo')->store('about', config('filesystems.uploads_disk'));

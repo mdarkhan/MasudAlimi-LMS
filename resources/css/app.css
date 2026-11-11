@@ -378,3 +378,20 @@ html.hero-anim .hero-enter > [data-enter] {
 
 /* Manual up/down ordering means nothing while a table is shown in another sort order (app.js adds .is-sorted). */
 table.is-sorted [data-reorder] { visibility: hidden; }
+
+/* Short rich text written in the admin editor (x-ui.rich-editor) — the same look in the editor and wherever
+   it is shown (homepage "about the ustaz"), so what the admin sees while typing is what visitors see. */
+.rich-text { line-height: 1.8; }
+.rich-text > :first-child { margin-top: 0; }
+.rich-text > :last-child { margin-bottom: 0; }
+.rich-text p { margin: 0 0 .6em; }
+.rich-text h3 { font-size: 1.3em; font-weight: 800; color: var(--color-ink); line-height: 1.4; margin: .9em 0 .35em; }
+.rich-text h4 { font-size: 1.12em; font-weight: 700; color: var(--color-ink); line-height: 1.45; margin: .8em 0 .3em; }
+.rich-text h2 { font-size: 1.4em; font-weight: 800; color: var(--color-ink); line-height: 1.35; margin: .9em 0 .35em; }
+.rich-text strong, .rich-text b { font-weight: 700; color: var(--color-ink); }
+.rich-text u { text-decoration: underline; text-underline-offset: 3px; }
+.rich-text a { color: var(--color-brand); text-decoration: underline; text-underline-offset: 3px; }
+.rich-text ul { list-style: disc; padding-inline-start: 1.5em; margin: 0 0 .6em; }
+.rich-text ol { list-style: decimal; padding-inline-start: 1.5em; margin: 0 0 .6em; }
+.rich-text li { margin: .2em 0; }
+.rich-text blockquote { border-inline-start: 4px solid color-mix(in oklab, var(--color-brand) 45%, transparent); padding-inline-start: 1em; margin: .6em 0; font-style: italic; }
