@@ -65,6 +65,18 @@ class TableSortTest extends TestCase
             ->assertSee('সীরাত-১<', false);
     }
 
+    public function test_the_admin_quiz_list_defaults_to_exam_number_order_not_creation_order(): void
+    {
+        $course = Course::factory()->create();
+        // created the way production got them: ০৪/০৫ first, ০৩/০২/০১ imported later
+        foreach (['সীরাত-০৪', 'সীরাত-০৫', 'সীরাত-০৩', 'সীরাত-০২', 'সীরাত-০১'] as $title) {
+            Quiz::factory()->create(['title' => $title, 'course_id' => $course->id]);
+        }
+
+        $this->actingAs($this->makeSuperAdmin())->get(route('admin.quizzes.index'))->assertOk()
+            ->assertSeeInOrder(['সীরাত-০১', 'সীরাত-০২', 'সীরাত-০৩', 'সীরাত-০৪', 'সীরাত-০৫']);
+    }
+
     public function test_admin_results_by_exam_follow_the_exam_number_even_without_dates(): void
     {
         // imported exams can have no start date — they must not sink to the end

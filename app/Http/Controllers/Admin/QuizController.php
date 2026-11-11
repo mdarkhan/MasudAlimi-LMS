@@ -37,8 +37,11 @@ class QuizController extends Controller
             ->when(in_array($status, [Quiz::STATUS_DRAFT, Quiz::STATUS_SCHEDULED, Quiz::STATUS_PUBLISHED, Quiz::STATUS_ARCHIVED], true),
                 fn ($q) => $q->where('status', $status))
             ->when($courseFilter, fn ($q) => $q->whereHas('course', fn ($c) => $c->where('slug', $courseFilter)))
-            ->latest('id')
             ->get();
+        // Default order is the exam's number, in natural order (সীরাত-০১, ০২ … ১০, ১১), not creation order —
+        // exams imported later (০১/০২/০৩) would otherwise sit on top in reverse. A clicked column sorts on top
+        // of this stably, so equal values keep exam order too.
+        $quizzes = \App\Support\TableSort::natural($quizzes, fn (Quiz $q) => $q->title);
         $quizzes = $sort->paginate($quizzes, [
             'title' => fn ($q) => $q->title,
             'course' => fn ($q) => $q->course?->title,
