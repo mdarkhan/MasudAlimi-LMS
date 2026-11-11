@@ -20,10 +20,10 @@
     // (Admin → Settings → General → সোসাল মিডিয়া লিংক).
     $socialSettings = app(\App\Services\Settings\SettingService::class)->group('general');
     $socialLinks = collect([
-        ['label' => __('public.social_whatsapp'), 'url' => $socialSettings['whatsapp_url'] ?? null],
-        ['label' => __('public.social_facebook_page'), 'url' => $socialSettings['facebook_page_url'] ?? null],
-        ['label' => __('public.social_facebook_group'), 'url' => $socialSettings['facebook_group_url'] ?? null],
-        ['label' => __('public.social_telegram_group'), 'url' => $socialSettings['telegram_url'] ?? null],
+        ['icon' => 'whatsapp', 'label' => __('public.social_whatsapp'), 'url' => $socialSettings['whatsapp_url'] ?? null],
+        ['icon' => 'facebook', 'label' => __('public.social_facebook_page'), 'url' => $socialSettings['facebook_page_url'] ?? null],
+        ['icon' => 'facebook', 'label' => __('public.social_facebook_group'), 'url' => $socialSettings['facebook_group_url'] ?? null],
+        ['icon' => 'telegram', 'label' => __('public.social_telegram_group'), 'url' => $socialSettings['telegram_url'] ?? null],
     ])->filter(fn ($link) => filled($link['url']));
 @endphp
 
@@ -120,7 +120,8 @@
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($socialLinks as $link)
                                     <a href="{{ $link['url'] }}" target="_blank" rel="noopener"
-                                       class="px-3 py-1.5 rounded-full border border-line text-xs font-semibold text-ink hover:border-brand/40 hover:text-brand transition-colors">
+                                       class="inline-flex items-center gap-1.5 ps-2 pe-3 py-1.5 rounded-full border border-line bg-card text-xs font-semibold text-ink hover:border-brand/40 hover:text-brand transition-colors">
+                                        <x-ui.social-icon :name="$link['icon']" class="w-4 h-4" />
                                         {{ $link['label'] }}
                                     </a>
                                 @endforeach
