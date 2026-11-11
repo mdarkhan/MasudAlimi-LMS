@@ -16,12 +16,12 @@
     @else
         <x-ui.table>
             <x-slot:head>
-                <th class="px-4 py-3"><x-ui.sort-link sort="title" :current="$sort->key" :dir="$sort->dir" :label="__('courses.title')" /></th>
-                <th class="px-4 py-3 hidden md:table-cell"><x-ui.sort-link sort="course" :current="$sort->key" :dir="$sort->dir" :label="__('admin.course')" /></th>
-                <th class="px-4 py-3 hidden sm:table-cell"><x-ui.sort-link sort="date" :current="$sort->key" :dir="$sort->dir" :label="__('lessons.date')" /></th>
-                <th class="px-4 py-3 text-right hidden lg:table-cell"><x-ui.sort-link sort="views" :current="$sort->key" :dir="$sort->dir" :label="__('lessons.viewed_by_col')" /></th>
-                <th class="px-4 py-3">{{ __('ui.status') }}</th>
-                <th class="px-4 py-3"></th>
+                <th class="px-4 py-3 text-center align-middle"><x-ui.sort-link sort="title" :current="$sort->key" :dir="$sort->dir" :label="__('courses.title')" /></th>
+                <th class="px-4 py-3 text-center align-middle hidden md:table-cell"><x-ui.sort-link sort="course" :current="$sort->key" :dir="$sort->dir" :label="__('admin.course')" /></th>
+                <th class="px-4 py-3 text-center align-middle hidden sm:table-cell"><x-ui.sort-link sort="date" :current="$sort->key" :dir="$sort->dir" :label="__('lessons.date')" /></th>
+                <th class="px-4 py-3 text-center align-middle hidden lg:table-cell"><x-ui.sort-link sort="views" :current="$sort->key" :dir="$sort->dir" :label="__('lessons.viewed_by_col')" /></th>
+                <th class="px-4 py-3 text-center align-middle">{{ __('ui.status') }}</th>
+                <th class="px-4 py-3 align-middle"></th>
             </x-slot:head>
             @foreach ($lessons as $lesson)
                 <tr>
@@ -32,10 +32,10 @@
                             @if ($lesson->embedUrl())<span class="text-xs text-muted flex items-center gap-0.5"><x-ui.icon name="volume" class="w-3 h-3" /> {{ __('lessons.audio') }}</span>@endif
                         </div>
                     </td>
-                    <td class="px-4 py-3 text-muted hidden md:table-cell">{{ $lesson->course->title }}</td>
-                    <td class="px-4 py-3 text-muted hidden sm:table-cell">{{ $lesson->date_label ?? '—' }}</td>
-                    <td class="px-4 py-3 text-right text-muted tabular-nums hidden lg:table-cell">{{ bn($lesson->views_count) }}/{{ bn($activeStudentCount) }}</td>
-                    <td class="px-4 py-3"><x-ui.badge :color="$lesson->is_published ? 'success' : 'neutral'">{{ $lesson->is_published ? __('admin.published') : __('admin.draft') }}</x-ui.badge></td>
+                    <td class="px-4 py-3 text-center align-middle text-muted hidden md:table-cell">{{ $lesson->course->title }}</td>
+                    <td class="px-4 py-3 text-center align-middle text-muted hidden sm:table-cell">{{ $lesson->date_label ?? '—' }}</td>
+                    <td class="px-4 py-3 text-center align-middle text-muted tabular-nums hidden lg:table-cell">{{ bn($lesson->views_count) }}/{{ bn($activeStudentCount) }}</td>
+                    <td class="px-4 py-3 text-center align-middle"><x-ui.badge :color="$lesson->is_published ? 'success' : 'neutral'">{{ $lesson->is_published ? __('admin.published') : __('admin.draft') }}</x-ui.badge></td>
                     <td class="px-4 py-3">
                         <div class="flex items-center justify-end gap-2">
                             <form method="POST" action="{{ route('admin.lessons.publish', $lesson) }}">
