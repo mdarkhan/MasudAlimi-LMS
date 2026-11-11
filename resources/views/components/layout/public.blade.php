@@ -117,12 +117,16 @@
                     <div>
                         @if ($socialLinks->isNotEmpty())
                             <p class="text-xs font-bold text-ink uppercase tracking-wider mb-3">{{ __('public.social_heading') }}</p>
-                            <div class="flex flex-wrap gap-2">
+                            {{-- Equal-width rows: the icon sits on its own soft tile with room to breathe, so it never
+                                 crowds the edge, and every label starts on the same line. --}}
+                            <div class="flex flex-col gap-2 max-w-64">
                                 @foreach ($socialLinks as $link)
                                     <a href="{{ $link['url'] }}" target="_blank" rel="noopener"
-                                       class="inline-flex items-center gap-1.5 ps-2 pe-3 py-1.5 rounded-full border border-line bg-card text-xs font-semibold text-ink hover:border-brand/40 hover:text-brand transition-colors">
-                                        <x-ui.social-icon :name="$link['icon']" class="w-4 h-4" />
-                                        {{ $link['label'] }}
+                                       class="group flex items-center gap-3 rounded-xl border border-line bg-card p-1.5 pe-4 text-sm font-semibold text-ink hover:border-brand/40 hover:bg-surface-raised transition-colors">
+                                        <span class="grid place-items-center size-8 shrink-0 rounded-lg bg-surface-raised group-hover:bg-card transition-colors">
+                                            <x-ui.social-icon :name="$link['icon']" class="w-[18px] h-[18px]" />
+                                        </span>
+                                        <span class="leading-tight">{{ $link['label'] }}</span>
                                     </a>
                                 @endforeach
                             </div>
