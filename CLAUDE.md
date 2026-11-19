@@ -360,7 +360,15 @@ all-or-nothing, students matched by roll). **`সীরাত-০১/০২` fol
 every one of the 80 results was matched name-by-name and score-by-score; in ০২ খাদিজার আম্মু (roll 43) is
 special consideration (last, unranked) and জিয়া (roll 23, 17) stays at the bottom where the sheet lists him; in ০১
 roll 48 was 8 on the old site but 5 on the sheet → owner chose the sheet (a −3 audited adjustment, never an edit
-of the legacy score). Production: `seerat-01-02-sheet-order-production.sql`, run AFTER deploying the migration. `tafseer-1`, `halakah-1`, `jummah-1` are
+of the legacy score). Production: `seerat-01-02-sheet-order-production.sql`, run AFTER deploying the migration.
+**`সীরাত-০৩` follows its signed sheet too** (`Sirah-course-result-3.pdf`, 17-01-26): all 69 sheet rows match old-site rows 163–231 in
+order and score (the two old rows উমর/ওমর ফারূক are not on the sheet and stay out). Owner decisions (2026-11-19): the old
+"first entry per roll" rule misattributed rows where family members shared one roll — the sheet's names win, so the 13 the sheet
+calls "মিসেস সজিব" moved from roll 16 to roll 27, roll 16 keeps its own 9, roll 33 (মিসেস আসিফ) gets 11, and the two
+roll-less rows that clearly are existing students were attributed (সোহান → roll 54, 13; সাইফুল → roll 56, 6). The other 26
+roll-less rows stay un-attributed **for now** (the owner will say later whether to create accounts for them — do not create any
+unasked). Board order = sheet order (`sheet_position`), 37 results. Production: `seerat-03-sheet-production.sql`, run AFTER
+`seerat-01-02-sheet-order-production.sql`. `tafseer-1`, `halakah-1`, `jummah-1` are
 not imported; the 225 blank-roll submissions are NOT attributed to anyone (the original `.sql` is the archive);
 students keep their sheet password as the **initial** password via the opt-in
 `legacy:students:import --use-sheet-passwords` (hashed, still `force_password_change`) — default stays fresh
