@@ -54,6 +54,7 @@ class QuizAttempt extends Model
             'time_taken_seconds' => 'integer',
             'submission_seq' => 'integer',
             'sheet_position' => 'integer',
+            'score_breakdown' => 'array',
             'special_consideration' => 'boolean',
             'counts_toward_cumulative' => 'boolean',
             'is_legacy_import' => 'boolean',

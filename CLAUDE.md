@@ -368,7 +368,14 @@ calls "মিসেস সজিব" moved from roll 16 to roll 27, roll 16 keep
 roll-less rows that clearly are existing students were attributed (সোহান → roll 54, 13; সাইফুল → roll 56, 6). The other 26
 roll-less rows stay un-attributed **for now** (the owner will say later whether to create accounts for them — do not create any
 unasked). Board order = sheet order (`sheet_position`), 37 results. Production: `seerat-03-sheet-production.sql`, run AFTER
-`seerat-01-02-sheet-order-production.sql`. `tafseer-1`, `halakah-1`, `jummah-1` are
+`seerat-01-02-sheet-order-production.sql`.
+**`সীরাত-মৌখিক` (oral exam, 2026-11-19)** is a **result-only exam**: `quizzes.manual_result = 1`, no questions, `total_marks` (100) set
+by staff — `Quiz::recalculateTotalMarks()` and the integrity checks leave it alone; never "fix" its total from questions. Each result keeps
+its parts in `quiz_attempts.score_breakdown` (এটিচিউড /20 + বই /80, shown on the result pages, never used for ranking) and its position on
+the sheet (`sheet_position`, 1–29). It counts toward the course and overall totals like any quiz (`counts_toward_overall`), so the student
+leaderboards add its 100 marks. The sheet carries no date: results are stamped 17-01-26 (like the other sheets). Sheet names are first
+names only — matched to accounts by the owner's data (khadijar ammu → 43, "জিয়া" → 23 not the duplicate 44, "আসিফ" → 32,
+"সোহান" → 54). Production: `seerat-moukhik-production.sql`, run AFTER deploying the migration. `tafseer-1`, `halakah-1`, `jummah-1` are
 not imported; the 225 blank-roll submissions are NOT attributed to anyone (the original `.sql` is the archive);
 students keep their sheet password as the **initial** password via the opt-in
 `legacy:students:import --use-sheet-passwords` (hashed, still `force_password_change`) — default stays fresh

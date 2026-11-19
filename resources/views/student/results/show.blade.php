@@ -47,7 +47,26 @@
 
         <x-results.share-card :attempt="$attempt" :quiz="$quiz" :rank="$rank" :percentage="$percentage" class="mb-6" />
 
-        @if ($legacy)
+        @if ($quiz->manual_result)
+            {{-- Oral / hand-marked exam: no questions to review — show how the mark is made up instead. --}}
+            @if (! empty($attempt->score_breakdown))
+                <x-ui.card>
+                    <h3 class="font-bold text-ink mb-3">{{ __('results.breakdown') }}</h3>
+                    <dl class="divide-y divide-line text-sm">
+                        @foreach ($attempt->score_breakdown as $part)
+                            <div class="flex items-center justify-between gap-3 py-2.5">
+                                <dt class="text-ink">{{ $part['label'] }}</dt>
+                                <dd class="font-bold text-ink tabular-nums">{{ bn($part['score']) }} <span class="text-muted font-normal">/ {{ bn($part['max']) }}</span></dd>
+                            </div>
+                        @endforeach
+                        <div class="flex items-center justify-between gap-3 py-2.5">
+                            <dt class="font-semibold text-ink">{{ __('results.col_score') }}</dt>
+                            <dd class="font-black text-brand tabular-nums">{{ bn($attempt->final_score) }} <span class="text-muted font-normal">/ {{ bn($attempt->total_marks_snapshot) }}</span></dd>
+                        </div>
+                    </dl>
+                </x-ui.card>
+            @endif
+        @elseif ($legacy)
             <x-ui.alert type="info">{{ __('results.legacy_no_answers') }}</x-ui.alert>
         @else
             <x-exams.answer-review :rows="$rows" :regraded="$regraded" />

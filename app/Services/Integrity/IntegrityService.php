@@ -18,7 +18,7 @@ class IntegrityService
         $markDrift = Quiz::query()->withSum(
             ['questions as active_marks_sum' => fn ($query) => $query->where('is_active', true)],
             'marks',
-        )->get(['id', 'title', 'total_marks'])->filter(
+        )->where('manual_result', false)->get(['id', 'title', 'total_marks'])->filter(
             fn (Quiz $quiz) => (int) $quiz->total_marks !== (int) ($quiz->active_marks_sum ?? 0),
         )->map(fn (Quiz $quiz) => [
             'quiz_id' => $quiz->id,
@@ -71,7 +71,7 @@ class IntegrityService
                     ->count()
             ),
             'quizzes_without_questions' => $this->count(
-                Quiz::query()->doesntHave('questions')->count(), severity: 'warning'
+                Quiz::query()->where('manual_result', false)->doesntHave('questions')->count(), severity: 'warning'
             ),
         ];
 

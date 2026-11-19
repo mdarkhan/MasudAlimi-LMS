@@ -70,4 +70,5 @@ return [
     'card_rank' => "মেধাতালিকায় অবস্থান :rank",
     'card_roll' => "রোল :roll",
     'share_card_link' => "ফলাফল কার্ড",
+    'breakdown' => 'নম্বরের বিভাজন',
 ];

@@ -40,6 +40,17 @@
                 </dl>
             </x-ui.card>
 
+            @if (! empty($attempt->score_breakdown))
+                <x-ui.card>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted mb-3">{{ __('results.breakdown') }}</h3>
+                    <dl class="space-y-1.5 text-sm">
+                        @foreach ($attempt->score_breakdown as $part)
+                            <div class="flex justify-between"><dt class="text-muted">{{ $part['label'] }}</dt><dd class="font-semibold tabular-nums">{{ bn($part['score']) }} / {{ bn($part['max']) }}</dd></div>
+                        @endforeach
+                    </dl>
+                </x-ui.card>
+            @endif
+
             {{-- Manual adjustment --}}
             @if ($canAdjust)
                 <x-ui.card x-data="{ manual: {{ (int) $attempt->manual_adjustment }}, calc: {{ (int) $attempt->calculated_score }} }">

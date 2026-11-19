@@ -70,4 +70,5 @@ return [
     'card_rank' => "Rank :rank",
     'card_roll' => "Roll :roll",
     'share_card_link' => "Result card",
+    'breakdown' => 'Marks breakdown',
 ];
